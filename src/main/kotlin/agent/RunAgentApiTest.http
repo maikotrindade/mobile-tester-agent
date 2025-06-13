@@ -1,6 +1,0 @@
-POST http://localhost:8080/run-agent
-Content-Type: application/json
-
-{
-    "prompt": "Turn the switch on"
-}

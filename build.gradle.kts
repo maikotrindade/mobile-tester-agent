@@ -2,6 +2,7 @@ val kotlin_version: String by project
 val logback_version: String by project
 val koog_agents_version: String by project
 val dotenv_kotlin_version: String by project
+val ktor_version: String by project
 
 plugins {
     kotlin("jvm") version "2.1.10"
@@ -19,6 +20,10 @@ repositories {
     mavenCentral()
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-openapi")
@@ -28,6 +33,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-config-yaml")
     implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
     implementation("ai.koog:koog-agents:$koog_agents_version")
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_kotlin_version")

@@ -20,5 +20,11 @@ fun Application.configureRouting() {
             val result = agent.runAgent(prompt)
             call.respondText(result)
         }
+        post("/run-tester") {
+            val request = call.receive<Map<String, String>>()
+            val prompt = request["prompt"] ?: return@post call.respondText("Missing prompt", status = io.ktor.http.HttpStatusCode.BadRequest)
+            val result = agent.runMobileTestAgent(prompt)
+            call.respondText(result)
+        }
     }
 }
