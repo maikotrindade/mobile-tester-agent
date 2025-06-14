@@ -34,6 +34,7 @@ suspend fun runMobileTestAgent(prompt: String): String {
 
             onAgentFinished = { strategyName, result ->
                 println("Agent finished with result: $result")
+                resultDeferred.complete(result ?: "Error: no result" )
             }
         }
     }
