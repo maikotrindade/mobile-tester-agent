@@ -1,28 +1,28 @@
 package agent.tool
 
+import agent.tool.utils.AdbUtils
+import agent.tool.utils.UiAutomatorUtils
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.reflect.ToolSet
 
 class MobileTestTools : ToolSet {
     @Tool
-    @LLMDescription("Tap on a UI element by its selector or coordinates.")
+    @LLMDescription("Get the current screen UI hierarchy as XML using UIAutomator dump.")
+    suspend fun getScreen(): String {
+        return UiAutomatorUtils.dumpUiHierarchy()
+    }
+
+    @Tool
+    @LLMDescription("Tap on a UI element by its text using UIAutomator dump and adb input tap. Example: tap('Click here') will tap the button with text 'Click here'. Returns an error if the element is not found or the tap fails.")
     suspend fun tap(selector: String): String {
-        // TODO: Implement tap action on emulator
-        return "NOT_IMPLEMENTED"
+        return UiAutomatorUtils.tapByText(selector)
     }
 
     @Tool
     @LLMDescription("Input text into a UI element by its selector.")
     suspend fun inputText(selector: String, text: String): String {
         // TODO: Implement input text action on emulator
-        return "NOT_IMPLEMENTED"
-    }
-
-    @Tool
-    @LLMDescription("Get the current screen UI hierarchy as JSON.")
-    suspend fun getScreen(): String {
-        // TODO: Implement screen dump from emulator
         return "NOT_IMPLEMENTED"
     }
 
@@ -46,17 +46,8 @@ class MobileTestTools : ToolSet {
         description = "Connect to a local Android device or emulator using ADB"
     )
     suspend fun connectDevice(): String {
-        fun getDevices(): Pair<String, List<String>> {
-            val process = ProcessBuilder("adb", "devices").redirectErrorStream(true).start()
-            val output = process.inputStream.bufferedReader().readText()
-            process.waitFor()
-            val devices = output.lines()
-                .drop(1)
-                .filter { it.isNotBlank() && !it.contains("List of devices attached") }
-            return output to devices
-        }
         return try {
-            var (output, devices) = getDevices()
+            var (output, devices) = AdbUtils.getDevices()
             val offlineDevices = devices.filter { it.contains("offline") }
             if (offlineDevices.isNotEmpty()) {
                 // Restart ADB server if any device is offline
@@ -64,7 +55,7 @@ class MobileTestTools : ToolSet {
                 ProcessBuilder("adb", "start-server").start().waitFor()
                 // Wait a moment for server to restart
                 Thread.sleep(1500)
-                val result = getDevices()
+                val result = AdbUtils.getDevices()
                 output = result.first
                 devices = result.second
             }
@@ -94,30 +85,17 @@ class MobileTestTools : ToolSet {
                 "data partition usage, battery level, and IP address."
     )
     suspend fun deviceInformation(): String {
-        fun runAdbCommand(vararg args: String): String {
-            return try {
-                val process = ProcessBuilder("adb", *args)
-                    .redirectErrorStream(true)
-                    .start()
-                val output = process.inputStream.bufferedReader().readText().trim()
-                process.waitFor()
-                output
-            } catch (e: Exception) {
-                "Error running adb ${args.joinToString(" ")}: ${e.message}"
-            }
-        }
-
         return try {
-            val manufacturer = runAdbCommand("shell", "getprop", "ro.product.manufacturer")
-            val model = runAdbCommand("shell", "getprop", "ro.product.model")
-            val androidVersion = runAdbCommand("shell", "getprop", "ro.build.version.release")
-            val sdk = runAdbCommand("shell", "getprop", "ro.build.version.sdk")
-            val platform = runAdbCommand("shell", "getprop", "ro.board.platform")
-            val memoryTotal = runAdbCommand("shell", "cat", "/proc/meminfo")
+            val manufacturer = AdbUtils.runAdb("shell", "getprop", "ro.product.manufacturer")
+            val model = AdbUtils.runAdb("shell", "getprop", "ro.product.model")
+            val androidVersion = AdbUtils.runAdb("shell", "getprop", "ro.build.version.release")
+            val sdk = AdbUtils.runAdb("shell", "getprop", "ro.build.version.sdk")
+            val platform = AdbUtils.runAdb("shell", "getprop", "ro.board.platform")
+            val memoryTotal = AdbUtils.runAdb("shell", "cat", "/proc/meminfo")
                 .lines().find { it.contains("MemTotal") } ?: "N/A"
-            val batteryLevel = runAdbCommand("shell", "dumpsys", "battery")
+            val batteryLevel = AdbUtils.runAdb("shell", "dumpsys", "battery")
                 .lines().find { it.contains("level") } ?: "N/A"
-            val ipInfo = runAdbCommand("shell", "ip", "addr", "show", "wlan0")
+            val ipInfo = AdbUtils.runAdb("shell", "ip", "addr", "show", "wlan0")
                 .lines().find { it.trim().startsWith("inet ") } ?: "N/A"
 
             """
