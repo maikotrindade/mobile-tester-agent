@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -43,7 +42,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import io.githib.maikotrindade.appfortesting.screen.FeedScreen
+import io.githib.maikotrindade.appfortesting.screen.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
 
 class MainActivity : ComponentActivity() {
@@ -62,18 +66,22 @@ class MainActivity : ComponentActivity() {
 private fun MainContent() {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val navController = rememberNavController()
     Scaffold(
         topBar = { InstagramTopBar() },
-        bottomBar = { InstagramBottomBar() },
+        bottomBar = { InstagramBottomBar(navController) },
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
+        NavHost(
+            navController = navController,
+            startDestination = "feed",
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            FeedScreen()
+            composable("feed") { FeedScreen() }
+            composable("search") { SearchScreen() }
         }
     }
 }
@@ -133,7 +141,8 @@ fun InstagramTopBar() {
 }
 
 @Composable
-fun InstagramBottomBar() {
+fun InstagramBottomBar(navController: NavHostController) {
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
     NavigationBar(
         containerColor = Color.Black,
         contentColor = Color.White
@@ -146,8 +155,11 @@ fun InstagramBottomBar() {
                     modifier = Modifier.size(28.dp)
                 )
             },
-            selected = true,
-            onClick = { },
+            selected = currentRoute == "feed",
+            onClick = { navController.navigate("feed") {
+                popUpTo("feed") { inclusive = true }
+                launchSingleTop = true
+            } },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 unselectedIconColor = Color.Gray,
@@ -162,8 +174,11 @@ fun InstagramBottomBar() {
                     modifier = Modifier.size(28.dp)
                 )
             },
-            selected = false,
-            onClick = { },
+            selected = currentRoute == "search",
+            onClick = { navController.navigate("search") {
+                popUpTo("feed")
+                launchSingleTop = true
+            } },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 unselectedIconColor = Color.Gray,
