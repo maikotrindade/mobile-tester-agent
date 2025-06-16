@@ -53,8 +53,7 @@ fun StoryItem(story: Story) {
                     )
                 }
             }
-            
-            // Profile image placeholder
+
             Box(
                 modifier = Modifier
                     .size(64.dp)
@@ -63,18 +62,16 @@ fun StoryItem(story: Story) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = story.username.take(2).uppercase(),
+                    text = story.user.username.take(2).uppercase(),
                     color = Color.White,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
-        
         Spacer(modifier = Modifier.height(4.dp))
-        
         Text(
-            text = story.username,
+            text = story.user.username,
             color = Color.White,
             fontSize = 12.sp,
             maxLines = 1,
