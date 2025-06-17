@@ -30,8 +30,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -64,14 +67,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainContent() {
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
+    var showSnackbarMessage by remember { mutableStateOf<String?>(null) }
+    val accountDeletedSuccess = stringResource(id = R.string.account_deleted_success)
+
     Scaffold(
         topBar = { InstagramTopBar(navController) },
         bottomBar = { InstagramBottomBar(navController) },
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
+        showSnackbarMessage?.let { message ->
+            LaunchedEffect(message) {
+                snackbarHostState.showSnackbar(message)
+                showSnackbarMessage = null
+            }
+        }
         NavHost(
             navController = navController,
             startDestination = "feed",
@@ -85,7 +96,13 @@ private fun MainContent() {
             composable("profile") {
                 ProfileScreen(
                     onSettingClick = {},
-                    onDeleteAccount = {}
+                    onDeleteAccount = {
+                        showSnackbarMessage = accountDeletedSuccess
+                        navController.navigate("feed") {
+                            popUpTo("feed") { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }

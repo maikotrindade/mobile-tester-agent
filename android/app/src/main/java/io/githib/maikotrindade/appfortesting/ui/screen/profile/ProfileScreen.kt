@@ -18,6 +18,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import io.githib.maikotrindade.appfortesting.model.User
 import io.githib.maikotrindade.appfortesting.repository.Repository
+import io.githib.maikotrindade.appfortesting.ui.screen.profile.delete.AccountDeletionScreen
 
 @Composable
 fun ProfileScreen(
@@ -39,6 +44,11 @@ fun ProfileScreen(
     onSettingClick: (String) -> Unit = {},
     onDeleteAccount: () -> Unit = {}
 ) {
+    var showDeleteScreen by remember { mutableStateOf(false) }
+    if (showDeleteScreen) {
+        AccountDeletionScreen(onConfirmDelete = onDeleteAccount)
+        return
+    }
     val settings = listOf(
         "Edit Profile",
         "Saved",
@@ -103,7 +113,7 @@ fun ProfileScreen(
         }
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = onDeleteAccount,
+            onClick = { showDeleteScreen = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),

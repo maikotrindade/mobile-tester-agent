@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Maikogram</string>
     <string name="notifications">Notifications</string>
+    <string name="account_deletion_title">Sorry to see you go</string>
+    <string name="account_deletion_message">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="confirm_delete_account">Confirm Delete Account</string>
+    <string name="account_deleted_success">Account deleted with success!</string>
 </resources>
