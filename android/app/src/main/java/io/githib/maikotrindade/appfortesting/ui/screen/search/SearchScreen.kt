@@ -33,6 +33,7 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
     val query by viewModel.query.collectAsState()
     val filteredUsers by viewModel.filteredUsers.collectAsState()
     val filteredPosts by viewModel.filteredPosts.collectAsState()
+    val loading by viewModel.loading.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         OutlinedTextField(
@@ -41,26 +42,33 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
             label = { Text("Search users or posts") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Users", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
-        LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
-            items(filteredUsers) { user ->
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    UserAvatar(user)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(user.username, color = MaterialTheme.colorScheme.onBackground)
+        if (loading) {
+            Spacer(modifier = Modifier.height(24.dp))
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Users", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+            LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
+                items(filteredUsers) { user ->
+                    Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                        UserAvatar(user)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(user.username, color = MaterialTheme.colorScheme.onBackground)
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Posts", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
-        LazyColumn {
-            items(filteredPosts) { post ->
-                PostTile(
-                    user = post.user,
-                    gifUrl = post.mediaUrl.orEmpty(),
-                    description = post.description.orEmpty())
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Posts", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+            LazyColumn {
+                items(filteredPosts) { post ->
+                    PostTile(
+                        user = post.user,
+                        gifUrl = post.mediaUrl.orEmpty(),
+                        description = post.description.orEmpty())
                 }
+            }
         }
     }
 }
