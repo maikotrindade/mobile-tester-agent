@@ -50,6 +50,7 @@ import io.githib.maikotrindade.appfortesting.ui.screen.createpost.CreatePostScre
 import io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.notification.NotificationScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.profile.ProfileScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.reels.ReelsScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.search.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -124,6 +125,7 @@ private fun MainContent() {
                     }
                 )
             }
+            composable("reels") { ReelsScreen() }
         }
     }
 }
@@ -243,8 +245,11 @@ fun InstagramBottomBar(navController: NavHostController) {
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             },
-            selected = false,
-            onClick = { },
+            selected = currentRoute == "reels",
+            onClick = { navController.navigate("reels") {
+                popUpTo("feed")
+                launchSingleTop = true
+            } },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.onSurface,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
