@@ -21,12 +21,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,29 +36,45 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.githib.maikotrindade.appfortesting.component.StoryItem
 import io.githib.maikotrindade.appfortesting.model.Story
 import io.githib.maikotrindade.appfortesting.model.User
-import io.githib.maikotrindade.appfortesting.repository.Repository.posts
-import io.githib.maikotrindade.appfortesting.repository.Repository.stories
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedScreen() {
-    StoriesSection(stories = stories)
-    Spacer(modifier = Modifier.height(8.dp))
-    LazyColumn(modifier = Modifier.padding(top = 110.dp)) {
-        items(posts) { post ->
-            PostTile(
-                user = post.user,
-                gifUrl = post.mediaUrl.orEmpty(),
-                description = post.description.orEmpty(),
-            )
-            HorizontalDivider()
+fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
+    val loading = feedViewModel.loading.collectAsState().value
+    val posts = feedViewModel.posts.collectAsState().value
+    val stories = feedViewModel.stories.collectAsState().value
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = loading)
+
+    SwipeRefresh(state = swipeRefreshState, onRefresh = { feedViewModel.refresh() }) {
+        if (loading) {
+            Column(modifier = Modifier.fillMaxWidth().padding(top = 120.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Column {
+                StoriesSection(stories = stories)
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn {
+                    items(posts) { post ->
+                        PostTile(
+                            user = post.user,
+                            gifUrl = post.mediaUrl.orEmpty(),
+                            description = post.description.orEmpty(),
+                        )
+                        HorizontalDivider()
+                    }
+                }
+            }
         }
     }
 }

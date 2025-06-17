@@ -1,4 +1,5 @@
 [versions]
+accompanistSwiperefresh = "0.33.2-alpha"
 agp = "8.10.1"
 coilGif = "2.4.0"
 kotlin = "2.0.21"
@@ -9,6 +10,7 @@ composeBom = "2025.06.00"
 navigationCompose = "2.9.0"
 
 [libraries]
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilGif" }
