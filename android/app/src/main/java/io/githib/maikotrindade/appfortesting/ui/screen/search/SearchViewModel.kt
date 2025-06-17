@@ -49,4 +49,11 @@ class SearchViewModel : ViewModel() {
             _loading.value = false
         }
     }
+
+    fun toggleLike(post: Post) {
+        val updatedPosts = _filteredPosts.value.map {
+            if (it == post) it.copy(isLiked = !it.isLiked) else it
+        }
+        _filteredPosts.value = updatedPosts
+    }
 }

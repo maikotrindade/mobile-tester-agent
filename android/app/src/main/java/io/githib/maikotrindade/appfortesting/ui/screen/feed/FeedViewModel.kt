@@ -55,4 +55,12 @@ class FeedViewModel : ViewModel() {
         Repository.posts.add(0, post)
         refresh()
     }
+
+    fun toggleLike(post: Post) {
+        val updatedPosts = currentPosts.map {
+            if (it == post) it.copy(isLiked = !it.isLiked) else it
+        }
+        currentPosts = updatedPosts.toMutableList()
+        _posts.value = currentPosts
+    }
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
@@ -34,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,11 +79,13 @@ fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
                 StoriesSection(stories = stories)
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(state = listState) {
-                    items(posts) { post ->
+                    items(posts, key = { it.hashCode() }) { post ->
                         PostTile(
                             user = post.user,
                             gifUrl = post.mediaUrl.orEmpty(),
                             description = post.description.orEmpty(),
+                            isLiked = post.isLiked,
+                            onLikeClick = { feedViewModel.toggleLike(post) }
                         )
                         HorizontalDivider()
                     }
@@ -109,6 +113,8 @@ fun PostTile(
     user: User,
     gifUrl: String,
     description: String,
+    isLiked: Boolean,
+    onLikeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -176,8 +182,20 @@ fun PostTile(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* handle click */ }) {
-                Icon(Icons.Outlined.FavoriteBorder, contentDescription = stringResource(id = R.string.like))
+            IconButton(onClick = onLikeClick) {
+                if (isLiked) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = stringResource(id = R.string.like),
+                        tint = Color.Red
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = stringResource(id = R.string.like),
+                        tint = Color.Gray
+                    )
+                }
             }
             IconButton(onClick = { /* handle click */ }) {
                 Icon(Icons.Outlined.Email, contentDescription = stringResource(id = R.string.comment))

@@ -68,7 +68,10 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
                     PostTile(
                         user = post.user,
                         gifUrl = post.mediaUrl.orEmpty(),
-                        description = post.description.orEmpty())
+                        description = post.description.orEmpty(),
+                        isLiked = post.isLiked,
+                        onLikeClick = { viewModel.toggleLike(post) }
+                    )
                 }
             }
         }
