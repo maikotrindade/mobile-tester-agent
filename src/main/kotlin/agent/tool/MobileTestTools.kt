@@ -14,7 +14,9 @@ class MobileTestTools : ToolSet {
     }
 
     @Tool
-    @LLMDescription("Tap on a UI element by its text using UIAutomator dump and adb input tap. Example: tap('Click here') will tap the button with text 'Click here'. Returns an error if the element is not found or the tap fails.")
+    @LLMDescription("Tap on a UI element by its text using UIAutomator dump and adb input tap." +
+            "Example: tap('Click here') will tap the button with text 'Click here'. " +
+            "Returns an error if the element is not found or the tap fails.")
     suspend fun tap(selector: String): String {
         return UiAutomatorUtils.tapByText(selector)
     }
