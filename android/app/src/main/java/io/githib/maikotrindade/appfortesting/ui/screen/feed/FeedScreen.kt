@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
@@ -28,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +58,14 @@ fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
     val posts = feedViewModel.posts.collectAsState().value
     val stories = feedViewModel.stories.collectAsState().value
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = loading)
+    val listState = rememberLazyListState()
+
+    // Scroll to top when posts change (e.g., after new post is added)
+    LaunchedEffect(posts) {
+        if (posts.isNotEmpty()) {
+            listState.animateScrollToItem(0)
+        }
+    }
 
     SwipeRefresh(state = swipeRefreshState, onRefresh = { feedViewModel.refresh() }) {
         if (loading) {
@@ -66,7 +76,7 @@ fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
             Column {
                 StoriesSection(stories = stories)
                 Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn {
+                LazyColumn(state = listState) {
                     items(posts) { post ->
                         PostTile(
                             user = post.user,

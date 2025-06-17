@@ -46,37 +46,37 @@ object Repository {
         Story(user = userEvan),
     )
 
-    val posts = List(20) { index ->
+    val mediaUrls = listOf(
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/cXblnKXr2BQOaYnTni/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BY8ORoRpnJDXeBNwxg/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/IwAZ6dvvvaTtdI8SD5/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/P0ZRTYaCmPsJPNd3r0/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jp7jSyjNNz2ansuOS8/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hyyV7pnbE0FqLNBAzs/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DhstvI3zZ598Nb1rFf/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QTAVEex4ANH1pcdg16/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ySlraQoZhmeUskuOX5/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZHnKJsXLI6ZClYFwzH/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pK6k4BNalmx44CQj3v/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dmltZzZ6ZHNncDh1d2R6b292MWg5ZGVtY3M0cnBjOG1hYTBuYTZxZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/GS9pfaxQj5hPKFGGp8/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG1mcDFnem0weGo4NHQ5ZGh1djYxcHR6d3hrMWZ4eGI0MzUydnh4YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/U4DswrBiaz0p67ZweH/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG1mcDFnem0weGo4NHQ5ZGh1djYxcHR6d3hrMWZ4eGI0MzUydnh4YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/11nloJQzzDP1MA/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2k4NGJ1NHZyMzVzMW5wYWVpb3VucmduOTNmN2pjdm52MG81ODAxdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/122pLlowwMS5aM/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eW5lM2Zndm9yYTVpN2JqanVtcTZ6MnBqMXNqdmJ2bDFncW9vZXg4dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/vgUFOWBwBkziE/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3YWo4bDN1eGZ2M3lwNmswMGNlMDVoeWF4Z2ZpOGZrdmg0MXd6MnU5eiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/tkApIfibjeWt1ufWwj/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HJB9Nq9RMZgZlLssZF/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/sT33tck48pfQ9dYkwd/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5sZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BbzOAkepyC1yUbzlWd/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N21lMHJ1NGd2N3l6aWFmNDEwbGZ4dGd4eXRueWh5NTUxODVicTM3ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/AAsNYlbJpyz7CWXItf/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dTV0cDN1eWRhZGJmMTZmOHB3dmdzMGlrODZnaHJraXdkNmFwc2JnNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/FnXgJ5KG1DqhzD0dF6/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lmosqcsn149zYmhEUh/giphy.gif",
+        "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LlZ2SxbdkCE1rTiTiW/giphy.gif",
+    )
+
+    var posts = mutableListOf<Post>().apply {
         val users = listOf(userAlice, userBob, userCharlie, userDiana, userEvan)
-        val user = users[index % users.size]
-        val mediaUrls = listOf(
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/cXblnKXr2BQOaYnTni/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BY8ORoRpnJDXeBNwxg/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/IwAZ6dvvvaTtdI8SD5/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/P0ZRTYaCmPsJPNd3r0/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jp7jSyjNNz2ansuOS8/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hyyV7pnbE0FqLNBAzs/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DhstvI3zZ598Nb1rFf/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QTAVEex4ANH1pcdg16/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ySlraQoZhmeUskuOX5/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZHnKJsXLI6ZClYFwzH/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa20xNTMyN2h2dHo5a3NtcXc0c2EwajluOG5mdTNlaXV2b296M253NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pK6k4BNalmx44CQj3v/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dmltZzZ6ZHNncDh1d2R6b292MWg5ZGVtY3M0cnBjOG1hYTBuYTZxZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/GS9pfaxQj5hPKFGGp8/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG1mcDFnem0weGo4NHQ5ZGh1djYxcHR6d3hrMWZ4eGI0MzUydnh4YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/U4DswrBiaz0p67ZweH/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG1mcDFnem0weGo4NHQ5ZGh1djYxcHR6d3hrMWZ4eGI0MzUydnh4YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/11nloJQzzDP1MA/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2k4NGJ1NHZyMzVzMW5wYWVpb3VucmduOTNmN2pjdm52MG81ODAxdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/122pLlowwMS5aM/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eW5lM2Zndm9yYTVpN2JqanVtcTZ6MnBqMXNqdmJ2bDFncW9vZXg4dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/vgUFOWBwBkziE/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3YWo4bDN1eGZ2M3lwNmswMGNlMDVoeWF4Z2ZpOGZrdmg0MXd6MnU5eiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/tkApIfibjeWt1ufWwj/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HJB9Nq9RMZgZlLssZF/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/sT33tck48pfQ9dYkwd/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5sZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BbzOAkepyC1yUbzlWd/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N21lMHJ1NGd2N3l6aWFmNDEwbGZ4dGd4eXRueWh5NTUxODVicTM3ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/AAsNYlbJpyz7CWXItf/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dTV0cDN1eWRhZGJmMTZmOHB3dmdzMGlrODZnaHJraXdkNmFwc2JnNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/FnXgJ5KG1DqhzD0dF6/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lmosqcsn149zYmhEUh/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LlZ2SxbdkCE1rTiTiW/giphy.gif",
-        )
         val descriptions = listOf(
             "Awesome day!",
             "Look at this!",
@@ -99,11 +99,16 @@ object Repository {
             "Random shot",
             "Quick snap"
         )
-        Post(
-            user = user,
-            mediaUrl = mediaUrls.random(),
-            description = descriptions[index % descriptions.size]
-        )
+        repeat(20) { index ->
+            val user = users[index % users.size]
+            add(
+                Post(
+                    user = user,
+                    mediaUrl = mediaUrls.random(),
+                    description = descriptions[index % descriptions.size]
+                )
+            )
+        }
     }
 
     val notifications = listOf(

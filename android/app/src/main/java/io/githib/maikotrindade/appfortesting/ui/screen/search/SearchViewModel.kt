@@ -39,9 +39,7 @@ class SearchViewModel : ViewModel() {
         _loading.value = true
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(700) // debounce
-            // Simulate loading
-            delay(900)
+            delay(1800)
             _filteredUsers.value = users.filter { it.username.contains(newQuery, ignoreCase = true) }
             _filteredPosts.value = posts.filter {
                 it.user.username.contains(newQuery, ignoreCase = true) ||

@@ -16,4 +16,7 @@
     <string name="add">Add</string>
     <string name="reels">Reels</string>
     <string name="profile">Profile</string>
+    <string name="description">Description</string>
+    <string name="create_post">Create Post</string>
+    <string name="post_created_success">Post created with success</string>
 </resources>

@@ -46,11 +46,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.githib.maikotrindade.appfortesting.ui.screen.createpost.CreatePostScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.notification.NotificationScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.profile.ProfileScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.search.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.githib.maikotrindade.appfortesting.model.Post
+import io.githib.maikotrindade.appfortesting.repository.Repository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,6 +106,21 @@ private fun MainContent() {
                             popUpTo("feed") { inclusive = true }
                             launchSingleTop = true
                         }
+                    }
+                )
+            }
+            composable("create_post") {
+                val feedViewModel = androidx.lifecycle.viewmodel.compose.viewModel<io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedViewModel>()
+                CreatePostScreen(
+                    navController = navController,
+                    onPostCreated = { description, gifUrl ->
+                        val newPost = Post(
+                            user = Repository.userMaiko,
+                            mediaUrl = gifUrl,
+                            description = description
+                        )
+                        feedViewModel.addPost(newPost)
+                        showSnackbarMessage = "Post created with success"
                     }
                 )
             }
@@ -204,8 +223,11 @@ fun InstagramBottomBar(navController: NavHostController) {
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             },
-            selected = false,
-            onClick = { },
+            selected = currentRoute == "create_post",
+            onClick = { navController.navigate("create_post") {
+                popUpTo("feed")
+                launchSingleTop = true
+            } },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.onSurface,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
