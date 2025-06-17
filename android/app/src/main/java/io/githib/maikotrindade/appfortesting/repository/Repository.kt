@@ -52,10 +52,32 @@ object Repository {
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lmosqcsn149zYmhEUh/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LlZ2SxbdkCE1rTiTiW/giphy.gif",
         )
-
+        val descriptions = listOf(
+            "Awesome day!",
+            "Look at this!",
+            "Random fun",
+            "Chilling out",
+            "What a view!",
+            "So cool!",
+            "Just wow, so happy",
+            "Vibes",
+            "Good times",
+            "Epic moment",
+            "Feeling great",
+            "Adventure happy time",
+            "Smile!, be happy!",
+            "Unforgettable",
+            "Best ever, super happy",
+            "Surprise!",
+            "Can you believe?",
+            "So happy",
+            "Random shot",
+            "Quick snap"
+        )
         Post(
             user = user,
-            mediaUrl = mediaUrls.random()
+            mediaUrl = mediaUrls.random(),
+            description = descriptions[index % descriptions.size]
         )
     }
 

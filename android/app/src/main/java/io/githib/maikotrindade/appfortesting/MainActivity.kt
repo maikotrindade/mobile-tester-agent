@@ -46,9 +46,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.githib.maikotrindade.appfortesting.screen.FeedScreen
-import io.githib.maikotrindade.appfortesting.screen.NotificationScreen
-import io.githib.maikotrindade.appfortesting.screen.SearchScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.notification.NotificationScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.search.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
 
 class MainActivity : ComponentActivity() {
@@ -218,7 +218,7 @@ fun InstagramBottomBar(navController: NavHostController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "YS",
+                        text = "MT",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold

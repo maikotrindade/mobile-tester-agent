@@ -1,4 +1,4 @@
-package io.githib.maikotrindade.appfortesting.screen
+package io.githib.maikotrindade.appfortesting.ui.screen.notification
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

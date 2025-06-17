@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package io.githib.maikotrindade.appfortesting.screen
+package io.githib.maikotrindade.appfortesting.ui.screen.feed
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import io.githib.maikotrindade.appfortesting.component.StoryItem
 import io.githib.maikotrindade.appfortesting.model.Story
+import io.githib.maikotrindade.appfortesting.model.User
 import io.githib.maikotrindade.appfortesting.repository.Repository.posts
 import io.githib.maikotrindade.appfortesting.repository.Repository.stories
 
@@ -52,7 +53,8 @@ fun FeedScreen() {
         items(posts) { post ->
             PostTile(
                 user = post.user,
-                gifUrl = post.mediaUrl.orEmpty()
+                gifUrl = post.mediaUrl.orEmpty(),
+                description = post.description.orEmpty(),
             )
             HorizontalDivider()
         }
@@ -74,8 +76,9 @@ fun StoriesSection(stories: List<Story>) {
 
 @Composable
 fun PostTile(
-    user: io.githib.maikotrindade.appfortesting.model.User,
+    user: User,
     gifUrl: String,
+    description: String,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -121,6 +124,21 @@ fun PostTile(
                 .height(400.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(modifier = Modifier.padding(horizontal = 4.dp)) {
+            Text(
+                text = user.username,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = description,
+                fontSize = 15.sp
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
