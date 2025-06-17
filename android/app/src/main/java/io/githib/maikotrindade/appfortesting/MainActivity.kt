@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -38,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,6 +47,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.githib.maikotrindade.appfortesting.screen.FeedScreen
+import io.githib.maikotrindade.appfortesting.screen.NotificationScreen
 import io.githib.maikotrindade.appfortesting.screen.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
 
@@ -68,7 +69,7 @@ private fun MainContent() {
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     Scaffold(
-        topBar = { InstagramTopBar() },
+        topBar = { InstagramTopBar(navController) },
         bottomBar = { InstagramBottomBar(navController) },
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -82,29 +83,30 @@ private fun MainContent() {
         ) {
             composable("feed") { FeedScreen() }
             composable("search") { SearchScreen() }
+            composable("notification") { NotificationScreen() }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InstagramTopBar() {
+fun InstagramTopBar(navController: NavHostController) {
     TopAppBar(
         title = {
             Text(
-                text = "Maikogram",
+                text = stringResource(R.string.app_name),
                 fontFamily = FontFamily.Cursive,
                 fontSize = 25.sp,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
         },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { navController.navigate("notification") }) {
                 Icon(
                     imageVector = Icons.Outlined.FavoriteBorder,
                     contentDescription = "Likes",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -113,29 +115,14 @@ fun InstagramTopBar() {
                     Icon(
                         imageVector = Icons.Outlined.Send,
                         contentDescription = "Messages",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(28.dp)
-                    )
-                }
-                // Notification badge
-                Box(
-                    modifier = Modifier
-                        .size(18.dp)
-                        .background(Color.Red, CircleShape)
-                        .offset(x = 12.dp, y = 4.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "2",
-                        color = Color.White,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
                     )
                 }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Black
+            containerColor = MaterialTheme.colorScheme.surface
         )
     )
 }
@@ -144,15 +131,16 @@ fun InstagramTopBar() {
 fun InstagramBottomBar(navController: NavHostController) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     NavigationBar(
-        containerColor = Color.Black,
-        contentColor = Color.White
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         NavigationBarItem(
             icon = {
                 Icon(
                     Icons.Default.Home,
                     contentDescription = "Home",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             },
             selected = currentRoute == "feed",
@@ -161,8 +149,8 @@ fun InstagramBottomBar(navController: NavHostController) {
                 launchSingleTop = true
             } },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                unselectedIconColor = Color.Gray,
+                selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 indicatorColor = Color.Transparent
             )
         )
@@ -171,7 +159,8 @@ fun InstagramBottomBar(navController: NavHostController) {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = "Search",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             },
             selected = currentRoute == "search",
@@ -180,8 +169,8 @@ fun InstagramBottomBar(navController: NavHostController) {
                 launchSingleTop = true
             } },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                unselectedIconColor = Color.Gray,
+                selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 indicatorColor = Color.Transparent
             )
         )
@@ -190,14 +179,15 @@ fun InstagramBottomBar(navController: NavHostController) {
                 Icon(
                     Icons.Default.Add,
                     contentDescription = "Add",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             },
             selected = false,
             onClick = { },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                unselectedIconColor = Color.Gray,
+                selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 indicatorColor = Color.Transparent
             )
         )
@@ -206,14 +196,15 @@ fun InstagramBottomBar(navController: NavHostController) {
                 Icon(
                     Icons.Default.PlayArrow,
                     contentDescription = "Reels",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             },
             selected = false,
             onClick = { },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                unselectedIconColor = Color.Gray,
+                selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 indicatorColor = Color.Transparent
             )
         )
@@ -223,12 +214,12 @@ fun InstagramBottomBar(navController: NavHostController) {
                     modifier = Modifier
                         .size(28.dp)
                         .clip(CircleShape)
-                        .background(Color.Gray),
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "YS",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -237,18 +228,10 @@ fun InstagramBottomBar(navController: NavHostController) {
             selected = false,
             onClick = { },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                unselectedIconColor = Color.Gray,
+                selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 indicatorColor = Color.Transparent
             )
         )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun CenteredBigButtonPreview() {
-//    AppForTestingTheme {
-//        CenteredBigButton(onClick = {})
-//    }
-//}

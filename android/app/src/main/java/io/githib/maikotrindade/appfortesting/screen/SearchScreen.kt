@@ -45,19 +45,18 @@ fun SearchScreen() {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Users", style = MaterialTheme.typography.titleMedium)
+        Text("Users", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
         LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
             items(filteredUsers) { user ->
                 Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    // Use the same avatar logic as in PostTile
                     io.githib.maikotrindade.appfortesting.screen.UserAvatar(user)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(user.username)
+                    Text(user.username, color = MaterialTheme.colorScheme.onBackground)
                 }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Posts", style = MaterialTheme.typography.titleMedium)
+        Text("Posts", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
         LazyColumn {
             items(filteredPosts) { post ->
                 PostTile(user = post.user, gifUrl = post.mediaUrl.orEmpty())
@@ -74,4 +73,3 @@ fun UserAvatar(user: User, size: Int = 36) {
         modifier = Modifier.size(size.dp).clip(MaterialTheme.shapes.small)
     )
 }
-

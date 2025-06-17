@@ -1,5 +1,6 @@
 package io.githib.maikotrindade.appfortesting.repository
 
+import io.githib.maikotrindade.appfortesting.model.Notification
 import io.githib.maikotrindade.appfortesting.model.Post
 import io.githib.maikotrindade.appfortesting.model.Story
 import io.githib.maikotrindade.appfortesting.model.User
@@ -44,8 +45,8 @@ object Repository {
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HJB9Nq9RMZgZlLssZF/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M2Zibjl4MXZ0cmw1NHp2eXhnNGdub2hoN3cybXBsZTcwM2c0MWdtYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/sT33tck48pfQ9dYkwd/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5sZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5sZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
-            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5sZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BbzOAkepyC1yUbzlWd/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hjvinhl1pUrb1gdzlV/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dXN3OWFkaG56c2h3ZnI0N2M2NG1wcG5zZmp2bjIzYTI3MXllNDF3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BbzOAkepyC1yUbzlWd/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N21lMHJ1NGd2N3l6aWFmNDEwbGZ4dGd4eXRueWh5NTUxODVicTM3ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/AAsNYlbJpyz7CWXItf/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dTV0cDN1eWRhZGJmMTZmOHB3dmdzMGlrODZnaHJraXdkNmFwc2JnNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/FnXgJ5KG1DqhzD0dF6/giphy.gif",
             "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWZyMW5vZXJycGEwenlqNWVhZHFtZGFsaDh4NGRkaWp0OWhmbm1naiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lmosqcsn149zYmhEUh/giphy.gif",
@@ -57,4 +58,37 @@ object Repository {
             mediaUrl = mediaUrls.random()
         )
     }
+
+    val notifications = listOf(
+        Notification(user = userAlice, action = "liked your photo", time = "2m"),
+        Notification(user = userBob, action = "started following you", time = "5m"),
+        Notification(user = userCharlie, action = "commented: Nice!", time = "10m"),
+        Notification(user = userDiana, action = "liked your post", time = "15m"),
+        Notification(user = userEvan, action = "mentioned you in a comment", time = "20m"),
+        Notification(user = userAlice, action = "liked your story", time = "25m"),
+        Notification(user = userBob, action = "shared your post", time = "30m"),
+        Notification(user = userCharlie, action = "liked your photo", time = "35m"),
+        Notification(user = userDiana, action = "started following you", time = "40m"),
+        Notification(user = userEvan, action = "liked your comment", time = "45m"),
+        Notification(user = userAlice, action = "commented: Awesome!", time = "50m"),
+        Notification(user = userBob, action = "liked your story", time = "55m"),
+        Notification(user = userCharlie, action = "shared your post", time = "1h"),
+        Notification(user = userDiana, action = "mentioned you in a comment", time = "1h 5m"),
+        Notification(user = userEvan, action = "liked your post", time = "1h 10m"),
+        Notification(user = userAlice, action = "started following you", time = "1h 15m"),
+        Notification(user = userBob, action = "liked your comment", time = "1h 20m"),
+        Notification(user = userCharlie, action = "commented: Great!", time = "1h 25m"),
+        Notification(user = userDiana, action = "liked your photo", time = "1h 30m"),
+        Notification(user = userEvan, action = "shared your story", time = "1h 35m"),
+        Notification(user = userAlice, action = "liked your post", time = "1h 40m"),
+        Notification(user = userBob, action = "mentioned you in a comment", time = "1h 45m"),
+        Notification(user = userCharlie, action = "liked your story", time = "1h 50m"),
+        Notification(user = userDiana, action = "shared your post", time = "1h 55m"),
+        Notification(user = userEvan, action = "commented: Well done!", time = "2h"),
+        Notification(user = userAlice, action = "liked your comment", time = "2h 5m"),
+        Notification(user = userBob, action = "liked your photo", time = "2h 10m"),
+        Notification(user = userCharlie, action = "started following you", time = "2h 15m"),
+        Notification(user = userDiana, action = "commented: Congrats!", time = "2h 20m"),
+        Notification(user = userEvan, action = "liked your post", time = "2h 25m")
+    )
 }

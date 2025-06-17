@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Maikogram</string>
+    <string name="notifications">Notifications</string>
 </resources>

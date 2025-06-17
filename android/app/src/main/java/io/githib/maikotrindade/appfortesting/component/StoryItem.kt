@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +35,6 @@ fun StoryItem(story: Story) {
         Box(
             contentAlignment = Alignment.Center
         ) {
-            // Story ring gradient
             if (story.hasStory) {
                 Canvas(
                     modifier = Modifier.size(70.dp)
@@ -72,7 +72,7 @@ fun StoryItem(story: Story) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = story.user.username,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 12.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
