@@ -37,7 +37,7 @@ import io.githib.maikotrindade.appfortesting.ui.screen.profile.delete.AccountDel
 
 @Composable
 fun ProfileScreen(
-    user: User = Repository.userMaiko,
+    user: User = Repository.currentUser,
     posts: Int = 120,
     followers: Int = 340,
     following: Int = 180,
@@ -112,18 +112,20 @@ fun ProfileScreen(
             HorizontalDivider()
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(
-            onClick = { showDeleteScreen = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
-            )
-        ) {
-            Text("Delete Account", color = Color.White, fontWeight = FontWeight.Bold)
+        if (user == Repository.currentUser) {
+            Button(
+                onClick = { showDeleteScreen = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("Delete Account", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(32.dp))
         }
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

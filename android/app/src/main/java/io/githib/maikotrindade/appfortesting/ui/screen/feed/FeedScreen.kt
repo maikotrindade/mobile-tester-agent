@@ -2,6 +2,7 @@
 
 package io.githib.maikotrindade.appfortesting.ui.screen.feed
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,7 +56,7 @@ import io.githib.maikotrindade.appfortesting.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
+fun FeedScreen(feedViewModel: FeedViewModel = viewModel(), navController: androidx.navigation.NavHostController? = null) {
     val loading = feedViewModel.loading.collectAsState().value
     val posts = feedViewModel.posts.collectAsState().value
     val stories = feedViewModel.stories.collectAsState().value
@@ -85,7 +86,10 @@ fun FeedScreen(feedViewModel: FeedViewModel = viewModel()) {
                             gifUrl = post.mediaUrl.orEmpty(),
                             description = post.description.orEmpty(),
                             isLiked = post.isLiked,
-                            onLikeClick = { feedViewModel.toggleLike(post) }
+                            onLikeClick = { feedViewModel.toggleLike(post) },
+                            onUserClick = {
+                                navController?.navigate("profile/${post.user.username}")
+                            }
                         )
                         HorizontalDivider()
                     }
@@ -115,6 +119,7 @@ fun PostTile(
     description: String,
     isLiked: Boolean,
     onLikeClick: () -> Unit,
+    onUserClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -137,12 +142,14 @@ fun PostTile(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(RoundedCornerShape(18.dp))
+                    .clickable { onUserClick() }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = user.username,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
+                modifier = Modifier.clickable { onUserClick() }
             )
         }
 
@@ -167,7 +174,8 @@ fun PostTile(
             Text(
                 text = user.username,
                 fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                modifier = Modifier.clickable { onUserClick() }
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(

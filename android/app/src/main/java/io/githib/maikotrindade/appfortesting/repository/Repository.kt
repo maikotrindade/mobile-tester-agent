@@ -6,7 +6,7 @@ import io.githib.maikotrindade.appfortesting.model.Story
 import io.githib.maikotrindade.appfortesting.model.User
 
 object Repository {
-    internal val userMaiko = User(
+    internal val currentUser = User(
         username = "Maiko Trindade",
         profilePictureUrl = "https://media.licdn.com/dms/image/v2/D5603AQE6cavpDPSPDA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1730821182721?e=1755734400&v=beta&t=QQp8mOOIlg2iOudjiEhpIAilkPdCoUzyWawimaSsAv4",
         bio = "Android Engineer | OSS | Kotlin | Compose | Testing | Coffee ☕"
@@ -144,5 +144,5 @@ object Repository {
         Notification(user = userEvan, action = "liked your post", time = "2h 25m")
     )
 
-    fun getAllUsers(): List<User> = listOf(userMaiko, userAlice, userBob, userCharlie, userDiana, userEvan)
+    fun getAllUsers(): List<User> = listOf(currentUser, userAlice, userBob, userCharlie, userDiana, userEvan)
 }

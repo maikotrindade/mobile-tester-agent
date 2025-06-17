@@ -97,11 +97,14 @@ private fun MainContent() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            composable("feed") { FeedScreen() }
+            composable("feed") { FeedScreen(navController = navController) }
             composable("search") { SearchScreen() }
             composable("notification") { NotificationScreen() }
-            composable("profile") {
+            composable("profile/{username}") { backStackEntry ->
+                val username = backStackEntry.arguments?.getString("username")
+                val user = Repository.stories.map { it.user }.find { it.username == username } ?: Repository.currentUser
                 ProfileScreen(
+                    user = user,
                     onSettingClick = {},
                     onDeleteAccount = {
                         showSnackbarMessage = accountDeletedSuccess
@@ -118,7 +121,7 @@ private fun MainContent() {
                     navController = navController,
                     onPostCreated = { description, gifUrl ->
                         val newPost = Post(
-                            user = Repository.userMaiko,
+                            user = Repository.currentUser,
                             mediaUrl = gifUrl,
                             description = description
                         )
@@ -280,11 +283,13 @@ fun InstagramBottomBar(navController: NavHostController) {
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             },
-            selected = currentRoute == "profile",
-            onClick = { navController.navigate("profile") {
-                popUpTo("feed")
-                launchSingleTop = true
-            } },
+            selected = currentRoute?.startsWith("profile") == true,
+            onClick = {
+                navController.navigate("profile/${Repository.currentUser.username}") {
+                    popUpTo("feed")
+                    launchSingleTop = true
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.onSurface,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
