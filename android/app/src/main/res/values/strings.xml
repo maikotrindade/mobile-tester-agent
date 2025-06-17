@@ -20,4 +20,5 @@
     <string name="description">Description</string>
     <string name="create_post">Create Post</string>
     <string name="post_created_success">Post created with success</string>
+    <string name="create_message">Create a message</string>
 </resources>

@@ -143,4 +143,6 @@ object Repository {
         Notification(user = userDiana, action = "commented: Congrats!", time = "2h 20m"),
         Notification(user = userEvan, action = "liked your post", time = "2h 25m")
     )
+
+    fun getAllUsers(): List<User> = listOf(userMaiko, userAlice, userBob, userCharlie, userDiana, userEvan)
 }

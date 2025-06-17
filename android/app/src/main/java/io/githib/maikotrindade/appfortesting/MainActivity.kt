@@ -46,16 +46,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.githib.maikotrindade.appfortesting.model.Post
+import io.githib.maikotrindade.appfortesting.model.User
+import io.githib.maikotrindade.appfortesting.repository.Repository
 import io.githib.maikotrindade.appfortesting.ui.screen.createpost.CreatePostScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.notification.NotificationScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.profile.ProfileScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.reels.ReelsScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.search.SearchScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.sendmessage.SendMessageScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.sendmessage.chat.ChatScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
-import io.githib.maikotrindade.appfortesting.model.Post
-import io.githib.maikotrindade.appfortesting.repository.Repository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +128,18 @@ private fun MainContent() {
                 )
             }
             composable("reels") { ReelsScreen() }
+            composable("send_message") {
+                SendMessageScreen(onUserClick = { user ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("chatUser", user)
+                    navController.navigate("chat")
+                })
+            }
+            composable("chat") {
+                val user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("chatUser")
+                if (user != null) {
+                    ChatScreen(user = user)
+                }
+            }
         }
     }
 }
@@ -152,11 +166,12 @@ fun InstagramTopBar(navController: NavHostController) {
                     modifier = Modifier.size(28.dp)
                 )
             }
+
             Box {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { navController.navigate("send_message") }) {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "Messages",
+                        contentDescription = "Send messages",
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(28.dp)
                     )
