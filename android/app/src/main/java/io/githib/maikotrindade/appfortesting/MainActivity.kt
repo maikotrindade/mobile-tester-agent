@@ -199,7 +199,7 @@ fun InstagramBottomBar(navController: NavHostController) {
             icon = {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Add",
+                    contentDescription = stringResource(id = R.string.add),
                     modifier = Modifier.size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
@@ -216,7 +216,7 @@ fun InstagramBottomBar(navController: NavHostController) {
             icon = {
                 Icon(
                     Icons.Default.PlayArrow,
-                    contentDescription = "Reels",
+                    contentDescription = stringResource(id = R.string.reels),
                     modifier = Modifier.size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
@@ -233,7 +233,7 @@ fun InstagramBottomBar(navController: NavHostController) {
             icon = {
                 Icon(
                     Icons.Default.AccountCircle,
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(id = R.string.profile),
                     modifier = Modifier.size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )

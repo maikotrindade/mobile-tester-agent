@@ -18,9 +18,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +44,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.githib.maikotrindade.appfortesting.R
 import io.githib.maikotrindade.appfortesting.component.StoryItem
 import io.githib.maikotrindade.appfortesting.model.Story
 import io.githib.maikotrindade.appfortesting.model.User
@@ -115,7 +117,7 @@ fun PostTile(
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = user.profilePictureUrl,
-                contentDescription = "User Thumbnail",
+                contentDescription = stringResource(id = R.string.user_thumbnail),
                 modifier = Modifier
                     .size(36.dp)
                     .clip(RoundedCornerShape(18.dp))
@@ -136,7 +138,7 @@ fun PostTile(
                 .crossfade(true)
                 .build(),
             imageLoader = imageLoader,
-            contentDescription = "GIF Post",
+            contentDescription = stringResource(id = R.string.gif_post),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(400.dp)
@@ -165,13 +167,13 @@ fun PostTile(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { /* handle click */ }) {
-                Icon(Icons.Default.FavoriteBorder, contentDescription = "Like")
+                Icon(Icons.Outlined.FavoriteBorder, contentDescription = stringResource(id = R.string.like))
             }
             IconButton(onClick = { /* handle click */ }) {
-                Icon(Icons.Default.Email, contentDescription = "Comment")
+                Icon(Icons.Outlined.Email, contentDescription = stringResource(id = R.string.comment))
             }
             IconButton(onClick = { /* handle click */ }) {
-                Icon(Icons.Default.Share, contentDescription = "Share")
+                Icon(Icons.Outlined.Share, contentDescription = stringResource(id = R.string.share))
             }
         }
     }

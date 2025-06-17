@@ -21,11 +21,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import io.githib.maikotrindade.appfortesting.model.User
 import io.githib.maikotrindade.appfortesting.ui.screen.feed.PostTile
+import io.githib.maikotrindade.appfortesting.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +41,7 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
         OutlinedTextField(
             value = query,
             onValueChange = { viewModel.updateQuery(it) },
-            label = { Text("Search users or posts") },
+            label = { Text(stringResource(id = R.string.search_users_or_posts)) },
             modifier = Modifier.fillMaxWidth()
         )
         if (loading) {
@@ -49,7 +51,7 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
             )
         } else {
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Users", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(id = R.string.users), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
             LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
                 items(filteredUsers) { user ->
                     Row(modifier = Modifier.padding(vertical = 8.dp)) {
@@ -60,7 +62,7 @@ fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Posts", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(id = R.string.posts), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
             LazyColumn {
                 items(filteredPosts) { post ->
                     PostTile(
