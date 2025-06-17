@@ -6,11 +6,36 @@ import io.githib.maikotrindade.appfortesting.model.Story
 import io.githib.maikotrindade.appfortesting.model.User
 
 object Repository {
-    private val userAlice = User("Alice Johnson", "https://ui-avatars.com/api/?name=Alice+Johnson&background=random&rounded=true")
-    private val userBob = User("Bob Smith", "https://ui-avatars.com/api/?name=Bob+Smith&background=random&rounded=true")
-    private val userCharlie = User("Charlie Lee", "https://ui-avatars.com/api/?name=Charlie+Lee&background=random&rounded=true")
-    private val userDiana = User("Diana Prince", "https://ui-avatars.com/api/?name=Diana+Prince&background=random&rounded=true")
-    private val userEvan = User("Evan Wright", "https://ui-avatars.com/api/?name=Evan+Wright&background=random&rounded=true")
+    internal val userMaiko = User(
+        username = "Maiko Trindade",
+        profilePictureUrl = "https://media.licdn.com/dms/image/v2/D5603AQE6cavpDPSPDA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1730821182721?e=1755734400&v=beta&t=QQp8mOOIlg2iOudjiEhpIAilkPdCoUzyWawimaSsAv4",
+        bio = "Android Engineer | OSS | Kotlin | Compose | Testing | Coffee ☕"
+    )
+    private val userAlice = User(
+        username = "Alice Johnson",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Alice+Johnson&background=random&rounded=true",
+        bio = "Loves hiking and photography."
+    )
+    private val userBob = User(
+        username = "Bob Smith",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Bob+Smith&background=random&rounded=true",
+        bio = "Tech enthusiast and foodie."
+    )
+    private val userCharlie = User(
+        username = "Charlie Lee",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Charlie+Lee&background=random&rounded=true",
+        bio = "Runner. Dreamer. Coder."
+    )
+    private val userDiana = User(
+        username = "Diana Prince",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Diana+Prince&background=random&rounded=true",
+        bio = "Wonder Woman fan."
+    )
+    private val userEvan = User(
+        username = "Evan Wright",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Evan+Wright&background=random&rounded=true",
+        bio = "Music, travel, and books."
+    )
 
     val stories = listOf(
         Story(user = User("Your story", null), hasStory = false),

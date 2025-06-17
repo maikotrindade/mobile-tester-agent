@@ -4,13 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
@@ -33,9 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -48,6 +45,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.githib.maikotrindade.appfortesting.ui.screen.feed.FeedScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.notification.NotificationScreen
+import io.githib.maikotrindade.appfortesting.ui.screen.profile.ProfileScreen
 import io.githib.maikotrindade.appfortesting.ui.screen.search.SearchScreen
 import io.githib.maikotrindade.appfortesting.ui.theme.AppForTestingTheme
 
@@ -84,6 +82,12 @@ private fun MainContent() {
             composable("feed") { FeedScreen() }
             composable("search") { SearchScreen() }
             composable("notification") { NotificationScreen() }
+            composable("profile") {
+                ProfileScreen(
+                    onSettingClick = {},
+                    onDeleteAccount = {}
+                )
+            }
         }
     }
 }
@@ -210,23 +214,18 @@ fun InstagramBottomBar(navController: NavHostController) {
         )
         NavigationBarItem(
             icon = {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "MT",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Icon(
+                    Icons.Default.AccountCircle,
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             },
-            selected = false,
-            onClick = { },
+            selected = currentRoute == "profile",
+            onClick = { navController.navigate("profile") {
+                popUpTo("feed")
+                launchSingleTop = true
+            } },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.onSurface,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
