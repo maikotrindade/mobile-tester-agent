@@ -48,7 +48,7 @@ import io.githib.maikotrindade.appfortesting.repository.Repository.stories
 fun FeedScreen() {
     StoriesSection(stories = stories)
     Spacer(modifier = Modifier.height(8.dp))
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(top = 110.dp)) {
         items(posts) { post ->
             PostTile(
                 user = post.user,
@@ -91,7 +91,6 @@ fun PostTile(
             .wrapContentHeight()
             .padding(12.dp)
     ) {
-
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = user.profilePictureUrl,
