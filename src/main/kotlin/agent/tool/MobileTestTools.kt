@@ -42,7 +42,6 @@ class MobileTestTools : ToolSet {
         return "NOT_IMPLEMENTED"
     }
 
-
     @Tool
     @LLMDescription(
         description = "Connect to a local Android device or emulator using ADB"
