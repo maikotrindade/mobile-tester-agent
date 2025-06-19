@@ -2,7 +2,6 @@ package agent.tool
 
 import agent.tool.utils.AdbUtils
 import agent.tool.utils.UiAutomatorUtils
-import agent.tool.utils.UiAutomatorUtils.findUiElementsByText
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
@@ -10,8 +9,8 @@ import ai.koog.agents.core.tools.reflect.ToolSet
 class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription("Get the current screen UI hierarchy as XML using UIAutomator dump.")
-    suspend fun getScreen(): String {
-        return UiAutomatorUtils.dumpUiHierarchy()
+    suspend fun findUiElementsByText(text: String): List<MatchResult> {
+        return UiAutomatorUtils.findUiElementsByText(text)
     }
 
     @Tool
@@ -20,11 +19,12 @@ class MobileTestTools : ToolSet {
             Tap element by text: Locate and tap the clickable UI element that best matches the provided text, 
             even if the text is not an exact match or is only a partial phrase. 
             Prioritize elements relevant to the current screen's context.
+            If there is more than one clickable button, use its position to define which button to click.
         """
     )
-    suspend fun tap(text: String): String {
-        val clickableUI = findUiElementsByText(text)
-        return UiAutomatorUtils.tapByText(clickableUI)
+    suspend fun tap(text: String, position: Int): String {
+        val clickableUIs = findUiElementsByText(text)
+        return UiAutomatorUtils.tapByText(clickableUIs, position)
     }
 
     @Tool
