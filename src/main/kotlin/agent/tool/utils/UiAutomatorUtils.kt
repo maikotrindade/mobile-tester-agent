@@ -12,15 +12,13 @@ object UiAutomatorUtils {
         }
         val xmlPath = "/sdcard/window_dump.xml"
         val xml = AdbUtils.runAdb("shell", "cat", xmlPath)
-        if (xml.isBlank() || xml.contains("Error")) return "Failed to read UI hierarchy XML."
+        if (xml.isBlank() || xml.contains("Error") || xml.startsWith("Failed"))
+            return "Failed to read UI hierarchy XML."
         return xml
     }
 
     fun findUiElementsByText(text: String): MatchResult {
         val xml = dumpUiHierarchy()
-        if (xml.startsWith("Failed")) {
-            throw IllegalStateException("UI hierarchy dump failed: $xml")
-        }
         val regex = Regex(
             "<node[^>]*text=\\\"([^\"]*${Regex.escape(text)}[^\"]*)\\\"[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
             RegexOption.IGNORE_CASE
