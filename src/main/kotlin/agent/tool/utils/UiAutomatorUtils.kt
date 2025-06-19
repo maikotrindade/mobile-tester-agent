@@ -16,28 +16,33 @@ object UiAutomatorUtils {
         return xml
     }
 
-    /**
-     * Taps on a UI element by its text using UIAutomator dump and adb input tap.
-     * Returns a success message or an error if the element is not found or the tap fails.
-     */
-    fun tapByText(text: String): String {
+    fun findUiElementsByText(text: String): MatchResult {
         val xml = dumpUiHierarchy()
-        if (xml.startsWith("Failed")) return xml
-        // Find node with text=text
+        if (xml.startsWith("Failed")) {
+            throw IllegalStateException("UI hierarchy dump failed: $xml")
+        }
         val regex = Regex(
             "<node[^>]*text=\\\"([^\"]*${Regex.escape(text)}[^\"]*)\\\"[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
             RegexOption.IGNORE_CASE
         )
         val match = regex.find(xml)
         if (match == null) {
-            return "Element matching text '$text' not found."
+            throw NoSuchElementException("No UI element found with text: '$text'")
         }
+        return match
+    }
+
+    /**
+     * Taps on a UI element by its text using UIAutomator dump and adb input tap.
+     * Returns a success message or an error if the element is not found or the tap fails.
+     */
+    fun tapByText(match: MatchResult): String {
         val (_, x1, y1, x2, y2) = match.destructured
         val centerX = (x1.toInt() + x2.toInt()) / 2
         val centerY = (y1.toInt() + y2.toInt()) / 2
         val tapResult = AdbUtils.runAdb("shell", "input", "tap", centerX.toString(), centerY.toString())
         return if (tapResult.isBlank() || tapResult == "\n") {
-            "Tapped element with text '$text' at ($centerX, $centerY)."
+            "Tapped element with at ($centerX, $centerY)."
         } else if (tapResult.contains("Error")) {
             "Tap command failed: $tapResult"
         } else {

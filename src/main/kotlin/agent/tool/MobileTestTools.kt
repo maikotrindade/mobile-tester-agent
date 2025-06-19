@@ -2,6 +2,7 @@ package agent.tool
 
 import agent.tool.utils.AdbUtils
 import agent.tool.utils.UiAutomatorUtils
+import agent.tool.utils.UiAutomatorUtils.findUiElementsByText
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
@@ -15,12 +16,15 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
-        "Tap on a UI element by its text using UIAutomator dump and adb input tap." +
-                "Example: tap next button will tap the button with text 'next' if it is clickable." +
-                "Returns an error if the element is not found or the tap fails."
+        """
+            Tap element by text: Locate and tap the clickable UI element that best matches the provided text, 
+            even if the text is not an exact match or is only a partial phrase. 
+            Prioritize elements relevant to the current screen's context.
+        """
     )
-    suspend fun tap(selector: String): String {
-        return UiAutomatorUtils.tapByText(selector)
+    suspend fun tap(text: String): String {
+        val clickableUI = findUiElementsByText(text)
+        return UiAutomatorUtils.tapByText(clickableUI)
     }
 
     @Tool
