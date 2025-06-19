@@ -24,12 +24,15 @@ object UiAutomatorUtils {
         val xml = dumpUiHierarchy()
         if (xml.startsWith("Failed")) return xml
         // Find node with text=text
-        val regex = Regex("<node[^>]*text=\\\"${Regex.escape(text)}\\\"[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"")
+        val regex = Regex(
+            "<node[^>]*text=\\\"([^\"]*${Regex.escape(text)}[^\"]*)\\\"[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
+            RegexOption.IGNORE_CASE
+        )
         val match = regex.find(xml)
         if (match == null) {
-            return "Element with text '$text' not found."
+            return "Element matching text '$text' not found."
         }
-        val (x1, y1, x2, y2) = match.destructured
+        val (_, x1, y1, x2, y2) = match.destructured
         val centerX = (x1.toInt() + x2.toInt()) / 2
         val centerY = (y1.toInt() + y2.toInt()) / 2
         val tapResult = AdbUtils.runAdb("shell", "input", "tap", centerX.toString(), centerY.toString())

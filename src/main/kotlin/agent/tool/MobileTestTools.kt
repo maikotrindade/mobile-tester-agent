@@ -2,8 +2,8 @@ package agent.tool
 
 import agent.tool.utils.AdbUtils
 import agent.tool.utils.UiAutomatorUtils
-import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.annotations.LLMDescription
+import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
 
 class MobileTestTools : ToolSet {
@@ -14,9 +14,11 @@ class MobileTestTools : ToolSet {
     }
 
     @Tool
-    @LLMDescription("Tap on a UI element by its text using UIAutomator dump and adb input tap." +
-            "Example: tap('Click here') will tap the button with text 'Click here'. " +
-            "Returns an error if the element is not found or the tap fails.")
+    @LLMDescription(
+        "Tap on a UI element by its text using UIAutomator dump and adb input tap." +
+                "Example: tap next button will tap the button with text 'next' if it is clickable." +
+                "Returns an error if the element is not found or the tap fails."
+    )
     suspend fun tap(selector: String): String {
         return UiAutomatorUtils.tapByText(selector)
     }
