@@ -1,6 +1,7 @@
 package agent.tool
 
 import agent.tool.utils.AdbUtils
+import agent.tool.utils.MediaUtils
 import agent.tool.utils.UiAutomatorUtils
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
@@ -149,12 +150,18 @@ class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription("Take a screenshot of the current screen, save it to /sdcard/screen.png, and pull it to /home/maiko/screen.png. Returns the local file path or error message.")
     suspend fun takeScreenshot(): String {
-        // TODO use system env paths and dynamic filename
-        val remotePath = "/sdcard/screen.png"
-        val localPath = "/home/maiko/screen.png"
-        val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remotePath)
-        if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
-        val pullResult = AdbUtils.runAdb("pull", remotePath, localPath)
-        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else localPath
+        return MediaUtils.takeScreenshot()
+    }
+
+    @Tool
+    @LLMDescription("Start recording a video of the device screen. This will record until you call stopScreenRecording. Returns a message indicating recording has started or an error.")
+    suspend fun startScreenRecording(): String {
+        return MediaUtils.startScreenRecording()
+    }
+
+    @Tool
+    @LLMDescription("Stop the ongoing screen recording, pull the video to the local machine, and return the local file path or error message.")
+    suspend fun stopScreenRecording(): String {
+        return MediaUtils.stopScreenRecording()
     }
 }
