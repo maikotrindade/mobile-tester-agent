@@ -28,27 +28,6 @@ class MobileTestTools : ToolSet {
     }
 
     @Tool
-    @LLMDescription("Input text into a UI element by its selector.")
-    suspend fun inputText(selector: String, text: String): String {
-        // TODO: Implement input text action on emulator
-        return "NOT_IMPLEMENTED"
-    }
-
-    @Tool
-    @LLMDescription("Go back in the app navigation.")
-    suspend fun goBack(): String {
-        // TODO: Implement back navigation
-        return "NOT_IMPLEMENTED"
-    }
-
-    @Tool
-    @LLMDescription("Take a screenshot of the current screen.")
-    suspend fun takeScreenshot(): String {
-        // TODO: Implement screenshot capture
-        return "NOT_IMPLEMENTED"
-    }
-
-    @Tool
     @LLMDescription(
         description = "Connect to a local Android device or emulator using ADB"
     )
@@ -142,5 +121,39 @@ class MobileTestTools : ToolSet {
     )
     suspend fun scrollHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
         return UiAutomatorUtils.scrollScreenHorizontally(distance, durationMs)
+    }
+
+    @Tool
+    @LLMDescription("Input text into a UI element by its selector. The selector should be the text of the element. Returns a success or error message.")
+    suspend fun inputText(selector: String, text: String): String {
+        return try {
+            val matches = UiAutomatorUtils.findUiElementsByText(selector)
+            if (matches.isEmpty()) return "No element found with selector: $selector"
+            UiAutomatorUtils.tapByText(matches, 0)
+            // Input the text
+            val inputResult = AdbUtils.runAdb("shell", "input", "text", text)
+            if (inputResult.contains("Error")) "Failed to input text: $inputResult" else "Input text '$text' into element with selector '$selector'"
+        } catch (e: Exception) {
+            "Error inputting text: ${e.message}"
+        }
+    }
+
+    @Tool
+    @LLMDescription("Go back in the app navigation by simulating the Android back button.")
+    suspend fun goBack(): String {
+        val result = AdbUtils.runAdb("shell", "input", "keyevent", "4")
+        return if (result.contains("Error")) "Failed to go back: $result" else "Went back in navigation."
+    }
+
+    @Tool
+    @LLMDescription("Take a screenshot of the current screen, save it to /sdcard/screen.png, and pull it to /home/maiko/screen.png. Returns the local file path or error message.")
+    suspend fun takeScreenshot(): String {
+        // TODO use system env paths and dynamic filename
+        val remotePath = "/sdcard/screen.png"
+        val localPath = "/home/maiko/screen.png"
+        val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remotePath)
+        if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
+        val pullResult = AdbUtils.runAdb("pull", remotePath, localPath)
+        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else localPath
     }
 }
