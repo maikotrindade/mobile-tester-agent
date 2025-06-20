@@ -1,6 +1,6 @@
 ktor:
   application:
     modules:
-      - io.github.maikotrindade.ApplicationKt.module
+      - server.ApplicationKt.module
   deployment:
     port: 8080

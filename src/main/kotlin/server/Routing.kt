@@ -1,9 +1,10 @@
-package io.github.maikotrindade
+package server
 
 import io.github.maikotrindade.agent.TesterAgent
 import io.github.maikotrindade.agent.executor.ExecutorInfo
 import io.github.maikotrindade.agent.executor.GeminiExecutor
 import io.github.maikotrindade.agent.executor.OllamaGwenExecutor
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -25,7 +26,7 @@ fun <T> Route.agentPost(path: String, executorProvider: () -> T) where T : Any {
         val request = call.receive<Map<String, String>>()
         val prompt = request["prompt"] ?: return@post call.respondText(
             "Missing prompt",
-            status = io.ktor.http.HttpStatusCode.BadRequest
+            status = HttpStatusCode.BadRequest
         )
         val result = TesterAgent.runAgent(prompt, executorProvider() as ExecutorInfo)
         call.respondText(result)
