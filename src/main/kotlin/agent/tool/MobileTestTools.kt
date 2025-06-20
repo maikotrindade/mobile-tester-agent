@@ -30,43 +30,6 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
-        description = "Connect to a local Android device or emulator using ADB"
-    )
-    suspend fun connectDevice(): String {
-        return try {
-            var (output, devices) = AdbUtils.getDevices()
-            val offlineDevices = devices.filter { it.contains("offline") }
-            if (offlineDevices.isNotEmpty()) {
-                // Restart ADB server if any device is offline
-                ProcessBuilder("adb", "kill-server").start().waitFor()
-                ProcessBuilder("adb", "start-server").start().waitFor()
-                // Wait a moment for server to restart
-                Thread.sleep(1500)
-                val result = AdbUtils.getDevices()
-                output = result.first
-                devices = result.second
-            }
-            if (output.contains("List of devices attached")) {
-                if (devices.isEmpty()) {
-                    "No devices connected."
-                } else {
-                    val offline = devices.filter { it.contains("offline") }
-                    val online = devices.filter { it.contains("device") && !it.contains("offline") }
-                    buildString {
-                        if (online.isNotEmpty()) append("Connected devices:\n${online.joinToString("\n")}\n")
-                        if (offline.isNotEmpty()) append("Devices offline (check connection):\n${offline.joinToString("\n")}")
-                    }.trim()
-                }
-            } else {
-                "Failed to get device list: $output"
-            }
-        } catch (e: Exception) {
-            "Error connecting to device: ${e.message}"
-        }
-    }
-
-    @Tool
-    @LLMDescription(
         "Scrolls the screen vertically to simulate user interaction. " +
                 "Use a positive distance (e.g., 1000) to scroll upward (i.e., swipe up), " +
                 "and a negative distance to scroll downward (i.e., swipe down). " +
@@ -136,36 +99,19 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
-        description = "Get detailed information about the connected Android device using adb, " +
-                "including manufacturer, model, Android version, SDK, platform, total memory, " +
-                "data partition usage, battery level, and IP address."
+        "Connect to a local Android device or emulator using ADB. " +
+                "If any device is offline, the ADB server will be restarted and the connection retried. " +
+                "Returns a summary of connected and offline devices, or an error message if no devices are found."
+    )
+    suspend fun connectDevice(): String {
+        return AdbUtils.connectDevice()
+    }
+
+    @Tool
+    @LLMDescription(
+        description = "Get detailed information about the connected Android device using adb, including manufacturer, model, Android version, SDK, platform, total memory, data partition usage, battery level, and IP address."
     )
     suspend fun deviceInformation(): String {
-        return try {
-            val manufacturer = AdbUtils.runAdb("shell", "getprop", "ro.product.manufacturer")
-            val model = AdbUtils.runAdb("shell", "getprop", "ro.product.model")
-            val androidVersion = AdbUtils.runAdb("shell", "getprop", "ro.build.version.release")
-            val sdk = AdbUtils.runAdb("shell", "getprop", "ro.build.version.sdk")
-            val platform = AdbUtils.runAdb("shell", "getprop", "ro.board.platform")
-            val memoryTotal = AdbUtils.runAdb("shell", "cat", "/proc/meminfo")
-                .lines().find { it.contains("MemTotal") } ?: "N/A"
-            val batteryLevel = AdbUtils.runAdb("shell", "dumpsys", "battery")
-                .lines().find { it.contains("level") } ?: "N/A"
-            val ipInfo = AdbUtils.runAdb("shell", "ip", "addr", "show", "wlan0")
-                .lines().find { it.trim().startsWith("inet ") } ?: "N/A"
-
-            """
-                |Manufacturer: $manufacturer
-                |Model: $model
-                |Android Version: $androidVersion
-                |SDK: $sdk
-                |Platform: $platform
-                |Memory: $memoryTotal
-                |Battery Level: $batteryLevel
-                |IP Info: $ipInfo
-            """.trimMargin()
-        } catch (e: Exception) {
-            "Error getting device info: ${e.message}"
-        }
+        return AdbUtils.deviceInformation()
     }
 }
