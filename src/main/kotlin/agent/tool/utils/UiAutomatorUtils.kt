@@ -17,6 +17,14 @@ object UiAutomatorUtils {
         return xml
     }
 
+    /**
+     * Finds all UI elements on the current screen whose text matches or contains the given string.
+     * Uses a regex search on the UIAutomator XML dump to locate nodes with matching text attributes.
+     *
+     * @param text The text to search for in UI elements.
+     * @return A list of MatchResult objects for each matching UI element found.
+     * @throws NoSuchElementException if no UI element with the given text is found.
+     */
     fun findUiElementsByText(text: String): List<MatchResult> {
         val xml = dumpUiHierarchy()
         val regex = Regex(
@@ -34,9 +42,9 @@ object UiAutomatorUtils {
      * Taps on a UI element by its text using UIAutomator dump and adb input tap.
      * Returns a success message or an error if the element is not found or the tap fails.
      */
-    fun tapByText(matches: List<MatchResult>, position: Int = 0): String {
+    fun tapByText(matches: List<MatchResult>, position: Int): String {
         if (matches.isEmpty()) throw NoSuchElementException("No UI elements to tap.")
-        if (position !in matches.indices) throw IndexOutOfBoundsException("uiIndex $position is out of bounds for matches list of size ${matches.size}.")
+        if (position !in matches.indices) throw IndexOutOfBoundsException("position $position is out of bounds for matches list of size ${matches.size}.")
         val (_, x1, y1, x2, y2) = matches[position].destructured
         val centerX = (x1.toInt() + x2.toInt()) / 2
         val centerY = (y1.toInt() + y2.toInt()) / 2
@@ -46,5 +54,40 @@ object UiAutomatorUtils {
             tapResult.contains("Error") -> "Tap command failed: $tapResult"
             else -> "Tap command output: $tapResult"
         }
+    }
+
+    /**
+     * Performs a swipe gesture from (startX, startY) to (endX, endY).
+     * Returns the result of the adb command.
+     */
+    private fun swipeScreen(startX: Int, startY: Int, endX: Int, endY: Int): String {
+        return AdbUtils.runAdb(
+            "shell", "input", "swipe",
+            startX.toString(), startY.toString(), endX.toString(), endY.toString()
+        )
+    }
+
+    /**
+     * Scrolls the screen vertically. Positive distance scrolls up, negative scrolls down.
+     * @param distance The distance in pixels to scroll. Default is 1000 (up).
+     * @param durationMs The duration of the swipe in ms. Default is 300.
+     */
+    fun scrollScreenVertically(distance: Int = 1000, durationMs: Int = 300): String {
+        val startX = 500
+        val startY = if (distance > 0) 1500 else 500
+        val endY = startY - distance
+        return swipeScreen(startX, startY, startX, endY)
+    }
+
+    /**
+     * Scrolls the screen horizontally. Positive distance scrolls right, negative scrolls left.
+     * @param distance The distance in pixels to scroll. Default is 1000 (right).
+     * @param durationMs The duration of the swipe in ms. Default is 300.
+     */
+    fun scrollScreenHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
+        val startY = 1000
+        val startX = if (distance > 0) 500 else 1500
+        val endX = startX + distance
+        return swipeScreen(startX, startY, endX, startY)
     }
 }

@@ -22,7 +22,7 @@ class MobileTestTools : ToolSet {
             If there is more than one clickable button, use its position to define which button to click.
         """
     )
-    suspend fun tap(text: String, position: Int): String {
+    suspend fun tap(text: String, position: Int = 0): String {
         val clickableUIs = findUiElementsByText(text)
         return UiAutomatorUtils.tapByText(clickableUIs, position)
     }
@@ -118,5 +118,29 @@ class MobileTestTools : ToolSet {
         } catch (e: Exception) {
             "Error getting device info: ${e.message}"
         }
+    }
+
+    @Tool
+    @LLMDescription(
+        "Scrolls the screen vertically to simulate user interaction. " +
+                "Use a positive distance (e.g., 1000) to scroll upward (i.e., swipe up), " +
+                "and a negative distance to scroll downward (i.e., swipe down). " +
+                "Optional: specify duration in milliseconds to control swipe speed. " +
+                "Example: scrollVertically(distance = 1500, durationMs = 500)"
+    )
+    suspend fun scrollVertically(distance: Int = 1000, durationMs: Int = 300): String {
+        return UiAutomatorUtils.scrollScreenVertically(distance, durationMs)
+    }
+
+    @Tool
+    @LLMDescription(
+        "Scrolls the screen horizontally to simulate user interaction. " +
+                "Use a positive distance (e.g., 1000) to scroll right (i.e., swipe left to right), " +
+                "and a negative distance to scroll left (i.e., swipe right to left). " +
+                "Optional: specify duration in milliseconds to control swipe speed. " +
+                "Example: scrollHorizontally(distance = -1200, durationMs = 400)"
+    )
+    suspend fun scrollHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
+        return UiAutomatorUtils.scrollScreenHorizontally(distance, durationMs)
     }
 }
