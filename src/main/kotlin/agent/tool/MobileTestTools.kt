@@ -67,6 +67,75 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
+        "Scrolls the screen vertically to simulate user interaction. " +
+                "Use a positive distance (e.g., 1000) to scroll upward (i.e., swipe up), " +
+                "and a negative distance to scroll downward (i.e., swipe down). " +
+                "Optional: specify duration in milliseconds to control swipe speed. " +
+                "Example: scrollVertically(distance = 1500, durationMs = 500)"
+    )
+    suspend fun scrollVertically(distance: Int = 1000, durationMs: Int = 300): String {
+        return UiAutomatorUtils.scrollScreenVertically(distance, durationMs)
+    }
+
+    @Tool
+    @LLMDescription(
+        "Scrolls the screen horizontally to simulate user interaction. " +
+                "Use a positive distance (e.g., 1000) to scroll right (i.e., swipe left to right), " +
+                "and a negative distance to scroll left (i.e., swipe right to left). " +
+                "Optional: specify duration in milliseconds to control swipe speed. " +
+                "Example: scrollHorizontally(distance = -1200, durationMs = 400)"
+    )
+    suspend fun scrollHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
+        return UiAutomatorUtils.scrollScreenHorizontally(distance, durationMs)
+    }
+
+    @Tool
+    @LLMDescription(
+        "Input text into a UI element by its selector. " +
+                "The selector should be the text of the element. " +
+                "Returns a success or error message."
+    )
+    suspend fun inputText(selector: String, text: String): String {
+        return UiAutomatorUtils.inputTextBySelector(selector, text)
+    }
+
+    @Tool
+    @LLMDescription("Go back in the app navigation by simulating the Android back button.")
+    suspend fun goBack(): String {
+        val result = AdbUtils.runAdb("shell", "input", "keyevent", "4")
+        return if (result.contains("Error")) "Failed to go back: $result" else "Went back in navigation."
+    }
+
+    @Tool
+    @LLMDescription(
+        "Take a screenshot of the current screen and pull it to a remote path. " +
+                "Returns the local file path or error message."
+    )
+    suspend fun takeScreenshot(): String {
+        return MediaUtils.takeScreenshot()
+    }
+
+    @Tool
+    @LLMDescription(
+        "Start recording a video of the device screen. " +
+                "This will record until you call stopScreenRecording. " +
+                "Returns a message indicating recording has started or an error."
+    )
+    suspend fun startScreenRecording(): String {
+        return MediaUtils.startScreenRecording()
+    }
+
+    @Tool
+    @LLMDescription(
+        "Stop the ongoing screen recording, pull the video to the local machine, " +
+                "and return the local file path or error message."
+    )
+    suspend fun stopScreenRecording(): String {
+        return MediaUtils.stopScreenRecording()
+    }
+
+    @Tool
+    @LLMDescription(
         description = "Get detailed information about the connected Android device using adb, " +
                 "including manufacturer, model, Android version, SDK, platform, total memory, " +
                 "data partition usage, battery level, and IP address."
@@ -98,70 +167,5 @@ class MobileTestTools : ToolSet {
         } catch (e: Exception) {
             "Error getting device info: ${e.message}"
         }
-    }
-
-    @Tool
-    @LLMDescription(
-        "Scrolls the screen vertically to simulate user interaction. " +
-                "Use a positive distance (e.g., 1000) to scroll upward (i.e., swipe up), " +
-                "and a negative distance to scroll downward (i.e., swipe down). " +
-                "Optional: specify duration in milliseconds to control swipe speed. " +
-                "Example: scrollVertically(distance = 1500, durationMs = 500)"
-    )
-    suspend fun scrollVertically(distance: Int = 1000, durationMs: Int = 300): String {
-        return UiAutomatorUtils.scrollScreenVertically(distance, durationMs)
-    }
-
-    @Tool
-    @LLMDescription(
-        "Scrolls the screen horizontally to simulate user interaction. " +
-                "Use a positive distance (e.g., 1000) to scroll right (i.e., swipe left to right), " +
-                "and a negative distance to scroll left (i.e., swipe right to left). " +
-                "Optional: specify duration in milliseconds to control swipe speed. " +
-                "Example: scrollHorizontally(distance = -1200, durationMs = 400)"
-    )
-    suspend fun scrollHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
-        return UiAutomatorUtils.scrollScreenHorizontally(distance, durationMs)
-    }
-
-    @Tool
-    @LLMDescription("Input text into a UI element by its selector. The selector should be the text of the element. Returns a success or error message.")
-    suspend fun inputText(selector: String, text: String): String {
-        return try {
-            val matches = UiAutomatorUtils.findUiElementsByText(selector)
-            if (matches.isEmpty()) return "No element found with selector: $selector"
-            UiAutomatorUtils.tapByText(matches, 0)
-            // Input the text (replace spaces with %s to input the whole string)
-            val encodedText = text.replace(" ", "%s")
-            val inputResult = AdbUtils.runAdb("shell", "input", "text", encodedText)
-            if (inputResult.contains("Error")) "Failed to input text: $inputResult" else "Input text '$text' into element with selector '$selector'"
-        } catch (e: Exception) {
-            "Error inputting text: ${e.message}"
-        }
-    }
-
-    @Tool
-    @LLMDescription("Go back in the app navigation by simulating the Android back button.")
-    suspend fun goBack(): String {
-        val result = AdbUtils.runAdb("shell", "input", "keyevent", "4")
-        return if (result.contains("Error")) "Failed to go back: $result" else "Went back in navigation."
-    }
-
-    @Tool
-    @LLMDescription("Take a screenshot of the current screen, save it to /sdcard/screen.png, and pull it to /home/maiko/screen.png. Returns the local file path or error message.")
-    suspend fun takeScreenshot(): String {
-        return MediaUtils.takeScreenshot()
-    }
-
-    @Tool
-    @LLMDescription("Start recording a video of the device screen. This will record until you call stopScreenRecording. Returns a message indicating recording has started or an error.")
-    suspend fun startScreenRecording(): String {
-        return MediaUtils.startScreenRecording()
-    }
-
-    @Tool
-    @LLMDescription("Stop the ongoing screen recording, pull the video to the local machine, and return the local file path or error message.")
-    suspend fun stopScreenRecording(): String {
-        return MediaUtils.stopScreenRecording()
     }
 }

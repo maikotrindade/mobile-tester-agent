@@ -57,6 +57,23 @@ object UiAutomatorUtils {
     }
 
     /**
+     * Finds a UI element by selector (text), taps it, and inputs the given text.
+     * Returns a success or error message.
+     */
+    fun inputTextBySelector(selector: String, text: String): String {
+        return try {
+            val matches = findUiElementsByText(selector)
+            if (matches.isEmpty()) return "No element found with selector: $selector"
+            tapByText(matches, 0)
+            val encodedText = text.replace(" ", "%s")
+            val inputResult = AdbUtils.runAdb("shell", "input", "text", encodedText)
+            if (inputResult.contains("Error")) "Failed to input text: $inputResult" else "Input text '$text' into element with selector '$selector'"
+        } catch (e: Exception) {
+            "Error inputting text: ${e.message}"
+        }
+    }
+
+    /**
      * Performs a swipe gesture from (startX, startY) to (endX, endY).
      * Returns the result of the adb command.
      */
