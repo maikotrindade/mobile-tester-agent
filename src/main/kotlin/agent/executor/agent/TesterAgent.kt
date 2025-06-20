@@ -5,7 +5,7 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
 import ai.koog.agents.ext.agent.simpleSingleRunAgent
 import ai.koog.agents.features.eventHandler.feature.handleEvents
-import io.github.maikotrindade.agent.executor.agent.executor.ExecutorInfo
+import io.github.maikotrindade.agent.executor.ExecutorInfo
 import kotlinx.coroutines.CompletableDeferred
 
 object TesterAgent {

@@ -1,4 +1,4 @@
-package io.github.maikotrindade.agent.executor.agent.executor
+package io.github.maikotrindade.agent.executor
 
 import ai.koog.prompt.executor.llms.all.simpleOllamaAIExecutor
 import ai.koog.prompt.llm.LLMCapability
