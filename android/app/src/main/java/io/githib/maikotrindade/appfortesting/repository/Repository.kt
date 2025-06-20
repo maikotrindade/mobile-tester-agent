@@ -36,6 +36,86 @@ object Repository {
         profilePictureUrl = "https://ui-avatars.com/api/?name=Evan+Wright&background=random&rounded=true",
         bio = "Music, travel, and books."
     )
+    private val userFiona = User(
+        username = "Fiona Gallagher",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Fiona+Gallagher&background=random&rounded=true",
+        bio = "Coffee lover and bookworm."
+    )
+    private val userGeorge = User(
+        username = "George Martin",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=George+Martin&background=random&rounded=true",
+        bio = "Guitarist and music producer."
+    )
+    private val userHannah = User(
+        username = "Hannah Kim",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Hannah+Kim&background=random&rounded=true",
+        bio = "Traveler. Blogger. Dreamer."
+    )
+    private val userIan = User(
+        username = "Ian Somerhalder",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Ian+Somerhalder&background=random&rounded=true",
+        bio = "Nature and animal lover."
+    )
+    private val userJulia = User(
+        username = "Julia Roberts",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Julia+Roberts&background=random&rounded=true",
+        bio = "Movie buff and foodie."
+    )
+    private val userKevin = User(
+        username = "Kevin Durant",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Kevin+Durant&background=random&rounded=true",
+        bio = "Basketball and sneakers."
+    )
+    private val userLily = User(
+        username = "Lily Collins",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Lily+Collins&background=random&rounded=true",
+        bio = "Writer and artist."
+    )
+    private val userMason = User(
+        username = "Mason Clark",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Mason+Clark&background=random&rounded=true",
+        bio = "Cyclist and tech geek."
+    )
+    private val userNina = User(
+        username = "Nina Dobrev",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Nina+Dobrev&background=random&rounded=true",
+        bio = "Yoga and wellness."
+    )
+    private val userOscar = User(
+        username = "Oscar Isaac",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Oscar+Isaac&background=random&rounded=true",
+        bio = "Film and photography."
+    )
+    private val userPaula = User(
+        username = "Paula Abdul",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Paula+Abdul&background=random&rounded=true",
+        bio = "Dance and fitness."
+    )
+    private val userQuinn = User(
+        username = "Quinn Hughes",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Quinn+Hughes&background=random&rounded=true",
+        bio = "Hockey and gaming."
+    )
+    private val userRita = User(
+        username = "Rita Ora",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Rita+Ora&background=random&rounded=true",
+        bio = "Singer and fashionista."
+    )
+    private val userSam = User(
+        username = "Sam Wilson",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Sam+Wilson&background=random&rounded=true",
+        bio = "Pilot and adventurer."
+    )
+    private val userTina = User(
+        username = "Tina Fey",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Tina+Fey&background=random&rounded=true",
+        bio = "Comedian and writer."
+    )
+    private val userUma = User(
+        username = "Uma Thurman",
+        profilePictureUrl = "https://ui-avatars.com/api/?name=Uma+Thurman&background=random&rounded=true",
+        bio = "Actress and traveler."
+    )
 
     val stories = listOf(
         Story(user = User("Your story", null), hasStory = false),
@@ -76,7 +156,7 @@ object Repository {
     )
 
     var posts = mutableListOf<Post>().apply {
-        val users = listOf(userAlice, userBob, userCharlie, userDiana, userEvan)
+        val users = listOf(userAlice, userBob, userCharlie, userDiana, userEvan, userFiona, userGeorge, userHannah, userIan, userJulia, userKevin, userLily, userMason, userNina, userOscar, userPaula, userQuinn, userRita, userSam, userTina, userUma)
         val descriptions = listOf(
             "Awesome day!",
             "Look at this!",
@@ -144,5 +224,5 @@ object Repository {
         Notification(user = userEvan, action = "liked your post", time = "2h 25m")
     )
 
-    fun getAllUsers(): List<User> = listOf(currentUser, userAlice, userBob, userCharlie, userDiana, userEvan)
+    fun getAllUsers(): List<User> = listOf(currentUser, userAlice, userBob, userCharlie, userDiana, userEvan, userFiona, userGeorge, userHannah, userIan, userJulia, userKevin, userLily, userMason, userNina, userOscar, userPaula, userQuinn, userRita, userSam, userTina, userUma)
 }
