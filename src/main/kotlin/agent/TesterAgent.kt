@@ -1,4 +1,4 @@
-package io.github.maikotrindade.agent.executor.agent
+package io.github.maikotrindade.agent
 
 import agent.tool.MobileTestTools
 import ai.koog.agents.core.tools.ToolRegistry

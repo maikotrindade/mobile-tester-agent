@@ -1,9 +1,9 @@
 package io.github.maikotrindade
 
+import io.github.maikotrindade.agent.TesterAgent
 import io.github.maikotrindade.agent.executor.ExecutorInfo
 import io.github.maikotrindade.agent.executor.GeminiExecutor
 import io.github.maikotrindade.agent.executor.OllamaGwenExecutor
-import io.github.maikotrindade.agent.executor.agent.TesterAgent
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
