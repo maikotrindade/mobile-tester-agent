@@ -124,6 +124,22 @@ object Repository {
         Story(user = userCharlie),
         Story(user = userDiana),
         Story(user = userEvan),
+        Story(user = userFiona),
+        Story(user = userGeorge),
+        Story(user = userHannah),
+        Story(user = userIan),
+        Story(user = userJulia),
+        Story(user = userKevin),
+        Story(user = userLily),
+        Story(user = userMason),
+        Story(user = userNina),
+        Story(user = userOscar),
+        Story(user = userPaula),
+        Story(user = userQuinn),
+        Story(user = userRita),
+        Story(user = userSam),
+        Story(user = userTina),
+        Story(user = userUma)
     )
 
     val mediaUrls = listOf(
