@@ -130,8 +130,9 @@ class MobileTestTools : ToolSet {
             val matches = UiAutomatorUtils.findUiElementsByText(selector)
             if (matches.isEmpty()) return "No element found with selector: $selector"
             UiAutomatorUtils.tapByText(matches, 0)
-            // Input the text
-            val inputResult = AdbUtils.runAdb("shell", "input", "text", text)
+            // Input the text (replace spaces with %s to input the whole string)
+            val encodedText = text.replace(" ", "%s")
+            val inputResult = AdbUtils.runAdb("shell", "input", "text", encodedText)
             if (inputResult.contains("Error")) "Failed to input text: $inputResult" else "Input text '$text' into element with selector '$selector'"
         } catch (e: Exception) {
             "Error inputting text: ${e.message}"
