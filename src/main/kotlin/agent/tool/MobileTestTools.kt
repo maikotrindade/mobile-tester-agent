@@ -8,20 +8,25 @@ import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
 
 class MobileTestTools : ToolSet {
+
     @Tool
-    @LLMDescription("Get the current screen UI hierarchy as XML using UIAutomator dump.")
+    @LLMDescription(
+        "Find all UI elements whose text, content-desc, or resource-id matches or" +
+                " contains the given string, considering Android Accessibility tags."
+    )
     suspend fun findUiElementsByText(text: String): List<MatchResult> {
         return UiAutomatorUtils.findUiElementsByText(text)
     }
 
     @Tool
     @LLMDescription(
-        """
-            Tap element by text: Locate and tap the clickable UI element that best matches the provided text, 
-            even if the text is not an exact match or is only a partial phrase. 
-            Prioritize elements relevant to the current screen's context.
-            If there is more than one clickable button, use its position to define which button to click.
-        """
+        "Tap element by text, content-desc, or resource-id: " +
+                "Locate and tap the clickable UI element that best matches the provided text, " +
+                "content-desc, or resource-id, " +
+                "even if the text is not an exact match or is only a partial phrase. " +
+                "Prioritize elements relevant to the current screen's context. " +
+                "If there is more than one clickable button, use its position to define which button to click. " +
+                "Considers Android Accessibility tags."
     )
     suspend fun tap(text: String, position: Int = 0): String {
         val clickableUIs = findUiElementsByText(text)

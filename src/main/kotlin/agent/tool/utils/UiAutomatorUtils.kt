@@ -4,6 +4,7 @@ object UiAutomatorUtils {
     /**
      * Dumps the current UI hierarchy using UIAutomator and returns the XML as a String.
      * Returns an error message if the dump or read fails.
+     * Considers Android Accessibility tags (content-desc, resource-id, etc).
      */
     private fun dumpUiHierarchy(): String {
         val dumpResult = AdbUtils.runAdb("shell", "uiautomator", "dump")
@@ -18,8 +19,8 @@ object UiAutomatorUtils {
     }
 
     /**
-     * Finds all UI elements on the current screen whose text matches or contains the given string.
-     * Uses a regex search on the UIAutomator XML dump to locate nodes with matching text attributes.
+     * Finds all UI elements on the current screen whose text, content-desc, or resource-id matches or contains the given string.
+     * Uses a regex search on the UIAutomator XML dump to locate nodes with matching attributes.
      *
      * @param text The text to search for in UI elements.
      * @return A list of MatchResult objects for each matching UI element found.
@@ -28,24 +29,33 @@ object UiAutomatorUtils {
     fun findUiElementsByText(text: String): List<MatchResult> {
         val xml = dumpUiHierarchy()
         val regex = Regex(
-            "<node[^>]*text=\\\"([^\"]*${Regex.escape(text)}[^\"]*)\\\"[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
+            "<node[^>]*(text=\\\"([^\\\"]*${Regex.escape(text)}[^\\\"]*)\\\"|content-desc=\\\"([^\\\"]*${
+                Regex.escape(
+                    text
+                )
+            }[^\\\"]*)\\\"|resource-id=\\\"([^\\\"]*${Regex.escape(text)}[^\\\"]*)\\\")[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
             RegexOption.IGNORE_CASE
         )
         val matches = regex.findAll(xml).toList()
         if (matches.isEmpty()) {
-            throw NoSuchElementException("No UI element found with text: '$text'")
+            throw NoSuchElementException("No UI element found with text/accessibility: '$text'")
         }
         return matches
     }
 
     /**
-     * Taps on a UI element by its text using UIAutomator dump and adb input tap.
+     * Taps on a UI element by its text, content-desc, or resource-id using UIAutomator dump and adb input tap.
      * Returns a success message or an error if the element is not found or the tap fails.
      */
     fun tapByText(matches: List<MatchResult>, position: Int): String {
         if (matches.isEmpty()) throw NoSuchElementException("No UI elements to tap.")
         if (position !in matches.indices) throw IndexOutOfBoundsException("position $position is out of bounds for matches list of size ${matches.size}.")
-        val (_, x1, y1, x2, y2) = matches[position].destructured
+        // The regex may have up to 4 capturing groups before bounds, so find the bounds at the end
+        val groups = matches[position].groupValues
+        val x1 = groups[groups.size - 4]
+        val y1 = groups[groups.size - 3]
+        val x2 = groups[groups.size - 2]
+        val y2 = groups[groups.size - 1]
         val centerX = (x1.toInt() + x2.toInt()) / 2
         val centerY = (y1.toInt() + y2.toInt()) / 2
         val tapResult = AdbUtils.runAdb("shell", "input", "tap", centerX.toString(), centerY.toString())
