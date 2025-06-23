@@ -1,4 +1,4 @@
-package io.github.maikotrindade.agent.executor
+package agent.executor
 
 import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.llms.all.simpleGoogleAIExecutor

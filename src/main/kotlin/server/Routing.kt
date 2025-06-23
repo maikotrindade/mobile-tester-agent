@@ -1,9 +1,9 @@
 package server
 
-import io.github.maikotrindade.agent.TesterAgent
-import io.github.maikotrindade.agent.executor.ExecutorInfo
-import io.github.maikotrindade.agent.executor.GeminiExecutor
-import io.github.maikotrindade.agent.executor.OllamaGwenExecutor
+import agent.TesterAgent
+import agent.executor.ExecutorInfo
+import agent.executor.GeminiExecutor
+import agent.executor.OllamaGwenExecutor
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

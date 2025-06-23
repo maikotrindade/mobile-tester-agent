@@ -1,4 +1,4 @@
-package io.github.maikotrindade.agent.executor
+package agent.executor
 
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLModel
