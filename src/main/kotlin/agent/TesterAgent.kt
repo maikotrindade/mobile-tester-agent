@@ -2,10 +2,10 @@ package agent
 
 import agent.executor.ExecutorInfo
 import agent.tool.MobileTestTools
+import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
-import ai.koog.agents.ext.agent.simpleSingleRunAgent
-import ai.koog.agents.features.eventHandler.feature.handleEvents
+import ai.koog.agents.features.eventHandler.feature.EventHandler
 import kotlinx.coroutines.CompletableDeferred
 
 object TesterAgent {
@@ -16,19 +16,19 @@ object TesterAgent {
 
         val resultDeferred = CompletableDeferred<String>()
 
-        val agent = simpleSingleRunAgent(
+        val agent = AIAgent(
             executor = executorInfo.executor,
             llmModel = executorInfo.llmModel,
             systemPrompt = "You're responsible for testing an Android app and perform operations on it by request",
-            temperature = 0.0,
-            toolRegistry = toolRegistry
+            temperature = 0.2,
+            toolRegistry = toolRegistry,
+            maxIterations = 100
         ) {
-            handleEvents {
-                onToolCall = { tool, toolArgs ->
+            install(EventHandler) {
+                onToolCall { tool, toolArgs ->
                     println("Tool called: ${tool.name} with args $toolArgs")
                 }
-
-                onAgentFinished = { strategyName, result ->
+                onAgentFinished { strategyName, result ->
                     println("Agent finished with result: $result")
                     resultDeferred.complete(result ?: "Error: no result")
                 }
