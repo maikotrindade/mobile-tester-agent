@@ -2,6 +2,7 @@ package agent.tool
 
 import agent.tool.utils.AdbUtils
 import agent.tool.utils.MediaUtils
+import agent.tool.utils.TestReportUtils
 import agent.tool.utils.UiAutomatorUtils
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
@@ -113,5 +114,11 @@ class MobileTestTools : ToolSet {
     )
     suspend fun deviceInformation(): String {
         return AdbUtils.deviceInformation()
+    }
+
+    @Tool
+    @LLMDescription("Generate a human-readable test report for a given TestScenario. Returns a Markdown summary of the scenario, steps, errors, and result.")
+    fun generateTestScenarioReport(scenario: testing.TestScenario): String {
+        return TestReportUtils.generateTestReport(scenario)
     }
 }

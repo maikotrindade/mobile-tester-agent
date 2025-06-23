@@ -19,7 +19,8 @@ object TesterAgent {
         val agent = AIAgent(
             executor = executorInfo.executor,
             llmModel = executorInfo.llmModel,
-            systemPrompt = "You're responsible for testing an Android app and perform operations on it by request",
+            systemPrompt = "You're responsible for testing an Android app and perform operations on it by request." +
+                    "You will run the test scenario and will record the tests and generate a report in the end.",
             temperature = 0.2,
             toolRegistry = toolRegistry,
             maxIterations = 100
