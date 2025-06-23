@@ -1,8 +1,11 @@
 package testing
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a single test step in a scenario.
  */
+@Serializable
 data class TestStep(
     val description: String,
     val expectedOutcome: String,
@@ -12,7 +15,7 @@ data class TestStep(
     val screenshotPath: String? = null
 )
 
+@Serializable
 enum class StepStatus {
     PENDING, PASSED, FAILED, SKIPPED
 }
-

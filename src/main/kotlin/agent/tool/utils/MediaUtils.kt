@@ -1,20 +1,23 @@
 package agent.tool.utils
 
+import io.github.cdimascio.dotenv.dotenv
+
 object MediaUtils {
+    val dotenv = dotenv()
     private var isRecording: Boolean = false
     private var recordingProcess: Process? = null
 
-    // TODO make these paths configurable
-    private val remoteRecordingPath = "/sdcard/screenrecord.mp4"
-    private val localRecordingPath = "/home/maiko/screenrecord.mp4"
-    private val remotePath: String = "/sdcard/screen.png"
-    private val localPath: String = "/home/maiko/screen.png"
+    private val homePath = dotenv["HOME_PATH"] ?: IllegalStateException("Home path is not set")
+    private const val remoteRecordingPath = "/sdcard/video.mp4"
+    private val localRecordingPath = "$homePath/video.mp4"
+    private const val remoteScreenshotPath = "/sdcard/screen.png"
+    private val localScreenshotPath: String = "$homePath/testscreen.png"
 
     fun takeScreenshot(): String {
-        val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remotePath)
+        val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remoteScreenshotPath)
         if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
-        val pullResult = AdbUtils.runAdb("pull", remotePath, localPath)
-        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else localPath
+        val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, localScreenshotPath)
+        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else localScreenshotPath
     }
 
     fun startScreenRecording(): String {

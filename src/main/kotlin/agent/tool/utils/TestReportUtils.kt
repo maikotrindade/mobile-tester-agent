@@ -2,35 +2,42 @@ package agent.tool.utils
 
 import testing.TestResult
 import testing.TestScenario
-import java.time.format.DateTimeFormatter
+import java.io.File
+
+const val reportPath = "/home/maiko/test"
 
 object TestReportUtils {
-    fun generateTestReport(scenario: TestScenario): String {
+    fun generateTestReport(scenario: TestScenario) {
         val sb = StringBuilder()
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        sb.appendLine("# Test Report: ${scenario.goal}")
-        sb.appendLine("**Scenario ID:** ${scenario.id}")
-        scenario.createdBy?.let { sb.appendLine("**Created By:** $it") }
-        scenario.dateStart?.let { sb.appendLine("**Start:** ${it.format(dateFormatter)}") }
-        scenario.dateEnd?.let { sb.appendLine("**End:** ${it.format(dateFormatter)}") }
-        sb.appendLine("**Tags:** ${scenario.tags.joinToString(", ")}")
-        scenario.notes?.let { sb.appendLine("**Notes:** $it") }
-        scenario.videoPath?.let { sb.appendLine("**Video:** $it") }
-        sb.appendLine("\n## Steps:")
+        sb.appendLine("<html><head><title>Test Report: ${scenario.goal}</title></head><body>")
+        sb.appendLine("<h1>Test Report: ${scenario.goal}</h1>")
+        sb.appendLine("<b>Scenario ID:</b> ${scenario.id}<br>")
+        scenario.createdBy?.let { sb.appendLine("<b>Created By:</b> $it<br>") }
+        scenario.dateStart?.let { sb.appendLine("<b>Start:</b> $it<br>") }
+        scenario.dateEnd?.let { sb.appendLine("<b>End:</b> $it<br>") }
+        sb.appendLine("<b>Tags:</b> ${scenario.tags.joinToString(", ")}<br>")
+        scenario.notes?.let { sb.appendLine("<b>Notes:</b> $it<br>") }
+        scenario.videoPath?.let { sb.appendLine("<b>Video:</b> $it<br>") }
+        sb.appendLine("<h2>Steps:</h2><ol>")
         scenario.testSteps.forEachIndexed { idx, step ->
-            sb.appendLine("${idx + 1}. ${step.description}")
-            sb.appendLine("   - Expected: ${step.expectedOutcome}")
-            sb.appendLine("   - Actual: ${step.actualOutcome ?: "N/A"}")
-            sb.appendLine("   - Status: ${step.status}")
-            step.error?.let { sb.appendLine("   - Error: $it") }
-            step.screenshotPath?.let { sb.appendLine("   - Screenshot: $it") }
+            sb.appendLine("<li>${step.description}<ul>")
+            sb.appendLine("<li><b>Expected:</b> ${step.expectedOutcome}</li>")
+            sb.appendLine("<li><b>Actual:</b> ${step.actualOutcome ?: "N/A"}</li>")
+            sb.appendLine("<li><b>Status:</b> ${step.status}</li>")
+            step.error?.let { sb.appendLine("<li><b>Error:</b> $it</li>") }
+            step.screenshotPath?.let { sb.appendLine("<li><b>Screenshot:</b> $it</li>") }
+            sb.appendLine("</ul></li>")
         }
+        sb.appendLine("</ol>")
         if (scenario.errors.isNotEmpty()) {
-            sb.appendLine("\n## Errors:")
-            scenario.errors.forEach { sb.appendLine("- $it") }
+            sb.appendLine("<h2>Errors:</h2><ul>")
+            scenario.errors.forEach { sb.appendLine("<li>$it</li>") }
+            sb.appendLine("</ul>")
         }
-        sb.appendLine("\n## Result: ${formatResult(scenario.result)}")
-        return sb.toString()
+        sb.appendLine("<h2>Result: ${formatResult(scenario.result)}</h2>")
+        sb.appendLine("</body></html>")
+        val html = sb.toString()
+        File("$reportPath/test-report.html").writeText(html)
     }
 
     private fun formatResult(result: TestResult): String = when (result) {
