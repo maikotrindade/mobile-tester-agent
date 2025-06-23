@@ -4,6 +4,7 @@ import agent.TesterAgent
 import agent.executor.ExecutorInfo
 import agent.executor.GeminiExecutor
 import agent.executor.OllamaGwenExecutor
+import agent.executor.OpenRouterExecutor
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -18,6 +19,7 @@ fun Application.configureRouting() {
 
         agentPost("/gemini") { GeminiExecutor() }
         agentPost("/ollama/gwen") { OllamaGwenExecutor() }
+        agentPost("/openRouter") { OpenRouterExecutor() }
     }
 }
 
