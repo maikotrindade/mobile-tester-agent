@@ -7,6 +7,8 @@ import agent.executor.OllamaGwenExecutor
 import agent.executor.OpenRouterExecutor
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -14,10 +16,8 @@ import server.model.AgentRequest
 
 fun Application.configureRouting() {
     routing {
-        get("/") {
-            call.respondText("Hello World Ktor!")
-        }
-
+        staticResources("/openapi", "openapi")
+        swaggerUI(path = "/swagger", swaggerFile = "openapi/openapi.yaml")
         agentPost("/gemini") { GeminiExecutor() }
         agentPost("/ollama/gwen") { OllamaGwenExecutor() }
         agentPost("/openRouter") { OpenRouterExecutor() }

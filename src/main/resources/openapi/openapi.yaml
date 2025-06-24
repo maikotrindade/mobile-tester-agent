@@ -1,0 +1,55 @@
+openapi: 3.0.1
+info:
+  title: Mobile Tester Agent API
+  version: 1.0.0
+paths:
+  /gemini:
+    post:
+      summary: Run Gemini Executor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+      responses:
+        '200':
+          description: Success
+  /ollama/gwen:
+    post:
+      summary: Run Ollama Gwen Executor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+      responses:
+        '200':
+          description: Success
+  /openRouter:
+    post:
+      summary: Run OpenRouter Executor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    AgentRequest:
+      type: object
+      properties:
+        goal:
+          type: string
+        steps:
+          type: array
+          items:
+            type: string
+      required:
+        - goal
+        - steps
