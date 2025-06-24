@@ -114,15 +114,26 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
-        description = "Get detailed information about the connected Android device using adb, including manufacturer, model, Android version, SDK, platform, total memory, data partition usage, battery level, and IP address."
+        description = "Get detailed information about the connected Android device using adb, " +
+                "including manufacturer, model, Android version, SDK, platform, total memory," +
+                " data partition usage, battery level, and IP address."
     )
     suspend fun deviceInformation(): String {
         return AdbUtils.deviceInformation()
     }
 
-//    @Tool
-//    @LLMDescription("Generate a human-readable test report for a given TestScenario. Returns a Markdown summary of the scenario, steps, errors, and result.")
-//    fun generateTestScenarioReport(scenario: TestScenario) {
-//        TestReportUtils.generateTestReport(scenario)
-//    }
+    @Tool
+    @LLMDescription(
+        "Generate a HTML test report for a given TestScenario in the end of the test. " +
+                "Returns a message indicating success or an error of test report generation. " +
+                "Accepts the scenario as a JSON string to avoid serialization issues."
+    )
+    fun generateTestScenarioReport(scenarioJson: String): String {
+        return try {
+            val scenario = kotlinx.serialization.json.Json.decodeFromString<testing.TestScenario>(scenarioJson)
+            agent.tool.utils.TestReportUtils.generateTestReport(scenario)
+        } catch (e: Exception) {
+            "Failed to parse scenario JSON: ${e.message}"
+        }
+    }
 }

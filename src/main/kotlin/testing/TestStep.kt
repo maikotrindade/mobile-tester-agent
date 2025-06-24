@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class TestStep(
-    val description: String,
-    val expectedOutcome: String,
-    val actualOutcome: String? = null,
-    val status: StepStatus = StepStatus.PENDING,
-    val error: String? = null,
-    val screenshotPath: String? = null
+    var description: String,
+    var expectedOutcome: String,
+    var actualOutcome: String? = null,
+    var status: StepStatus = StepStatus.PENDING,
+    var error: String? = null,
+    var screenshotPath: String? = null
 )
 
 @Serializable

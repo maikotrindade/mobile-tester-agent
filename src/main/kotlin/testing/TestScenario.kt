@@ -1,22 +1,22 @@
 package testing
 
 import kotlinx.serialization.Serializable
+import java.util.*
 
 /**
  * Represents a test scenario with its goal, steps, execution times, errors, and result.
  */
 @Serializable
 data class TestScenario(
-    val id: String,
-    val goal: String,
-    val testSteps: List<TestStep>,
-    val dateStart: String? = null,
-    val dateEnd: String? = null,
-    val errors: List<String> = emptyList(),
-    val result: TestResult = TestResult.Pending,
-    val tags: List<String> = emptyList(),
-    val createdBy: String? = null,
-    val lastModified: String? = null,
-    val notes: String? = null,
-    val videoPath: String? = null,
+    var id: String = UUID.randomUUID().toString(),
+    var goal: String,
+    var testSteps: List<TestStep>,
+    var dateStart: String? = null,
+    var dateEnd: String? = null,
+    var errorMessage: String,
+    var result: TestResult = TestResult.Pending,
+    var createdBy: String? = null,
+    var lastModified: String? = null,
+    var notes: String? = null,
+    var videoPath: String? = null,
 )
