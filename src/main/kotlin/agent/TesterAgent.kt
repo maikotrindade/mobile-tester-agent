@@ -7,14 +7,16 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
 import ai.koog.agents.features.eventHandler.feature.EventHandler
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.serialization.json.Json
+import testing.TestScenario
 
 object TesterAgent {
-    suspend fun runAgent(prompt: String, executorInfo: ExecutorInfo): String {
+    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): TestScenario {
         val toolRegistry = ToolRegistry.Companion {
             tools(MobileTestTools().asTools())
         }
 
-        val resultDeferred = CompletableDeferred<String>()
+        val resultDeferred = CompletableDeferred<TestScenario>()
 
         val agent = AIAgent(
             executor = executorInfo.executor,
@@ -33,11 +35,21 @@ object TesterAgent {
                     println("Agent finished with result: $result")
                     // Expecting result to be a JSON string representing TestScenario
                     try {
-                        resultDeferred.complete(result ?: "No results")
+                        val scenario =
+                            Json.decodeFromString<TestScenario>(result ?: throw IllegalArgumentException("No result"))
+                        resultDeferred.complete(scenario)
                     } catch (e: Exception) {
                         throw IllegalArgumentException("Failed to parse TestScenario: ${e.message}")
                     }
                 }
+            }
+        }
+
+        val prompt = buildString {
+            appendLine("Goal: $goal")
+            appendLine("Steps:")
+            steps.forEachIndexed { idx, step ->
+                appendLine("${idx + 1}. $step")
             }
         }
         agent.run(prompt)
