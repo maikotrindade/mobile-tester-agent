@@ -5,7 +5,7 @@ import agent.tool.MobileTestTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
-import ai.koog.agents.features.eventHandler.feature.EventHandler
+import ai.koog.agents.features.eventHandler.feature.handleEvents
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.serialization.json.Json
 import testing.TestScenario
@@ -27,16 +27,20 @@ object TesterAgent {
             toolRegistry = toolRegistry,
             maxIterations = 100
         ) {
-            install(EventHandler) {
-                onToolCall { tool, toolArgs ->
-                    println("Tool called: ${tool.name} with args $toolArgs")
+            handleEvents {
+                onToolCall { eventContext ->
+                    println("Tool called: tool ${eventContext.tool.name}, args ${eventContext.toolArgs}")
                 }
-                onAgentFinished { strategyName, result ->
-                    println("Agent finished with result: $result")
-                    // Expecting result to be a JSON string representing TestScenario
+
+                onAgentRunError { eventContext ->
+                    println("An error occurred: ${eventContext.throwable.message}\n${eventContext.throwable.stackTraceToString()}")
+                }
+
+                onAgentFinished { eventContext ->
+                    println("Agent finished with result: ${eventContext.result}")
                     try {
-                        val scenario =
-                            Json.decodeFromString<TestScenario>(result ?: throw IllegalArgumentException("No result"))
+                        val result = eventContext.result?.toString() ?: throw IllegalArgumentException("No result")
+                        val scenario = Json.decodeFromString<TestScenario>(result)
                         resultDeferred.complete(scenario)
                     } catch (e: Exception) {
                         throw IllegalArgumentException("Failed to parse TestScenario: ${e.message}")
