@@ -1,5 +1,6 @@
 package server
 
+import agent.ComplexTesterAgent
 import agent.TesterAgent
 import agent.executor.ExecutorInfo
 import agent.executor.GeminiExecutor
@@ -21,6 +22,9 @@ fun Application.configureRouting() {
         agentPost("/gemini") { GeminiExecutor() }
         agentPost("/ollama/gwen") { OllamaGwenExecutor() }
         agentPost("/openRouter") { OpenRouterExecutor() }
+        complexAgentPost("/gemini/complex") { GeminiExecutor() }
+        complexAgentPost("/ollama/gwen/complex") { OllamaGwenExecutor() }
+        complexAgentPost("/openRouter/complex") { OpenRouterExecutor() }
     }
 }
 
@@ -43,6 +47,18 @@ fun <T> Route.agentPost(path: String, executorProvider: () -> T) where T : Any {
                 )
             }
             val result = TesterAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
+            call.respond(result)
+        } catch (e: Exception) {
+            call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.BadRequest)
+        }
+    }
+}
+
+fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T : Any {
+    post(path) {
+        try {
+            val prompt = call.receive<String>()
+            val result = ComplexTesterAgent.runAgent(prompt, executorProvider() as ExecutorInfo)
             call.respond(result)
         } catch (e: Exception) {
             call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.BadRequest)
