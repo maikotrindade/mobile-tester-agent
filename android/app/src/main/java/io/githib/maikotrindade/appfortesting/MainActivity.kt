@@ -237,8 +237,8 @@ fun InstagramBottomBar(navController: NavHostController) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.create_post),
                     modifier = Modifier.size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
