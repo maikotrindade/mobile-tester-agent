@@ -55,6 +55,36 @@ object AdbUtils {
         }
     }
 
+    fun closeCurrentApp(): String {
+        // Use sh -c to enable shell features like pipes
+        val getAppProcess = ProcessBuilder(
+            "adb", "shell", "sh", "-c", "dumpsys window | grep -E 'mCurrentFocus|mFocusedApp'"
+        ).redirectErrorStream(true).start()
+
+        val output = getAppProcess.inputStream.bufferedReader().readText()
+        getAppProcess.waitFor()
+
+        // Extract package/activity from lines like:
+        // mCurrentFocus=Window{xxx u0 com.example.app/com.example.app.MainActivity}
+        val regex = Regex("([a-zA-Z0-9_.]+)/(\\S+)")
+        val matches = regex.findAll(output).toList()
+
+        // Filter out system apps or null matches
+        val packageName = matches
+            .map { it.groups[1]?.value }
+            .firstOrNull { it != null && it != "null" && it != "system" }
+
+        return if (packageName != null) {
+            val stopProcess = ProcessBuilder("adb", "shell", "am", "force-stop", packageName)
+                .redirectErrorStream(true)
+                .start()
+            stopProcess.waitFor()
+            "App '$packageName' has been force-stopped."
+        } else {
+            "Failed to identify the current foreground app."
+        }
+    }
+
     fun deviceInformation(): String {
         return try {
             val manufacturer = runAdb("shell", "getprop", "ro.product.manufacturer")
