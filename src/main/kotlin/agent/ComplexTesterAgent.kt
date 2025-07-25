@@ -16,10 +16,12 @@ import ai.koog.prompt.params.LLMParams
 import kotlinx.coroutines.CompletableDeferred
 
 object ComplexTesterAgent {
-    suspend fun runAgent(prompt: String, executorInfo: ExecutorInfo): String {
+    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): String {
+
         val resultDeferred = CompletableDeferred<String>()
+
         val agentConfig = AIAgentConfig(
-            prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
+            prompt = prompt("mobileTester", LLMParams(temperature = 1.0)) {
                 system(
                     """
                     "You're responsible for testing an Android app and perform tests on it by request."
@@ -80,7 +82,15 @@ object ComplexTesterAgent {
             }
         }
 
-        agent.run(prompt)
+        val testScenario = buildString {
+            appendLine("Goal: $goal")
+            appendLine("Steps:")
+            steps.forEachIndexed { idx, step ->
+                appendLine("${idx + 1}. $step")
+            }
+        }
+
+        agent.run(testScenario)
         return resultDeferred.await()
     }
 }

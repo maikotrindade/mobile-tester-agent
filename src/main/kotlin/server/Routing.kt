@@ -57,8 +57,22 @@ fun <T> Route.agentPost(path: String, executorProvider: () -> T) where T : Any {
 fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T : Any {
     post(path) {
         try {
-            val prompt = call.receive<String>()
-            val result = ComplexTesterAgent.runAgent(prompt, executorProvider() as ExecutorInfo)
+            val request = call.receive<AgentRequest>()
+            val goal = request.goal
+            val stepsAsStrings = request.steps
+            if (goal.isBlank()) {
+                return@post call.respondText(
+                    "Missing goal",
+                    status = HttpStatusCode.BadRequest
+                )
+            }
+            if (stepsAsStrings.isEmpty()) {
+                return@post call.respondText(
+                    "Missing steps",
+                    status = HttpStatusCode.BadRequest
+                )
+            }
+            val result = ComplexTesterAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
             call.respond(result)
         } catch (e: Exception) {
             call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.BadRequest)
