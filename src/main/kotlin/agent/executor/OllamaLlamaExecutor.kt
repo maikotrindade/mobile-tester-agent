@@ -3,7 +3,7 @@ package agent.executor
 import ai.koog.prompt.executor.llms.all.simpleOllamaAIExecutor
 import ai.koog.prompt.llm.OllamaModels
 
-class OllamaGwenExecutor : ExecutorInfo {
+class OllamaLlamaExecutor : ExecutorInfo {
     override val executor = simpleOllamaAIExecutor()
-    override val llmModel = OllamaModels.Alibaba.QWEN_2_5_05B
+    override val llmModel = OllamaModels.Meta.LLAMA_3_2_3B
 }

@@ -2,10 +2,7 @@ package server
 
 import agent.ComplexTesterAgent
 import agent.TesterAgent
-import agent.executor.ExecutorInfo
-import agent.executor.GeminiExecutor
-import agent.executor.OllamaGwenExecutor
-import agent.executor.OpenRouterExecutor
+import agent.executor.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -24,6 +21,7 @@ fun Application.configureRouting() {
         agentPost("/openRouter") { OpenRouterExecutor() }
         complexAgentPost("/gemini/complex") { GeminiExecutor() }
         complexAgentPost("/ollama/gwen/complex") { OllamaGwenExecutor() }
+        complexAgentPost("/ollama/llama/complex") { OllamaLlamaExecutor() }
         complexAgentPost("/openRouter/complex") { OpenRouterExecutor() }
     }
 }
