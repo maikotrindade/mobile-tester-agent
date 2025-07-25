@@ -25,6 +25,8 @@ object ComplexTesterAgent {
                 system(
                     """
                     "You're responsible for testing an Android app and perform tests on it by request."
+                    "Take a screenshot every time the screen is tapped."
+                    "Close the app when the tests were finished."
                 """.trimIndent()
                 )
             },
@@ -58,9 +60,9 @@ object ComplexTesterAgent {
                 }
 
                 onAgentFinished { eventContext ->
-                    val result = eventContext.result?.toString() ?: throw IllegalArgumentException("No result")
-                    println("Result: result")
-                    resultDeferred.complete(result)
+                    resultDeferred.complete(
+                        if (eventContext.result != null) "Summary: ${eventContext.result.toString()}" else "Something went wrong."
+                    )
                 }
 
                 onAfterLLMCall { eventContext ->
@@ -86,7 +88,7 @@ object ComplexTesterAgent {
             appendLine("Goal: $goal")
             appendLine("Steps:")
             steps.forEachIndexed { idx, step ->
-                appendLine("${idx + 1}. $step")
+                appendLine("Step ${idx + 1}. $step")
             }
         }
 

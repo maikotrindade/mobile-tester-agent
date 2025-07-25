@@ -78,10 +78,11 @@ class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription(
         "Take a screenshot of the current screen and pull it to a remote path. " +
+                "`baseName` is the test goal and `stepNumber` is the number of the test scenario step" +
                 "Returns the local file path or error message."
     )
-    suspend fun takeScreenshot(): String {
-        return MediaUtils.takeScreenshot()
+    suspend fun takeScreenshot(baseName: String, stepNumber: Int): String {
+        return MediaUtils.takeScreenshot(baseName, stepNumber)
     }
 
     @Tool
@@ -137,4 +138,15 @@ class MobileTestTools : ToolSet {
             "Failed to parse scenario JSON: ${e.message}"
         }
     }
+
+    @Tool
+    @LLMDescription(
+        "Close the currently active foreground app on a connected Android device via ADB." +
+                "Identifies the package name of the app currently in focus, then runs `adb shell am force-stop " +
+                "to close it. Useful for resetting app state during testing different test scenarios."
+    )
+    fun closeApp() {
+        AdbUtils.closeCurrentApp()
+    }
+
 }
