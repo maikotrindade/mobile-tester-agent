@@ -3,6 +3,7 @@ package agent.tool
 import agent.tool.utils.AdbUtils
 import agent.tool.utils.MediaUtils
 import agent.tool.utils.UiAutomatorUtils
+import agent.tool.utils.UiMatchResult
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
@@ -14,7 +15,7 @@ class MobileTestTools : ToolSet {
         "Find all UI elements whose text, content-desc, or resource-id matches or" +
                 " contains the given string, considering Android Accessibility tags."
     )
-    suspend fun findUiElementsByText(text: String): List<MatchResult> {
+    suspend fun findUiElementsByText(text: String): List<UiMatchResult> {
         return UiAutomatorUtils.findUiElementsByText(text)
     }
 

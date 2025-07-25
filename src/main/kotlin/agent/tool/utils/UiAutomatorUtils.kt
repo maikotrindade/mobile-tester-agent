@@ -26,7 +26,7 @@ object UiAutomatorUtils {
      * @return A list of MatchResult objects for each matching UI element found.
      * @throws NoSuchElementException if no UI element with the given text is found.
      */
-    fun findUiElementsByText(text: String): List<MatchResult> {
+    fun findUiElementsByText(text: String): List<UiMatchResult> {
         val xml = dumpUiHierarchy()
         val regex = Regex(
             "<node[^>]*(text=\\\"([^\\\"]*${Regex.escape(text)}[^\\\"]*)\\\"|content-desc=\\\"([^\\\"]*${
@@ -37,17 +37,15 @@ object UiAutomatorUtils {
             RegexOption.IGNORE_CASE
         )
         val matches = regex.findAll(xml).toList()
-        if (matches.isEmpty()) {
-            throw NoSuchElementException("No UI element found with text/accessibility: '$text'")
-        }
-        return matches
+        if (matches.isEmpty()) throw NoSuchElementException("No UI element found with text/accessibility: '$text'")
+        return matches.map { match -> UiMatchResult(match.groupValues) }
     }
 
     /**
      * Taps on a UI element by its text, content-desc, or resource-id using UIAutomator dump and adb input tap.
      * Returns a success message or an error if the element is not found or the tap fails.
      */
-    fun tapByText(matches: List<MatchResult>, position: Int): String {
+    fun tapByText(matches: List<UiMatchResult>, position: Int): String {
         if (matches.isEmpty()) throw NoSuchElementException("No UI elements to tap.")
         if (position !in matches.indices) throw IndexOutOfBoundsException("position $position is out of bounds for matches list of size ${matches.size}.")
         // The regex may have up to 4 capturing groups before bounds, so find the bounds at the end

@@ -56,7 +56,9 @@ object ComplexTesterAgent {
                 }
 
                 onAgentFinished { eventContext ->
-                    println("Result: ${eventContext.result}")
+                    val result = eventContext.result?.toString() ?: throw IllegalArgumentException("No result")
+                    println("Result: result")
+                    resultDeferred.complete(result)
                 }
 
                 onAfterLLMCall { eventContext ->
