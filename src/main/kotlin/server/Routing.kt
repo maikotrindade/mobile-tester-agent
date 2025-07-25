@@ -18,6 +18,7 @@ fun Application.configureRouting() {
         swaggerUI(path = "/swagger", swaggerFile = "openapi/openapi.yaml")
         agentPost("/gemini") { GeminiExecutor() }
         agentPost("/ollama/gwen") { OllamaGwenExecutor() }
+        agentPost("/ollama/llama") { OllamaGwenExecutor() }
         agentPost("/openRouter") { OpenRouterExecutor() }
         complexAgentPost("/gemini/complex") { GeminiExecutor() }
         complexAgentPost("/ollama/gwen/complex") { OllamaGwenExecutor() }
