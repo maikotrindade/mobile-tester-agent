@@ -11,13 +11,14 @@ object MediaUtils {
     private const val remoteRecordingPath = "/sdcard/video.mp4"
     private val localRecordingPath = "$homePath/video.mp4"
     private const val remoteScreenshotPath = "/sdcard/screen.png"
-    private val localScreenshotPath: String = "$homePath/testscreen.png"
 
-    fun takeScreenshot(): String {
+    fun takeScreenshot(baseName: String, stepNumber: Int): String {
         val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remoteScreenshotPath)
         if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
-        val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, localScreenshotPath)
-        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else localScreenshotPath
+
+        val screenshotName = "$baseName-$stepNumber.png"
+        val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, screenshotName)
+        return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else screenshotName
     }
 
     fun startScreenRecording(): String {
