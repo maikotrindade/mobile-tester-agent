@@ -1,5 +1,6 @@
 package agent.tool.utils
 
+import agent.tool.utils.Formatter.formatToSlug
 import io.github.cdimascio.dotenv.dotenv
 
 object MediaUtils {
@@ -16,7 +17,7 @@ object MediaUtils {
         val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remoteScreenshotPath)
         if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
 
-        val screenshotName = "$baseName-$stepNumber.png"
+        val screenshotName = "$homePath/${baseName.formatToSlug()}-$stepNumber.png"
         val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, screenshotName)
         return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else screenshotName
     }
