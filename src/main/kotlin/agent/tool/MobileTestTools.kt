@@ -1,9 +1,6 @@
 package agent.tool
 
-import agent.tool.utils.AdbUtils
-import agent.tool.utils.MediaUtils
-import agent.tool.utils.UiAutomatorUtils
-import agent.tool.utils.UiMatchResult
+import agent.tool.utils.*
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
@@ -78,11 +75,11 @@ class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription(
         "Take a screenshot of the current screen and pull it to a remote path. " +
-                "`baseName` is the test goal and `stepNumber` is the number of the test scenario step" +
-                "Returns the local file path or error message."
+                "`baseName` is the test goal. " +
+                "Returns the local file path or error message. "
     )
     suspend fun takeScreenshot(baseName: String, stepNumber: Int): String {
-        return MediaUtils.takeScreenshot(baseName, stepNumber)
+        return MediaUtils.takeScreenshot(baseName)
     }
 
     @Tool
@@ -133,7 +130,7 @@ class MobileTestTools : ToolSet {
     fun generateTestScenarioReport(scenarioJson: String): String {
         return try {
             val scenario = kotlinx.serialization.json.Json.decodeFromString<testing.TestScenario>(scenarioJson)
-            agent.tool.utils.TestReportUtils.generateTestReport(scenario)
+            TestReportUtils.generateTestReport(scenario)
         } catch (e: Exception) {
             "Failed to parse scenario JSON: ${e.message}"
         }
@@ -145,8 +142,9 @@ class MobileTestTools : ToolSet {
                 "Identifies the package name of the app currently in focus, then runs `adb shell am force-stop " +
                 "to close it. Useful for resetting app state during testing different test scenarios."
     )
-    fun closeApp() {
-        AdbUtils.closeCurrentApp()
+    fun closeApp(): String {
+        val result = AdbUtils.closeCurrentApp()
+        return result
     }
 
 }

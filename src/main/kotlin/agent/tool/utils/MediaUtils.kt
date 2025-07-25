@@ -11,13 +11,16 @@ object MediaUtils {
     private val homePath = dotenv["HOME_PATH"] ?: IllegalStateException("Home path is not set")
     private const val remoteRecordingPath = "/sdcard/video.mp4"
     private val localRecordingPath = "$homePath/video.mp4"
-    private const val remoteScreenshotPath = "/sdcard/screen.png"
 
-    fun takeScreenshot(baseName: String, stepNumber: Int): String {
+    private var screenshotIndex = 0
+
+    fun takeScreenshot(baseName: String): String {
+        screenshotIndex++
+        val remoteScreenshotPath = "/sdcard/screen-$screenshotIndex.png"
         val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remoteScreenshotPath)
         if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
 
-        val screenshotName = "$homePath/${baseName.formatToSlug()}-$stepNumber.png"
+        val screenshotName = "$homePath/${baseName.formatToSlug()}-$screenshotIndex.png"
         val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, screenshotName)
         return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else screenshotName
     }

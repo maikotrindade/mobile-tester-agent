@@ -5,6 +5,7 @@ import agent.strategy.TestingStrategy
 import agent.tool.MobileTestTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
+import ai.koog.agents.core.feature.handler.AfterLLMCallContext
 import ai.koog.agents.core.feature.handler.AgentStartContext
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.tools
@@ -66,20 +67,7 @@ object ComplexTesterAgent {
                 }
 
                 onAfterLLMCall { eventContext ->
-                    val inputTokensCountList = eventContext.responses.map { it.metaInfo.inputTokensCount }
-                    var inputTokensCount = 0
-                    inputTokensCountList.forEach { inputTokensCount += (it ?: 0) }
-                    println("INPUT tokens count: $inputTokensCount")
-
-                    val outputTokensCountList = eventContext.responses.map { it.metaInfo.outputTokensCount }
-                    var outputTokensCount = 0
-                    outputTokensCountList.forEach { outputTokensCount += (it ?: 0) }
-                    println("OUTPUT tokens count: $outputTokensCount")
-
-                    val totalTokensCountList = eventContext.responses.map { it.metaInfo.totalTokensCount }
-                    var totalTokensCount = 0
-                    totalTokensCountList.forEach { totalTokensCount += (it ?: 0) }
-                    println("TOTAL tokens count: $totalTokensCount")
+                    // logTokensConsumption(eventContext)
                 }
             }
         }
@@ -94,5 +82,22 @@ object ComplexTesterAgent {
 
         agent.run(testScenario)
         return resultDeferred.await()
+    }
+
+    private fun logTokensConsumption(eventContext: AfterLLMCallContext) {
+        val inputTokensCountList = eventContext.responses.map { it.metaInfo.inputTokensCount }
+        var inputTokensCount = 0
+        inputTokensCountList.forEach { inputTokensCount += (it ?: 0) }
+        println("INPUT tokens count: $inputTokensCount")
+
+        val outputTokensCountList = eventContext.responses.map { it.metaInfo.outputTokensCount }
+        var outputTokensCount = 0
+        outputTokensCountList.forEach { outputTokensCount += (it ?: 0) }
+        println("OUTPUT tokens count: $outputTokensCount")
+
+        val totalTokensCountList = eventContext.responses.map { it.metaInfo.totalTokensCount }
+        var totalTokensCount = 0
+        totalTokensCountList.forEach { totalTokensCount += (it ?: 0) }
+        println("TOTAL tokens count: $totalTokensCount")
     }
 }
