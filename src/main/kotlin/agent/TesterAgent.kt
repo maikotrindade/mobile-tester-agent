@@ -1,6 +1,7 @@
 package agent
 
 import agent.executor.ExecutorInfo
+import agent.model.TestScenario
 import agent.tool.MobileTestTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
@@ -8,7 +9,6 @@ import ai.koog.agents.core.tools.reflect.asTools
 import ai.koog.agents.features.eventHandler.feature.handleEvents
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.serialization.json.Json
-import testing.TestScenario
 
 object TesterAgent {
     suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): TestScenario {

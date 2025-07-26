@@ -1,8 +1,8 @@
 package agent.tool.utils
 
+import agent.model.TestResult
+import agent.model.TestScenario
 import agent.tool.utils.MediaUtils.dotenv
-import testing.TestResult
-import testing.TestScenario
 import java.io.File
 
 private val homePath = dotenv["HOME_PATH"] ?: IllegalStateException("Home path is not set")
@@ -14,12 +14,11 @@ object TestReportUtils {
             val sb = StringBuilder()
             sb.appendLine("<html><head><title>Test Report: ${scenario.goal}</title></head><body>")
             sb.appendLine("<h1>Test Report: ${scenario.goal}</h1>")
-            sb.appendLine("<b>Scenario ID:</b> ${scenario.id}<br>")
-            scenario.createdBy?.let { sb.appendLine("<b>Created By:</b> $it<br>") }
+//            scenario.createdBy?.let { sb.appendLine("<b>Created By:</b> $it<br>") }
             scenario.dateStart?.let { sb.appendLine("<b>Start:</b> $it<br>") }
             scenario.dateEnd?.let { sb.appendLine("<b>End:</b> $it<br>") }
-            scenario.notes?.let { sb.appendLine("<b>Notes:</b> $it<br>") }
-            scenario.videoPath?.let { sb.appendLine("<b>Video:</b> $it<br>") }
+//            scenario.notes?.let { sb.appendLine("<b>Notes:</b> $it<br>") }
+//            scenario.videoPath?.let { sb.appendLine("<b>Video:</b> $it<br>") }
             sb.appendLine("<h2>Steps:</h2><ol>")
             scenario.testSteps.forEachIndexed { idx, step ->
                 sb.appendLine("<li>${step.description}<ul>")
@@ -31,11 +30,11 @@ object TestReportUtils {
                 sb.appendLine("</ul></li>")
             }
             sb.appendLine("</ol>")
-            if (scenario.errorMessage.isNotEmpty()) {
-                sb.appendLine("<h2>Error:</h2>")
-                sb.appendLine("<p>${scenario.errorMessage}</p")
-            }
-            sb.appendLine("<h2>Result: ${formatResult(scenario.result)}</h2>")
+//            if (scenario.errorMessage.isNotEmpty()) {
+//                sb.appendLine("<h2>Error:</h2>")
+//                sb.appendLine("<p>${scenario.errorMessage}</p")
+//            }
+//            sb.appendLine("<h2>Result: ${formatResult(scenario.result)}</h2>")
             sb.appendLine("</body></html>")
             val html = sb.toString()
             File("$reportPath/test-report.html").writeText(html)

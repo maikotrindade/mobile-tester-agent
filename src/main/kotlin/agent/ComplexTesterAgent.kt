@@ -22,12 +22,13 @@ object ComplexTesterAgent {
         val resultDeferred = CompletableDeferred<String>()
 
         val agentConfig = AIAgentConfig(
-            prompt = prompt("mobileTester", LLMParams(temperature = 1.0)) {
+            prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
                 system(
                     """
                     "You're responsible for testing an Android app and perform tests on it by request."
                     "Take a screenshot every time the screen is tapped."
-                    "Close the app when the tests were finished."
+                    "Populate the Test Report in the end."
+                    "Close the app in the end."
                 """.trimIndent()
                 )
             },
@@ -62,7 +63,11 @@ object ComplexTesterAgent {
 
                 onAgentFinished { eventContext ->
                     resultDeferred.complete(
-                        if (eventContext.result != null) "Summary: ${eventContext.result.toString()}" else "Something went wrong."
+                        if (eventContext.result != null) {
+                            "Result: ${eventContext.result.toString()}"
+                        } else {
+                            "Something went wrong."
+                        }
                     )
                 }
 

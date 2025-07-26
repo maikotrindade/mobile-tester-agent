@@ -1,5 +1,6 @@
 package agent.tool
 
+import agent.model.TestScenario
 import agent.tool.utils.*
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
@@ -13,7 +14,12 @@ class MobileTestTools : ToolSet {
                 " contains the given string, considering Android Accessibility tags."
     )
     suspend fun findUiElementsByText(text: String): List<UiMatchResult> {
-        return UiAutomatorUtils.findUiElementsByText(text)
+        return try {
+            UiAutomatorUtils.findUiElementsByText(text)
+        } catch (e: NoSuchElementException) {
+            println(e.localizedMessage)
+            emptyList()
+        }
     }
 
     @Tool
@@ -75,11 +81,11 @@ class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription(
         "Take a screenshot of the current screen and pull it to a remote path. " +
-                "`baseName` is the test goal. " +
+                "`goalName` is the test goal name. " +
                 "Returns the local file path or error message. "
     )
-    suspend fun takeScreenshot(baseName: String, stepNumber: Int): String {
-        return MediaUtils.takeScreenshot(baseName)
+    suspend fun takeScreenshot(goalName: String): String {
+        return MediaUtils.takeScreenshot(goalName)
     }
 
     @Tool
@@ -127,10 +133,9 @@ class MobileTestTools : ToolSet {
                 "Returns a message indicating success or an error of test report generation. " +
                 "Accepts the scenario as a JSON string to avoid serialization issues."
     )
-    fun generateTestScenarioReport(scenarioJson: String): String {
+    fun generateTestScenarioReport(testScenario: TestScenario): String {
         return try {
-            val scenario = kotlinx.serialization.json.Json.decodeFromString<testing.TestScenario>(scenarioJson)
-            TestReportUtils.generateTestReport(scenario)
+            TestReportUtils.generateTestReport(testScenario)
         } catch (e: Exception) {
             "Failed to parse scenario JSON: ${e.message}"
         }

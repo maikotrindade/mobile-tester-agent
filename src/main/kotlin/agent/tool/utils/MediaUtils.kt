@@ -14,13 +14,13 @@ object MediaUtils {
 
     private var screenshotIndex = 0
 
-    fun takeScreenshot(baseName: String): String {
+    fun takeScreenshot(goalName: String): String {
         screenshotIndex++
         val remoteScreenshotPath = "/sdcard/screen-$screenshotIndex.png"
         val screencapResult = AdbUtils.runAdb("shell", "screencap", "-p", remoteScreenshotPath)
         if (screencapResult.contains("Error")) return "Failed to take screenshot: $screencapResult"
 
-        val screenshotName = "$homePath/${baseName.formatToSlug()}-$screenshotIndex.png"
+        val screenshotName = "$homePath/${goalName.formatToSlug()}-$screenshotIndex.png"
         val pullResult = AdbUtils.runAdb("pull", remoteScreenshotPath, screenshotName)
         return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else screenshotName
     }
