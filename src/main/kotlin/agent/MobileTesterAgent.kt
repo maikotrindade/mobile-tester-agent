@@ -1,6 +1,6 @@
 package agent
 
-import agent.executor.ExecutorInfo
+import agent.executor.GeminiExecutor
 import agent.strategy.TestingStrategy
 import agent.tool.mobile.test.MobileTestTools
 import agent.tool.reporting.ReportingTools
@@ -16,9 +16,9 @@ import ai.koog.prompt.params.LLMParams
 import kotlinx.coroutines.CompletableDeferred
 
 object MobileTesterAgent {
-    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): String {
-
+    suspend fun runAgent(prompt: String): String {
         val resultDeferred = CompletableDeferred<String>()
+        val executorInfo = GeminiExecutor()
         val agentConfig = AIAgentConfig(
             prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
                 system(
@@ -70,20 +70,12 @@ object MobileTesterAgent {
                 }
 
                 onAfterLLMCall { eventContext ->
-                    // logTokensConsumption(eventContext)
+                    logTokensConsumption(eventContext)
                 }
             }
         }
 
-        val testScenario = buildString {
-            appendLine("Goal: $goal")
-            appendLine("Steps:")
-            steps.forEachIndexed { idx, step ->
-                appendLine("Step ${idx + 1}. $step")
-            }
-        }
-
-        agent.run(testScenario)
+        agent.run(prompt)
         return resultDeferred.await()
     }
 
