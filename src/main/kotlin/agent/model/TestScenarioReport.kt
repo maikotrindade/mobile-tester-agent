@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TestScenarioReport(
     var goal: String,
-    var testSteps: MutableList<TestStep>,
+    var testSteps: MutableList<String>,
     var dateStart: String? = null,
     var dateEnd: String? = null,
 )

@@ -1,7 +1,6 @@
 package agent.tool.reporting
 
 import agent.model.TestScenarioReport
-import agent.model.TestStep
 import agent.tool.reporting.utils.TestReportUtils
 import agent.tool.reporting.utils.TestReportUtils.getCurrentFormattedDateTime
 import ai.koog.agents.core.tools.annotations.LLMDescription
@@ -40,7 +39,7 @@ class ReportingTools : ToolSet {
     @Tool
     @LLMDescription("Update the scenario report by adding a test step to the current test scenario.")
     suspend fun updateTestScenarioReport(description: String): String {
-        testScenarioReport?.testSteps?.add(TestStep(description))
+        testScenarioReport?.testSteps?.add(description)
         return "Test step added: $description"
     }
 }

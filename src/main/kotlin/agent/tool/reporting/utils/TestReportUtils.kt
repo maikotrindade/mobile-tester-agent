@@ -17,8 +17,8 @@ object TestReportUtils {
             scenario.dateStart?.let { reportBuilder.appendLine("Start: $it") }
             scenario.dateEnd?.let { reportBuilder.appendLine("End:</b> $it") }
             reportBuilder.appendLine("\nSteps:")
-            scenario.testSteps.forEachIndexed { idx, step ->
-                reportBuilder.appendLine("\n${step.description}")
+            scenario.testSteps.forEach {
+                reportBuilder.appendLine("\n$it")
             }
             reportBuilder.toString()
         } catch (e: Exception) {
