@@ -8,14 +8,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TestStep(
     var description: String,
-    var expectedOutcome: String,
-    var actualOutcome: String? = null,
-    var status: StepStatus = StepStatus.PENDING,
-    var error: String? = null,
-    var screenshotPath: String? = null
+//    var expectedOutcome: String,
+//    var actualOutcome: String? = null,
+//    var status: StepStatus = StepStatus.PENDING,
+//    var error: String? = null,
 )
-
-@Serializable
-enum class StepStatus {
-    PENDING, PASSED, FAILED, SKIPPED
-}

@@ -5,5 +5,5 @@ import ai.koog.prompt.llm.OllamaModels
 
 class OllamaGwenExecutor : ExecutorInfo {
     override val executor = simpleOllamaAIExecutor()
-    override val llmModel = OllamaModels.Alibaba.QWEN_2_5_05B
+    override val llmModel = OllamaModels.Alibaba.QWEN_3_06B
 }

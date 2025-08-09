@@ -1,6 +1,6 @@
-package agent.tool.utils
+package agent.tool.mobile.test.utils
 
-import agent.tool.utils.Formatter.formatToSlug
+import agent.tool.mobile.test.utils.Formatter.formatToSlug
 import io.github.cdimascio.dotenv.dotenv
 
 object MediaUtils {
@@ -55,4 +55,3 @@ object MediaUtils {
         }
     }
 }
-

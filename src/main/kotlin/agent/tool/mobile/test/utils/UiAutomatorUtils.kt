@@ -1,4 +1,4 @@
-package agent.tool.utils
+package agent.tool.mobile.test.utils
 
 object UiAutomatorUtils {
     /**

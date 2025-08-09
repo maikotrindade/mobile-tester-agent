@@ -1,8 +1,8 @@
 package agent
 
 import agent.executor.ExecutorInfo
-import agent.model.TestScenario
-import agent.tool.MobileTestTools
+import agent.model.TestScenarioReport
+import agent.tool.mobile.test.MobileTestTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
@@ -11,12 +11,12 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.serialization.json.Json
 
 object TesterAgent {
-    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): TestScenario {
+    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): TestScenarioReport {
         val toolRegistry = ToolRegistry.Companion {
             tools(MobileTestTools().asTools())
         }
 
-        val resultDeferred = CompletableDeferred<TestScenario>()
+        val resultDeferred = CompletableDeferred<TestScenarioReport>()
 
         val agent = AIAgent(
             executor = executorInfo.executor,
@@ -40,7 +40,7 @@ object TesterAgent {
                     println("Agent finished with result: ${eventContext.result}")
                     try {
                         val result = eventContext.result?.toString() ?: throw IllegalArgumentException("No result")
-                        val scenario = Json.decodeFromString<TestScenario>(result)
+                        val scenario = Json.decodeFromString<TestScenarioReport>(result)
                         resultDeferred.complete(scenario)
                     } catch (e: Exception) {
                         throw IllegalArgumentException("Failed to parse TestScenario: ${e.message}")

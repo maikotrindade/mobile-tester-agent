@@ -7,17 +7,13 @@ import kotlinx.serialization.Serializable
  *
  * @property goal The objective or purpose of this test scenario.
  * @property testSteps The list of steps to execute for this test scenario.
+ * @property dateStart The date and time when the test scenario was started.
+ * @property dateEnd The date and time when the test scenario was finished.
  */
 @Serializable
-data class TestScenario(
+data class TestScenarioReport(
     var goal: String,
-    var testSteps: List<TestStep>,
+    var testSteps: MutableList<TestStep>,
     var dateStart: String? = null,
     var dateEnd: String? = null,
-//    var errorMessage: String,
-//    var result: TestResult = TestResult.Pending,
-//    var createdBy: String? = null,
-//    var lastModified: String? = null,
-//    var notes: String? = null,
-//    var videoPath: String? = null,
 )

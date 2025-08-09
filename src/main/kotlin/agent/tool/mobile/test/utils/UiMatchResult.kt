@@ -1,4 +1,4 @@
-package agent.tool.utils
+package agent.tool.mobile.test.utils
 
 import kotlinx.serialization.Serializable
 
@@ -8,4 +8,3 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class UiMatchResult(val groupValues: List<String>)
-

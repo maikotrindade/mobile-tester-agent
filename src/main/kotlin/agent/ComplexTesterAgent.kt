@@ -2,15 +2,14 @@ package agent
 
 import agent.executor.ExecutorInfo
 import agent.strategy.TestingStrategy
-import agent.tool.MobileTestTools
+import agent.tool.mobile.test.MobileTestTools
+import agent.tool.reporting.ReportingTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
 import ai.koog.agents.core.feature.handler.AfterLLMCallContext
 import ai.koog.agents.core.feature.handler.AgentStartContext
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.tools
-import ai.koog.agents.ext.tool.AskUser
-import ai.koog.agents.ext.tool.SayToUser
 import ai.koog.agents.features.eventHandler.feature.handleEvents
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.params.LLMParams
@@ -20,26 +19,23 @@ object ComplexTesterAgent {
     suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): String {
 
         val resultDeferred = CompletableDeferred<String>()
-
         val agentConfig = AIAgentConfig(
             prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
                 system(
                     """
-                    "You're responsible for testing an Android app and perform tests on it by request."
-                    "Take a screenshot every time the screen is tapped."
-                    "Populate the Test Report in the end."
-                    "Close the app in the end."
+                    You're responsible for testing an Android app and perform tests on it by request.
+                    Update the test scenario report every time an action is performed.
+                    Close the app and generate a test scenario in the end.
                 """.trimIndent()
                 )
             },
             model = executorInfo.llmModel,
-            maxAgentIterations = 50
+            maxAgentIterations = 100
         )
 
         val toolRegistry = ToolRegistry {
-            tool(AskUser)
-            tool(SayToUser)
             tools(MobileTestTools())
+            tools(ReportingTools())
         }
 
         val agent = AIAgent(
@@ -54,7 +50,9 @@ object ComplexTesterAgent {
                 }
 
                 onToolCall { eventContext ->
-                    println("Tool called: tool ${eventContext.tool.name}, args ${eventContext.toolArgs}")
+                    println(
+                        "Tool called: tool ${eventContext.tool.name}, args ${eventContext.toolArgs}"
+                    )
                 }
 
                 onAgentRunError { eventContext ->
@@ -64,7 +62,7 @@ object ComplexTesterAgent {
                 onAgentFinished { eventContext ->
                     resultDeferred.complete(
                         if (eventContext.result != null) {
-                            "Result: ${eventContext.result.toString()}"
+                            "onAgentFinished: ${eventContext.result.toString()}"
                         } else {
                             "Something went wrong."
                         }
