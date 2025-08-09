@@ -15,7 +15,7 @@ import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.params.LLMParams
 import kotlinx.coroutines.CompletableDeferred
 
-object ComplexTesterAgent {
+object MobileTestAgent {
     suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): String {
 
         val resultDeferred = CompletableDeferred<String>()

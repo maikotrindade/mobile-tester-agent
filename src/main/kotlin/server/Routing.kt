@@ -1,6 +1,6 @@
 package server
 
-import agent.ComplexTesterAgent
+import agent.MobileTestAgent
 import agent.executor.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -15,10 +15,10 @@ fun Application.configureRouting() {
     routing {
         staticResources("/openapi", "openapi")
         swaggerUI(path = "/swagger", swaggerFile = "openapi/openapi.yaml")
-        complexAgentPost("/gemini/complex") { GeminiExecutor() }
-        complexAgentPost("/ollama/gwen/complex") { OllamaGwenExecutor() }
-        complexAgentPost("/ollama/llama/complex") { OllamaLlamaExecutor() }
-        complexAgentPost("/openRouter/complex") { OpenRouterExecutor() }
+        complexAgentPost("/gemini") { GeminiExecutor() }
+        complexAgentPost("/ollama/gwen") { OllamaGwenExecutor() }
+        complexAgentPost("/ollama/llama") { OllamaLlamaExecutor() }
+        complexAgentPost("/openRouter") { OpenRouterExecutor() }
     }
 }
 
@@ -40,7 +40,7 @@ fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T 
                     status = HttpStatusCode.BadRequest
                 )
             }
-            val result = ComplexTesterAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
+            val result = MobileTestAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
             call.respond(result)
         } catch (e: Exception) {
             call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.BadRequest)
