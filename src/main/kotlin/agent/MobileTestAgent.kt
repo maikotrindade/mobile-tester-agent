@@ -25,7 +25,6 @@ object MobileTestAgent {
                     """
                     You're responsible for testing an Android app and perform tests on it by request.
                     Update the test scenario report every time an action is performed.
-                    Close the app and generate a test scenario in the end.
                 """.trimIndent()
                 )
             },

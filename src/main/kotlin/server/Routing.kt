@@ -15,10 +15,10 @@ fun Application.configureRouting() {
     routing {
         staticResources("/openapi", "openapi")
         swaggerUI(path = "/swagger", swaggerFile = "openapi/openapi.yaml")
-        complexAgentPost("/gemini") { GeminiExecutor() }
-        complexAgentPost("/ollama/gwen") { OllamaGwenExecutor() }
-        complexAgentPost("/ollama/llama") { OllamaLlamaExecutor() }
-        complexAgentPost("/openRouter") { OpenRouterExecutor() }
+        complexAgentPost("/api/gemini_2_0Flash") { GeminiExecutor() }
+        complexAgentPost("/api/ollama/gwen_3_06B") { OllamaGwenExecutor() }
+        complexAgentPost("/api/ollama/llama_3_2_3B") { OllamaLlamaExecutor() }
+        complexAgentPost("/api/openRouter/gpt_4") { OpenRouterExecutor() }
     }
 }
 

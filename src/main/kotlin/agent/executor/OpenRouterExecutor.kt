@@ -7,5 +7,5 @@ import io.github.cdimascio.dotenv.dotenv
 class OpenRouterExecutor : ExecutorInfo {
     val dotenv = dotenv()
     override val executor = simpleOpenRouterExecutor(dotenv["OPEN_ROUTER"])
-    override val llmModel = OpenRouterModels.GPT35Turbo
+    override val llmModel = OpenRouterModels.GPT4
 }

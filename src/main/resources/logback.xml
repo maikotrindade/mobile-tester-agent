@@ -1,14 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!--            <pattern>%-5level %logger{36} - %msg%n</pattern>-->
-            <pattern>%-5level %logger{36} - %replace(%msg){'^(Tool called: )(.*)', '&#27;[36;1m$1$2&#27;[0m'}%n
-            </pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
 </configuration>
