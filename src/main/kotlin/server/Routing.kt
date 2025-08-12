@@ -43,7 +43,7 @@ fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T 
             val result = MobileTestAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
             call.respond(result)
         } catch (e: Exception) {
-            call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.BadRequest)
+            call.respondText("Error: ${e::class.simpleName}: ${e.message}", status = HttpStatusCode.InternalServerError)
         }
     }
 }

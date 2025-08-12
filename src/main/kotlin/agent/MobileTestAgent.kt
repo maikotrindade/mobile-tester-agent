@@ -3,7 +3,6 @@ package agent
 import agent.executor.ExecutorInfo
 import agent.strategy.TestingStrategy
 import agent.tool.mobile.test.MobileTestTools
-import agent.tool.reporting.ReportingTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
 import ai.koog.agents.core.feature.handler.AfterLLMCallContext
@@ -23,8 +22,8 @@ object MobileTestAgent {
             prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
                 system(
                     """
-                    You're responsible for testing an Android app and perform tests on it by request.
-                    Update the test scenario report every time an action is performed.
+                    You're responsible for testing an Android app and perform actions on the Android app by request.
+                    PERFORM THE STEPS SEQUENTIALLY AND CLOSE THE APP ONLY IN THE END OF THE TEST.
                 """.trimIndent()
                 )
             },
@@ -34,7 +33,6 @@ object MobileTestAgent {
 
         val toolRegistry = ToolRegistry {
             tools(MobileTestTools())
-            tools(ReportingTools())
         }
 
         val agent = AIAgent(
@@ -69,7 +67,7 @@ object MobileTestAgent {
                 }
 
                 onAfterLLMCall { eventContext ->
-                    // logTokensConsumption(eventContext)
+                    logTokensConsumption(eventContext)
                 }
             }
         }

@@ -31,8 +31,7 @@ class MobileTestTools : ToolSet {
                 "content-desc, or resource-id, " +
                 "even if the text is not an exact match or is only a partial phrase. " +
                 "Prioritize elements relevant to the current screen's context. " +
-                "If there is more than one clickable button, use its position to define which button to click. " +
-                "MUST: take a screenshot every time before the screen is tapped."
+                "If there is more than one clickable button, use its position to define which button to click. "
     )
     suspend fun tap(text: String, position: Int = 0): String {
         val clickableUIs = findUiElementsByText(text)
