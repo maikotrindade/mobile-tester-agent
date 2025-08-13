@@ -14,6 +14,12 @@ object MediaUtils {
 
     private var screenshotIndex = 0
 
+    /**
+     * Takes a screenshot of the connected device.
+     *
+     * @param goalName The name of the goal, used to create a slug for the screenshot filename.
+     * @return The path to the saved screenshot, or an error message if it failed.
+     */
     fun takeScreenshot(goalName: String): String {
         screenshotIndex++
         val remoteScreenshotPath = "/sdcard/screen-$screenshotIndex.png"
@@ -25,6 +31,11 @@ object MediaUtils {
         return if (pullResult.contains("Error")) "Failed to pull screenshot: $pullResult" else screenshotName
     }
 
+    /**
+     * Starts a screen recording on the connected device.
+     *
+     * @return A message indicating the status of the screen recording.
+     */
     fun startScreenRecording(): String {
         return try {
             if (isRecording) return "Screen recording is already in progress."
@@ -40,6 +51,11 @@ object MediaUtils {
         }
     }
 
+    /**
+     * Stops the current screen recording and saves the video file.
+     *
+     * @return The path to the saved video file, or an error message if it failed.
+     */
     fun stopScreenRecording(): String {
         return try {
             if (!isRecording || recordingProcess == null) return "No screen recording in progress."

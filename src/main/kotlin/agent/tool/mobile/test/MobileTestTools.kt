@@ -15,7 +15,10 @@ class MobileTestTools : ToolSet {
         "Find all UI elements whose text, content-desc, or resource-id matches or" +
                 " contains the given string, considering Android Accessibility tags."
     )
-    suspend fun findUiElementsByText(text: String): List<UiMatchResult> {
+    fun findUiElementsByText(
+        @LLMDescription("The text to search for in the UI elements.")
+        text: String
+    ): List<UiMatchResult> {
         return try {
             UiAutomatorUtils.findUiElementsByText(text)
         } catch (e: NoSuchElementException) {
@@ -33,7 +36,12 @@ class MobileTestTools : ToolSet {
                 "Prioritize elements relevant to the current screen's context. " +
                 "If there is more than one clickable button, use its position to define which button to click. "
     )
-    suspend fun tap(text: String, position: Int = 0): String {
+    fun tap(
+        @LLMDescription("The text, content-desc, or resource-id of the element to tap.")
+        text: String,
+        @LLMDescription("The position of the element to tap if multiple elements are found.")
+        position: Int = 0
+    ): String {
         val clickableUIs = findUiElementsByText(text)
         return UiAutomatorUtils.tapByText(clickableUIs, position)
     }
@@ -46,7 +54,12 @@ class MobileTestTools : ToolSet {
                 "Optional: specify duration in milliseconds to control swipe speed. " +
                 "Example: scrollVertically(distance = 1500, durationMs = 500)"
     )
-    suspend fun scrollVertically(distance: Int = 1000, durationMs: Int = 300): String {
+    fun scrollVertically(
+        @LLMDescription("The distance to scroll. Positive for up, negative for down.")
+        distance: Int = 1000,
+        @LLMDescription("The duration of the scroll in milliseconds.")
+        durationMs: Int = 300
+    ): String {
         return UiAutomatorUtils.scrollScreenVertically(distance, durationMs)
     }
 
@@ -58,7 +71,12 @@ class MobileTestTools : ToolSet {
                 "Optional: specify duration in milliseconds to control swipe speed. " +
                 "Example: scrollHorizontally(distance = -1200, durationMs = 400)"
     )
-    suspend fun scrollHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
+    fun scrollHorizontally(
+        @LLMDescription("The distance to scroll. Positive for right, negative for left.")
+        distance: Int = 1000,
+        @LLMDescription("The duration of the scroll in milliseconds.")
+        durationMs: Int = 300
+    ): String {
         return UiAutomatorUtils.scrollScreenHorizontally(distance, durationMs)
     }
 
@@ -69,13 +87,18 @@ class MobileTestTools : ToolSet {
                 "The keyboard must be hidden after inputting text. " +
                 "Returns a success or error message."
     )
-    suspend fun inputText(selector: String, text: String): String {
+    fun inputText(
+        @LLMDescription("The selector of the UI element to input text into.")
+        selector: String,
+        @LLMDescription("The text to input.")
+        text: String
+    ): String {
         return UiAutomatorUtils.inputTextBySelector(selector, text)
     }
 
     @Tool
     @LLMDescription("Go back in the app navigation by simulating the Android back button.")
-    suspend fun goBack(): String {
+    fun goBack(): String {
         val result = AdbUtils.runAdb("shell", "input", "keyevent", "4")
         return if (result.contains("Error")) "Failed to go back: $result" else "Went back in navigation."
     }
@@ -85,7 +108,7 @@ class MobileTestTools : ToolSet {
         "Hide keyboard by simulating user input or back press." +
                 "Usually the keyboard should be hidden after a text is input."
     )
-    suspend fun hideKeyboard(): String {
+    fun hideKeyboard(): String {
         // First try dismissing it by sending an empty input text
         var result = AdbUtils.runAdb("shell", "input", "text", "\"\"")
 
@@ -106,7 +129,10 @@ class MobileTestTools : ToolSet {
                 "`goalName` is the test goal name. " +
                 "Returns the local file path or error message. "
     )
-    suspend fun takeScreenshot(goalName: String): String {
+    suspend fun takeScreenshot(
+        @LLMDescription("The name of the goal for which the screenshot is being taken.")
+        goalName: String
+    ): String {
         return MediaUtils.takeScreenshot(goalName)
     }
 
@@ -135,7 +161,7 @@ class MobileTestTools : ToolSet {
                 "If any device is offline, the ADB server will be restarted and the connection retried. " +
                 "Returns a summary of connected and offline devices, or an error message if no devices are found."
     )
-    suspend fun connectDevice(): String {
+    fun connectDevice(): String {
         return AdbUtils.connectDevice()
     }
 
@@ -145,7 +171,7 @@ class MobileTestTools : ToolSet {
                 "including manufacturer, model, Android version, SDK, platform, total memory," +
                 " data partition usage, battery level, and IP address."
     )
-    suspend fun deviceInformation(): String {
+    fun deviceInformation(): String {
         return AdbUtils.deviceInformation()
     }
 
@@ -155,7 +181,7 @@ class MobileTestTools : ToolSet {
                 "Identifies the package name of the app currently in focus, then runs `adb shell am force-stop " +
                 "to close it."
     )
-    suspend fun closeApp(): String {
+    fun closeApp(): String {
         val result = AdbUtils.closeCurrentApp()
         return result
     }

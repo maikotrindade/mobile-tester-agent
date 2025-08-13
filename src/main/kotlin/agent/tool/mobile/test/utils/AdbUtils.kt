@@ -1,6 +1,12 @@
 package agent.tool.mobile.test.utils
 
 object AdbUtils {
+    /**
+     * Runs an adb command with the given arguments.
+     *
+     * @param args The arguments to pass to the adb command.
+     * @return The output of the command, or an error message if it fails.
+     */
     fun runAdb(vararg args: String): String {
         return try {
             val process = ProcessBuilder("adb", *args)
@@ -14,6 +20,11 @@ object AdbUtils {
         }
     }
 
+    /**
+     * Gets the list of connected adb devices.
+     *
+     * @return A pair containing the raw output and a list of device identifiers.
+     */
     fun getDevices(): Pair<String, List<String>> {
         val process = ProcessBuilder("adb", "devices").redirectErrorStream(true).start()
         val output = process.inputStream.bufferedReader().readText()
@@ -24,6 +35,11 @@ object AdbUtils {
         return output to devices
     }
 
+    /**
+     * Connects to a device, handling offline devices by restarting the adb server.
+     *
+     * @return A string summarizing the connection status.
+     */
     fun connectDevice(): String {
         return try {
             var (output, devices) = getDevices()
@@ -55,6 +71,11 @@ object AdbUtils {
         }
     }
 
+    /**
+     * Closes the current foreground application on the device.
+     *
+     * @return A message indicating which app was closed, or a failure message.
+     */
     fun closeCurrentApp(): String {
         // Use sh -c to enable shell features like pipes
         val getAppProcess = ProcessBuilder(
@@ -85,6 +106,11 @@ object AdbUtils {
         }
     }
 
+    /**
+     * Gathers and returns detailed information about the connected device.
+     *
+     * @return A formatted string with device information, or an error message.
+     */
     fun deviceInformation(): String {
         return try {
             val manufacturer = runAdb("shell", "getprop", "ro.product.manufacturer")

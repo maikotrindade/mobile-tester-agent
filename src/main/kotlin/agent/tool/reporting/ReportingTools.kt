@@ -16,7 +16,10 @@ class ReportingTools : ToolSet {
         "Initializes a new test scenario report with a specified goal. " +
                 "This should be the first tool called in any test plan."
     )
-    suspend fun initializeTestScenarioReport(goal: String): String {
+    suspend fun initializeTestScenarioReport(
+        @LLMDescription("The goal of the test scenario.")
+        goal: String
+    ): String {
         testScenarioReport = TestScenarioReport(
             goal = goal,
             testSteps = mutableListOf(),
@@ -38,7 +41,10 @@ class ReportingTools : ToolSet {
 
     @Tool
     @LLMDescription("Update the scenario report by adding a test step to the current test scenario.")
-    suspend fun updateTestScenarioReport(description: String): String {
+    suspend fun updateTestScenarioReport(
+        @LLMDescription("A description of the test step to add.")
+        description: String
+    ): String {
         testScenarioReport?.testSteps?.add(description)
         return "Test step added: $description"
     }

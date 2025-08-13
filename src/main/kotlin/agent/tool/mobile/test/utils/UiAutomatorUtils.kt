@@ -3,8 +3,9 @@ package agent.tool.mobile.test.utils
 object UiAutomatorUtils {
     /**
      * Dumps the current UI hierarchy using UIAutomator and returns the XML as a String.
-     * Returns an error message if the dump or read fails.
      * Considers Android Accessibility tags (content-desc, resource-id, etc).
+     *
+     * @return The UI hierarchy as an XML string, or an error message if it fails.
      */
     private fun dumpUiHierarchy(): String {
         val dumpResult = AdbUtils.runAdb("shell", "uiautomator", "dump")
@@ -29,11 +30,11 @@ object UiAutomatorUtils {
     fun findUiElementsByText(text: String): List<UiMatchResult> {
         val xml = dumpUiHierarchy()
         val regex = Regex(
-            "<node[^>]*(text=\\\"([^\\\"]*${Regex.escape(text)}[^\\\"]*)\\\"|content-desc=\\\"([^\\\"]*${
+            "<node[^>]*(text=\"([^\"]*${Regex.escape(text)}[^\"]*)\"|content-desc=\"([^\"]*${
                 Regex.escape(
                     text
                 )
-            }[^\\\"]*)\\\"|resource-id=\\\"([^\\\"]*${Regex.escape(text)}[^\\\"]*)\\\")[^>]*bounds=\\\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\\\"",
+            }[^\"]*)\"|resource-id=\"([^\"]*${Regex.escape(text)}[^\"]*)\")[^>]*bounds=\"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]\"",
             RegexOption.IGNORE_CASE
         )
         val matches = regex.findAll(xml).toList()
@@ -43,7 +44,10 @@ object UiAutomatorUtils {
 
     /**
      * Taps on a UI element by its text, content-desc, or resource-id using UIAutomator dump and adb input tap.
-     * Returns a success message or an error if the element is not found or the tap fails.
+     *
+     * @param matches The list of UI elements to choose from.
+     * @param position The index of the element to tap in the matches list.
+     * @return A success message or an error if the element is not found or the tap fails.
      */
     fun tapByText(matches: List<UiMatchResult>, position: Int): String {
         if (matches.isEmpty()) throw NoSuchElementException("No UI elements to tap.")
@@ -66,7 +70,10 @@ object UiAutomatorUtils {
 
     /**
      * Finds a UI element by selector (text), taps it, and inputs the given text.
-     * Returns a success or error message.
+     *
+     * @param selector The text to search for in UI elements.
+     * @param text The text to input into the element.
+     * @return A success or error message.
      */
     fun inputTextBySelector(selector: String, text: String): String {
         return try {
@@ -83,36 +90,46 @@ object UiAutomatorUtils {
 
     /**
      * Performs a swipe gesture from (startX, startY) to (endX, endY).
-     * Returns the result of the adb command.
+     *
+     * @param startX The starting X coordinate.
+     * @param startY The starting Y coordinate.
+     * @param endX The ending X coordinate.
+     * @param endY The ending Y coordinate.
+     * @param durationMs The duration of the swipe in ms.
+     * @return The result of the adb command.
      */
-    private fun swipeScreen(startX: Int, startY: Int, endX: Int, endY: Int): String {
+    private fun swipeScreen(startX: Int, startY: Int, endX: Int, endY: Int, durationMs: Int): String {
         return AdbUtils.runAdb(
             "shell", "input", "swipe",
-            startX.toString(), startY.toString(), endX.toString(), endY.toString()
+            startX.toString(), startY.toString(), endX.toString(), endY.toString(), durationMs.toString()
         )
     }
 
     /**
-     * Scrolls the screen vertically. Positive distance scrolls up, negative scrolls down.
-     * @param distance The distance in pixels to scroll. Default is 1000 (up).
+     * Scrolls the screen vertically.
+     *
+     * @param distance The distance in pixels to scroll. Positive scrolls up, negative scrolls down. Default is 1000 (up).
      * @param durationMs The duration of the swipe in ms. Default is 300.
+     * @return The result of the adb command.
      */
     fun scrollScreenVertically(distance: Int = 1000, durationMs: Int = 300): String {
         val startX = 500
         val startY = if (distance > 0) 1500 else 500
         val endY = startY - distance
-        return swipeScreen(startX, startY, startX, endY)
+        return swipeScreen(startX, startY, startX, endY, durationMs)
     }
 
     /**
-     * Scrolls the screen horizontally. Positive distance scrolls right, negative scrolls left.
-     * @param distance The distance in pixels to scroll. Default is 1000 (right).
+     * Scrolls the screen horizontally.
+     *
+     * @param distance The distance in pixels to scroll. Positive scrolls right, negative scrolls left. Default is 1000 (right).
      * @param durationMs The duration of the swipe in ms. Default is 300.
+     * @return The result of the adb command.
      */
     fun scrollScreenHorizontally(distance: Int = 1000, durationMs: Int = 300): String {
         val startY = 1000
         val startX = if (distance > 0) 500 else 1500
         val endX = startX + distance
-        return swipeScreen(startX, startY, endX, startY)
+        return swipeScreen(startX, startY, endX, startY, durationMs)
     }
 }
