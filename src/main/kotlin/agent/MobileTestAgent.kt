@@ -23,12 +23,12 @@ object MobileTestAgent {
                 system(
                     """
                     You're responsible for testing an Android app and perform actions on the Android app by request.
-                    PERFORM THE STEPS SEQUENTIALLY AND CLOSE THE APP ONLY IN THE END OF THE TEST.
+                    YOU MUST PERFORM THE TEST STEPS SEQUENTIALLY.
                 """.trimIndent()
                 )
             },
             model = executorInfo.llmModel,
-            maxAgentIterations = 100
+            maxAgentIterations = 50
         )
 
         val toolRegistry = ToolRegistry {

@@ -12,6 +12,19 @@ class MobileTestTools : ToolSet {
 
     @Tool
     @LLMDescription(
+        "Connect the device or emulator and open the app if it is necessary" +
+                "THIS MUST BE THE INITIAL ACTION AND ONLY BE CALLED ONCE"
+    )
+    fun startTestingScenario(
+        @LLMDescription("The name of the app which will tapped in the screen.")
+        appName: String
+    ): String {
+        connectDevice()
+        return tap(appName)
+    }
+
+    @Tool
+    @LLMDescription(
         "Find all UI elements whose text, content-desc, or resource-id matches or" +
                 " contains the given string, considering Android Accessibility tags."
     )
@@ -67,9 +80,7 @@ class MobileTestTools : ToolSet {
     @LLMDescription(
         "Scrolls the screen horizontally to simulate user interaction. " +
                 "Use a positive distance (e.g., 1000) to scroll right (i.e., swipe left to right), " +
-                "and a negative distance to scroll left (i.e., swipe right to left). " +
-                "Optional: specify duration in milliseconds to control swipe speed. " +
-                "Example: scrollHorizontally(distance = -1200, durationMs = 400)"
+                "and a negative distance to scroll left (i.e., swipe right to left). "
     )
     fun scrollHorizontally(
         @LLMDescription("The distance to scroll. Positive for right, negative for left.")
@@ -158,8 +169,7 @@ class MobileTestTools : ToolSet {
     @Tool
     @LLMDescription(
         "Connect to a local Android device or emulator using ADB. " +
-                "If any device is offline, the ADB server will be restarted and the connection retried. " +
-                "Returns a summary of connected and offline devices, or an error message if no devices are found."
+                "If the device is offline, the ADB server will be restarted and the connection retried. "
     )
     fun connectDevice(): String {
         return AdbUtils.connectDevice()
@@ -179,7 +189,8 @@ class MobileTestTools : ToolSet {
     @LLMDescription(
         "Close the currently active foreground app on a connected Android device via ADB." +
                 "Identifies the package name of the app currently in focus, then runs `adb shell am force-stop " +
-                "to close it."
+                "to close it." +
+                "THIS MUST BE THE LAST ACTION AND ONLY BE CALLED ONCE."
     )
     fun closeApp(): String {
         val result = AdbUtils.closeCurrentApp()

@@ -15,14 +15,14 @@ fun Application.configureRouting() {
     routing {
         staticResources("/openapi", "openapi")
         swaggerUI(path = "/swagger", swaggerFile = "openapi/openapi.yaml")
-        complexAgentPost("/gemini_2_0Flash") { GeminiExecutor() }
-        complexAgentPost("/ollama/gwen_3_06B") { OllamaGwenExecutor() }
-        complexAgentPost("/ollama/llama_3_2_3B") { OllamaLlamaExecutor() }
-        complexAgentPost("/openRouter/gpt_4") { OpenRouterExecutor() }
+        agentRunPost("/gemini_2_0Flash") { GeminiExecutor() }
+        agentRunPost("/ollama/gwen_3_06B") { OllamaGwenExecutor() }
+        agentRunPost("/ollama/llama_3_2_3B") { OllamaLlamaExecutor() }
+        agentRunPost("/openRouter/gpt_4") { OpenRouterExecutor() }
     }
 }
 
-fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T : Any {
+fun <T> Route.agentRunPost(path: String, executorProvider: () -> T) where T : Any {
     post(path) {
         try {
             val request = call.receive<AgentRequest>()
@@ -40,6 +40,9 @@ fun <T> Route.complexAgentPost(path: String, executorProvider: () -> T) where T 
                     status = HttpStatusCode.BadRequest
                 )
             }
+
+            println("\n###### API REQUEST\n Goal: $goal \n steps: $stepsAsStrings \n######\n")
+
             val result = MobileTestAgent.runAgent(goal, stepsAsStrings, executorProvider() as ExecutorInfo)
             call.respond(result)
         } catch (e: Exception) {

@@ -23,6 +23,9 @@ object UiAutomatorUtils {
      * Finds all UI elements on the current screen whose text, content-desc, or resource-id matches or contains the given string.
      * Uses a regex search on the UIAutomator XML dump to locate nodes with matching attributes.
      *
+     * THE PARAMETER text TO BE FOUND MAY HAVE VARIATIONS. DO NOT STICK TO THE LITERAL TEXT. IT MIGHT APPEAR SLIGHTLY
+     * DIFFERENT ON THE SCREEN, FOR EXAMPLE, AS PART OF A SHORT PHRASE, AS A SYNONYM, OR IN UPPERCASE LETTERS.
+     *
      * @param text The text to search for in UI elements.
      * @return A list of MatchResult objects for each matching UI element found.
      * @throws NoSuchElementException if no UI element with the given text is found.

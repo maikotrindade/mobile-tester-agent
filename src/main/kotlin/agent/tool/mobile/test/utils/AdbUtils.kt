@@ -77,32 +77,20 @@ object AdbUtils {
      * @return A message indicating which app was closed, or a failure message.
      */
     fun closeCurrentApp(): String {
-        // Use sh -c to enable shell features like pipes
-        val getAppProcess = ProcessBuilder(
-            "adb", "shell", "sh", "-c", "dumpsys window | grep -E 'mCurrentFocus|mFocusedApp'"
-        ).redirectErrorStream(true).start()
+        return try {
+            val output = runAdb("shell", "dumpsys", "activity", "top")
+            
+            val regex = Regex("ACTIVITY\\s+([a-zA-Z0-9_.]+)/")
+            val packageName = regex.find(output)?.groups?.get(1)?.value
 
-        val output = getAppProcess.inputStream.bufferedReader().readText()
-        getAppProcess.waitFor()
-
-        // Extract package/activity from lines like:
-        // mCurrentFocus=Window{xxx u0 com.example.app/com.example.app.MainActivity}
-        val regex = Regex("([a-zA-Z0-9_.]+)/(\\S+)")
-        val matches = regex.findAll(output).toList()
-
-        // Filter out system apps or null matches
-        val packageName = matches
-            .map { it.groups[1]?.value }
-            .firstOrNull { it != null && it != "null" && it != "system" }
-
-        return if (packageName != null) {
-            val stopProcess = ProcessBuilder("adb", "shell", "am", "force-stop", packageName)
-                .redirectErrorStream(true)
-                .start()
-            stopProcess.waitFor()
-            "App '$packageName' has been force-stopped."
-        } else {
-            "Failed to identify the current foreground app."
+            if (packageName != null && packageName != "system") {
+                runAdb("shell", "am", "force-stop", packageName)
+                "App '$packageName' has been force-stopped."
+            } else {
+                "Failed to identify the current foreground app."
+            }
+        } catch (e: Exception) {
+            "Error closing app: ${e.message}"
         }
     }
 
