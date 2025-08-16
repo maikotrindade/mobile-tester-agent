@@ -1,6 +1,6 @@
 package agent
 
-import agent.executor.ExecutorInfo
+import agent.model.MobileTesterConfig
 import agent.strategy.TestingStrategy
 import agent.tool.mobile.test.MobileTestTools
 import ai.koog.agents.core.agent.AIAgent
@@ -15,11 +15,13 @@ import ai.koog.prompt.params.LLMParams
 import kotlinx.coroutines.CompletableDeferred
 
 object MobileTestAgent {
-    suspend fun runAgent(goal: String, steps: List<String>, executorInfo: ExecutorInfo): String {
+    private var config: MobileTesterConfig = MobileTesterConfig()
 
+    suspend fun runAgent(goal: String, steps: List<String>): String {
         val resultDeferred = CompletableDeferred<String>()
+
         val agentConfig = AIAgentConfig(
-            prompt = prompt("mobileTester", LLMParams(temperature = 0.0)) {
+            prompt = prompt("mobileTester", LLMParams(temperature = config.llmTemperature)) {
                 system(
                     """
                     You're responsible for testing an Android app and perform actions on the Android app by request.
@@ -27,8 +29,8 @@ object MobileTestAgent {
                 """.trimIndent()
                 )
             },
-            model = executorInfo.llmModel,
-            maxAgentIterations = 50
+            model = config.executorInfo.llmModel,
+            maxAgentIterations = config.maxAgentIterations
         )
 
         val toolRegistry = ToolRegistry {
@@ -36,7 +38,7 @@ object MobileTestAgent {
         }
 
         val agent = AIAgent(
-            promptExecutor = executorInfo.executor,
+            promptExecutor = config.executorInfo.executor,
             strategy = TestingStrategy.strategy,
             agentConfig = agentConfig,
             toolRegistry = toolRegistry
@@ -67,7 +69,9 @@ object MobileTestAgent {
                 }
 
                 onAfterLLMCall { eventContext ->
-                    logTokensConsumption(eventContext)
+                    if (config.logTokensConsumption) {
+                        logTokensConsumption(eventContext)
+                    }
                 }
             }
         }
@@ -82,6 +86,10 @@ object MobileTestAgent {
 
         agent.run(testScenario)
         return resultDeferred.await()
+    }
+
+    fun updateConfiguration(newConfig: MobileTesterConfig) {
+        config = newConfig
     }
 
     private fun logTokensConsumption(eventContext: AfterLLMCallContext) {
