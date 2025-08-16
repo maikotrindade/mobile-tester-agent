@@ -50,6 +50,7 @@ fun Application.configureRouting() {
             try {
                 val configApi = call.receive<MobileTesterConfigAPI>()
                 MobileTestAgent.updateConfiguration(configApi.toMobileConfig())
+                println("Configuration updated: $configApi")
                 call.respond(HttpStatusCode.OK, "Configuration updated successfully")
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid configuration: ${e.message}")
