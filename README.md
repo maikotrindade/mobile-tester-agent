@@ -2,6 +2,9 @@
 
 The **Mobile Tester Agent** is an **AI-powered test automation tool** built with [Koog](https://github.com/JetBrains/koog). It allows developers to run automated tests on Android apps using **LLM-based agents**.
 
+![ai-agentic-mobile-tester (1)](https://github.com/user-attachments/assets/2042cf29-4207-4959-a6c1-e5d0c7d7e373)
+
+
 ---
 
 ## 📂 Repositories
