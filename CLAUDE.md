@@ -1,148 +1,100 @@
 # mobile-tester-agent
 
-Agentic AI backend that drives Android UI testing via ADB. A Ktor HTTP server receives test scenarios and delegates execution to a Koog-powered AI agent that reasons step-by-step and interacts with a connected Android device or emulator.
+AI-powered mobile UI test automation for **Android, iOS, and React Native**. A Kotlin/Ktor backend exposes an HTTP API that hands natural-language scenarios to a [Koog](https://docs.koog.ai)-powered LLM agent, which drives a real device or emulator. A React/Vite dashboard under [web/](web/) lets users author scenarios and trigger runs.
 
-## Architecture
+## Where to find things
+
+Full documentation lives in [docs/](docs/). Start there for anything non-trivial.
+
+| Doc | What it covers |
+|---|---|
+| [docs/architecture.md](docs/architecture.md) | Runtime topology, request lifecycle, module map |
+| [docs/getting-started.md](docs/getting-started.md) | Prerequisites, env, first run |
+| [docs/api.md](docs/api.md) | `POST /run-test`, `POST /config` payloads + errors |
+| [docs/ai-agent.md](docs/ai-agent.md) | `MobileTestAgent`, strategy graph, system prompt, executors |
+| [docs/tools.md](docs/tools.md) | Tool catalog, status-prefix convention, utility layer |
+| [docs/frontend.md](docs/frontend.md) | React/Vite dashboard internals |
+| [docs/dependencies.md](docs/dependencies.md) | Every third-party library, by reason |
+
+## Project layout
 
 ```
-HTTP Request (POST /run-test)
-  └── Routing.kt
-        └── MobileTestAgent (singleton object)
-              ├── AIAgentConfig  (prompt, model, max iterations, temperature)
-              ├── TestingStrategy (Koog strategy graph)
-              └── ToolRegistry → MobileTestTools
-                    ├── AdbUtils        (raw ADB execution)
-                    ├── UiAutomatorUtils (UI element queries & interaction)
-                    └── MediaUtils       (screenshot, screen recording)
+src/main/kotlin/
+├── server/                    # Ktor: Application, Routing, HTTP, Monitoring
+│   └── model/                 # AgentRequest, MobileTesterConfigAPI (wire DTOs)
+└── agent/
+    ├── MobileTestAgent.kt     # Singleton — builds & runs the Koog AIAgent
+    ├── strategy/              # TestingStrategy.kt — Koog graph
+    ├── executor/              # One file per LLM provider (ExecutorInfo impls)
+    ├── model/                 # MobileTesterConfig, TestScenarioReport
+    └── tool/
+        ├── mobile/test/       # MobileTestTools, ReportingTools, utils/
+        └── reporting/         # ReportingTools scaffolding (not yet wired)
+web/                           # React 19 + Vite dashboard
+docs/                          # Source of truth for design + API docs
 ```
 
-## Key source files
+## Backend stack
 
-| File | Role |
-|------|------|
-| `src/main/kotlin/agent/MobileTestAgent.kt` | Agent singleton — builds and runs the Koog `AIAgent` |
-| `src/main/kotlin/agent/strategy/TestingStrategy.kt` | Koog strategy graph (LLM → tools → LLM loop with history compression) |
-| `src/main/kotlin/agent/tool/mobile/test/MobileTestTools.kt` | All `@Tool` methods exposed to the LLM |
-| `src/main/kotlin/agent/tool/mobile/test/utils/AdbUtils.kt` | ADB command execution helpers |
-| `src/main/kotlin/agent/tool/mobile/test/utils/UiAutomatorUtils.kt` | UI hierarchy parsing and element interaction |
-| `src/main/kotlin/agent/tool/mobile/test/utils/MediaUtils.kt` | Screenshot and screen-recording capture |
-| `src/main/kotlin/agent/model/MobileTesterConfig.kt` | Runtime config (executor, temperature, iterations) |
-| `src/main/kotlin/agent/executor/` | LLM executor implementations (Gemini, OpenRouter, Ollama Llama, Ollama Gwen) |
-| `src/main/kotlin/server/Routing.kt` | `POST /run-test` and `POST /config` endpoints |
-| `src/main/kotlin/server/Application.kt` | Ktor entry point |
+- **JDK 21** (Amazon Corretto), Kotlin **2.3.0**, Gradle wrapper (8.11+)
+- **Ktor 3.1.3** (Netty) + `kotlinx.serialization`
+- **Koog Agents 0.8.0** — `AIAgent`, strategy DSL, `@Tool` reflection
+- **dotenv-kotlin** — loads `.env` from project root
 
-## API endpoints
+## Frontend stack
 
-### `POST /run-test`
-Runs a test scenario on the connected Android device.
-
-```json
-{
-  "goal": "Log in and navigate to the profile screen",
-  "steps": [
-    "Tap the login button",
-    "Enter username 'test@example.com'",
-    "Enter password '123456'",
-    "Tap submit",
-    "Verify profile screen is visible"
-  ]
-}
-```
-
-### `POST /config`
-Updates the agent configuration at runtime (no restart needed).
-
-```json
-{
-  "executorType": "GEMINI",
-  "llmTemperature": 0.0,
-  "maxAgentIterations": 50,
-  "logTokensConsumption": false
-}
-```
+- **React 19 + react-router-dom 7** on **Vite 7 + TypeScript 5.8**
+- **axios** for `POST /run-test`, native `fetch` for `/config`
+- **Firebase Firestore** for scenario persistence
+- **mermaid** for architecture diagram on About page
+- Vite dev server proxies `/api/*` → `http://localhost:8080`
 
 ## LLM executors
 
-The active executor is set via `POST /config`. Available implementations in `agent/executor/`:
+All implement `ExecutorInfo` in `agent/executor/`. Selected via `POST /config` (`executorInfoId` string).
 
-| Class | Model | Env var required |
-|-------|-------|------------------|
-| `GeminiExecutor` | `gemini-2.0-flash` | `GEMINI_API_KEY` |
-| `OpenRouterExecutor` | configurable | `OPENROUTER_API_KEY` |
-| `OllamaLlamaExecutor` | Llama (local Ollama) | — |
-| `OllamaGwenExecutor` | Gwen (local Ollama) | — |
+| `executorInfoId` | Class | Env var |
+|---|---|---|
+| `deepseek` *(default)* | `DeepSeekExecutor` | `DEEP_SEEK_KEY` |
+| `gemini` | `GeminiExecutor` (Gemini 2.5 Flash) | `GEMINI_API_KEY` |
+| `haiku` | `HaikuExecutor` (Claude Haiku 4.5) | `CLAUDE_API_KEY` |
+| `open_router` | `OpenRouterExecutor` (GPT-4) | `OPEN_ROUTER` |
+| `ollama_llama` | `OllamaLlamaExecutor` (local) | — |
+| `ollama_gwen` | `OllamaGwenExecutor` (local) | — |
 
-Default executor is `GeminiExecutor`.
+## Critical conventions
 
-## Environment variables
+These behaviors are load-bearing — see [docs/ai-agent.md](docs/ai-agent.md) and [docs/tools.md](docs/tools.md) for the full reasoning.
 
-Copy `.env.example` to `.env` (loaded automatically via `dotenv-kotlin`):
+- **Status-prefixed tool returns.** Every `@Tool` returns a `String` starting with one of `OK | TAPPED | VISIBLE | NOT_VISIBLE | NOT_FOUND | AMBIGUOUS | ERROR | TIMEOUT`. The system prompt tells the LLM to pattern-match the prefix. Preserve this when adding tools — return strings, never throw.
+- **Device serial pinning.** `AdbUtils.runAdb()` injects `-s <serial>` after `connectDevice()` picks a target. Don't bypass it with raw `ProcessBuilder("adb", …)` calls.
+- **`MAX_TOKENS_THRESHOLD = 8000`** in `TestingStrategy.kt`. Lower values trigger compression too aggressively and the agent forgets which step it's on.
+- **`startTestingScenario` once, first; `closeApp` once, last.** The system prompt forbids any "tap launcher to open the app" recovery — launch is handled programmatically.
+- **`hideKeyboard` uses `KEYCODE_BACK` (4)**, not `KEYCODE_ESCAPE`. Empirically required on the target device; documented inline.
 
-```
-GEMINI_API_KEY=your_key_here
-OPENROUTER_API_KEY=your_key_here   # optional
-```
-
-## Running locally
-
-Requires a connected Android device or running emulator visible to ADB.
+## Common commands
 
 ```bash
-# start the server (port 8080 by default)
-./gradlew run
+./gradlew run                       # Start backend on :8080
+./gradlew compileKotlin             # Type-check Kotlin
+adb devices                         # Confirm device/emulator visibility
 
-# verify ADB device is detected
-adb devices
+cd web && npm install               # Frontend deps
+cd web && npm run dev               # Vite dev server on :5173 (proxies /api → :8080)
+cd web && npm run build             # tsc -b && vite build
+cd web && npm run lint              # ESLint
 ```
 
-Use the IntelliJ run configuration **mobile-tester-agent** (Gradle `run` task).
+## Environment
 
-## Testing strategy (`TestingStrategy.kt`)
+`.env` at project root (loaded by `dotenv-kotlin`, gitignored). See [.env.example](.env.example) for the template. At minimum one LLM key plus `HOME_PATH` (where screenshots/recordings are pulled to). For the dashboard, also `VITE_FIREBASE_*` keys.
 
-The Koog strategy graph follows this loop:
+## Adding things
 
-1. `nodeCallLLM` — ask the LLM for the next tool call(s)
-2. `nodeExecuteToolMultiple` — execute tools in parallel
-3. If token usage > 1000 → `nodeCompressHistory` before sending results
-4. `nodeSendToolResultMultiple` — send results back to the LLM
-5. Repeat until LLM emits an assistant message (finish)
+- **New `@Tool`** — add a method to `MobileTestTools` with `@Tool` + `@LLMDescription`. Koog reflection picks it up; no registry edits needed. Return a status-prefixed string.
+- **New executor** — implement `ExecutorInfo` in `agent/executor/`, then add a `when`-branch in `MobileTesterConfigAPI.toMobileConfig()` and (optionally) an `<option>` in `web/src/pages/settings/Settings.tsx`.
 
-## MobileTestTools — available tools
+## Related repos
 
-| Tool | Description |
-|------|-------------|
-| `startTestingScenario(appName)` | Connect device and open app — **called once, first** |
-| `findUiElementsByText(text)` | Query UI hierarchy for matching elements |
-| `tap(text, position)` | Tap a UI element by text/content-desc/resource-id |
-| `scrollVertically(distance, durationMs)` | Vertical scroll (positive = up) |
-| `scrollHorizontally(distance, durationMs)` | Horizontal scroll (positive = right) |
-| `inputText(selector, text)` | Type text into a field |
-| `goBack()` | Press Android back button |
-| `hideKeyboard()` | Dismiss the on-screen keyboard |
-| `takeScreenshot(goalName)` | Capture and pull screenshot |
-| `startScreenRecording()` | Start video recording |
-| `stopScreenRecording()` | Stop and pull video |
-| `connectDevice()` | Connect/reconnect ADB device |
-| `deviceInformation()` | Dump device info (model, OS, battery…) |
-| `closeApp()` | Force-stop foreground app — **called once, last** |
-
-## Adding a new tool
-
-1. Add a method to `MobileTestTools` annotated with `@Tool` and `@LLMDescription`.
-2. The method is automatically registered via `tools(MobileTestTools())` in `MobileTestAgent`.
-3. No changes to `ToolRegistry` or strategy are required.
-
-## Adding a new LLM executor
-
-1. Create a class in `agent/executor/` implementing `ExecutorInfo`.
-2. Wire it into the `POST /config` deserialization in `MobileTesterConfigAPI`.
-
-## Dependencies
-
-- **Ktor 3.1.3** — HTTP server (Netty engine)
-- **Koog agents** — Koog.ai agentic framework
-- **dotenv-kotlin** — `.env` file loading
-- **kotlinx.serialization** — JSON (de)serialization
-- **Logback** — logging
-- **JDK 21** (Amazon Corretto 21 on this machine)
-- **Gradle 8.11.1**
+- Sample Android app under test: [mobile-tester-agent-sample-app](https://github.com/maikotrindade/mobile-tester-agent-sample-app)
+- Background reading: [Building an Agentic AI Mobile Tester with Koog and Kotlin](https://maikotrindade.com/ai/kotlin/android/development/agents/2025/08/19/building-agentic-ai-mobile-tester-koog-kotlin.html)

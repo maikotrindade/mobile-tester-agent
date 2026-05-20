@@ -1,44 +1,27 @@
 # Mobile Tester Agent
 
-An **AI-powered mobile test automation** system covering **Android, iOS, and React Native**. A Kotlin/Ktor backend exposes an HTTP API that hands natural-language test scenarios to a [Koog](https://docs.koog.ai)-powered LLM agent. The agent reasons step-by-step and drives a real device or emulator on the target platform. A React/Vite dashboard lets users author scenarios, configure the LLM, and trigger runs.
+AI-powered UI test automation for **Android, iOS, and React Native** — author scenarios in natural language, let a [Koog](https://docs.koog.ai)-powered LLM agent drive a real device or emulator.
 
 ![ai-agentic-mobile-tester (1)](https://github.com/user-attachments/assets/2042cf29-4207-4959-a6c1-e5d0c7d7e373)
 
-> Background reading: [Building an Agentic AI Mobile Tester with Koog and Kotlin](https://maikotrindade.com/ai/kotlin/android/development/agents/2025/08/19/building-agentic-ai-mobile-tester-koog-kotlin.html) — the blog post behind this project.
-
 ---
 
-## Documentation
+## Get Started
 
-Full documentation lives in [docs/](docs/):
-
-| Doc | What it covers |
-|---|---|
-| [docs/README.md](docs/README.md) | Index + 30-second overview |
-| [Architecture](docs/architecture.md) | System map, request lifecycle, mermaid diagrams |
-| [Getting Started](docs/getting-started.md) | Setup, env vars, first test run |
-| [HTTP API](docs/api.md) | `POST /run-test`, `POST /config`, payloads and errors |
-| [AI Agent](docs/ai-agent.md) | Koog `AIAgent`, strategy graph, system prompt, executors |
-| [Tools](docs/tools.md) | Full `MobileTestTools` catalog + the ADB/UiAutomator utilities |
-| [Frontend (web)](docs/frontend.md) | React 19 + Vite dashboard, theming, i18n, Firestore |
-| [Dependencies](docs/dependencies.md) | Every third-party library used in backend and frontend |
-
----
-
-## Quick start
+**Prerequisites:** JDK 21, Android Platform Tools (`adb`), Node 18+ for the dashboard, one LLM API key (DeepSeek, Gemini, Claude, OpenRouter, or local Ollama).
 
 ```bash
-# 1. Set up .env (LLM key + HOME_PATH for artifacts)
-cp .env.example .env
+# 1. Configure environment
+cp .env.example .env          # then fill in at least one LLM key + HOME_PATH
 
-# 2. Start the backend
+# 2. Start the backend (port 8080)
 ./gradlew run
 
-# 3. (Optional) start the dashboard in another terminal
+# 3. Start the dashboard (optional, port 5173)
 cd web && npm install && npm run dev
 ```
 
-Then trigger a test:
+Trigger a test scenario:
 
 ```bash
 curl -X POST http://localhost:8080/run-test \
@@ -46,30 +29,63 @@ curl -X POST http://localhost:8080/run-test \
   -d '{
     "goal": "Verify the login flow",
     "packageName": "io.githib.maikotrindade.appfortesting",
-    "steps": ["Tap Login", "Enter username test@example.com", "Enter password hunter2", "Tap Submit", "Verify Profile screen is visible"]
+    "steps": [
+      "Tap Login",
+      "Enter username test@example.com",
+      "Enter password hunter2",
+      "Tap Submit",
+      "Verify Profile screen is visible"
+    ]
   }'
 ```
 
-> `packageName` is the platform-native app identifier — Android package id, iOS bundle id, or the bundle/package of a React Native app.
+> `packageName` is the platform-native identifier — Android package id, iOS bundle id, or the bundle of a React Native app.
 
-See [docs/getting-started.md](docs/getting-started.md) for the full walkthrough.
+Full walkthrough: [docs/getting-started.md](docs/getting-started.md).
 
 ---
 
-## Platforms
+## Architecture
 
-The Mobile Tester Agent is designed to drive UI tests across the three dominant mobile stacks:
+A Kotlin/Ktor server receives a scenario, a Koog `AIAgent` reasons step-by-step, and a platform-aware tool layer drives the device under test.
 
-| Platform | Target |
+```mermaid
+flowchart LR
+    U[User] -->|writes scenario| FE[Web Dashboard<br/>React + Vite]
+    FE -->|POST /run-test| API[Ktor HTTP API]
+    API --> AGENT[MobileTestAgent<br/>Koog AIAgent]
+    AGENT <-->|reasoning| LLM[(LLM<br/>DeepSeek / Gemini /<br/>Claude / OpenRouter / Ollama)]
+    AGENT -->|@Tool calls| TOOLS[MobileTestTools<br/>platform-aware]
+    TOOLS --> AND[Android<br/>device / emulator]
+    TOOLS --> IOS[iOS<br/>device / simulator]
+    TOOLS --> RN[React Native<br/>app on Android or iOS]
+    AGENT -->|result| API
+    API -->|JSON| FE
+    FE -.->|scenarios| FS[(Firebase Firestore)]
+```
+
+Detailed design lives in [docs/](docs/):
+
+| Doc | What it covers |
 |---|---|
-| **Android** | Physical devices and emulators |
-| **iOS** | Physical devices and simulators |
-| **React Native** | The same scenarios run against the native shell on either OS |
-
-A single test scenario is authored in natural language and the agent picks the right tool calls for the platform under test.
+| [Architecture](docs/architecture.md) | Runtime topology, request lifecycle, module map |
+| [Getting Started](docs/getting-started.md) | Prerequisites, env vars, first test run |
+| [HTTP API](docs/api.md) | `POST /run-test`, `POST /config`, payloads and errors |
+| [AI Agent](docs/ai-agent.md) | Strategy graph, system prompt, LLM executors |
+| [Tools](docs/tools.md) | Full `MobileTestTools` catalog and ADB/UiAutomator utilities |
+| [Frontend (web)](docs/frontend.md) | React 19 + Vite dashboard, theming, i18n, Firestore |
+| [Dependencies](docs/dependencies.md) | Every third-party library used in backend and frontend |
 
 ---
 
-## Related repositories
+## References
 
-* Sample Android app under test: [mobile-tester-agent-sample-app](https://github.com/maikotrindade/mobile-tester-agent-sample-app)
+- [Koog Documentation](https://docs.koog.ai) — the agentic framework powering the LLM ↔ tool loop
+- [Building an Agentic AI Mobile Tester with Koog and Kotlin](https://maikotrindade.com/ai/kotlin/android/development/agents/2025/08/19/building-agentic-ai-mobile-tester-koog-kotlin.html) — the blog post behind this project
+- [mobile-tester-agent-sample-app](https://github.com/maikotrindade/mobile-tester-agent-sample-app) — sample Android app under test
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE). © 2026 Maiko Trindade.

@@ -1,81 +1,77 @@
-# 🖥️ Mobile Tester Agent Frontend
+# Mobile Tester Agent — Web Dashboard
 
-This repository contains the **Frontend Dashboard** for the [Mobile Tester Agent](https://github.com/maikotrindade/mobile-tester-agent). The dashboard provides a user-friendly interface to configure, run, and monitor AI-powered test scenarios for Android applications.
+The browser dashboard for the [Mobile Tester Agent](../README.md). Authors natural-language test scenarios, configures the LLM, and dispatches runs to the Ktor backend.
 
----
-
-## 🎯 Purpose
-
-The frontend is the **visual interface** of the Mobile Tester Agent system. It allows users to:
-
-* Define **test goals and steps**.
-* Configure **AI agent parameters** (LLM choice, execution settings, etc.).
-* Trigger tests via the backend API.
-* View **reports and test results** in a structured way.
-
----
-## 📷 Screenshot
-
-<img height="520" alt="Mobile Tester Agent Frontend" src="https://github.com/user-attachments/assets/cef8adef-491e-43fc-9f7a-fd1a08aa3cfa" />
+For the full design — pages, state, routing, theming, i18n, dev proxy — see [../docs/frontend.md](../docs/frontend.md).
 
 ---
 
-## 🏗️ Tech Stack
+## Stack
 
-The frontend is built with modern web technologies:
+- **React 19** + **react-router-dom 7**
+- **Vite 7** + **TypeScript 5.8**
+- **axios** (`POST /run-test`) + native `fetch` (`POST /config`)
+- **Firebase Firestore** — persists user-authored scenarios
+- **mermaid** — renders the architecture diagram on the About page
+- Custom lightweight i18n (English / French) and a `data-theme` light/dark switch
 
-* ⚛️ **ReactJS** → Core UI framework.
-* 🎨 **TailwindCSS** → Styling with utility-first CSS.
-* 📊 **Recharts** → Data visualization and charts.
-* 🧩 **shadcn/ui** → Pre-styled UI components.
-* 🌀 **Framer Motion** → Animations and transitions.
-* 🌐 **REST API Integration** → Connects to the [Mobile Tester Agent backend](https://github.com/maikotrindade/mobile-tester-agent).
+## Routes
 
----
+| Path | Purpose |
+|---|---|
+| `/` | Author scenarios, list saved ones, run tests |
+| `/settings` | LLM / agent configuration (model, temperature, iterations) |
+| `/about` | System overview + mermaid architecture diagram |
 
-## 🔗 Relation to Main Project
-
-This dashboard works in tandem with the **core agentic AI backend**:
-
-* **Frontend (this repo):** Interface for creating test scenarios and viewing results.
-* **Backend (Koog + Ktor API):** AI agent execution and communication with Android devices.
-* **Sample Android App:** Provides a testing target for the agent.
-
-For the full architecture, see the main project: [Mobile Tester Agent](https://github.com/maikotrindade/mobile-tester-agent).
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/maikotrindade/mobile-tester-agent-frontend.git
-cd mobile-tester-agent-frontend
-```
-
-### 2. Install Dependencies
+## Getting started
 
 ```bash
 npm install
+npm run dev          # http://localhost:5173, proxies /api → :8080
+npm run build        # tsc -b && vite build
+npm run lint         # ESLint over the workspace
+npm run preview      # Serve the built bundle locally
 ```
 
-### 3. Run Development Server
+The Vite dev proxy forwards `/api/*` to `http://localhost:8080`, so the backend must be running for end-to-end tests. See [../docs/getting-started.md](../docs/getting-started.md) for the full setup.
 
-```bash
-npm run dev
+## Environment
+
+Create `web/.env.local` (Vite reads `VITE_*` automatically):
+
+```dotenv
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
 ```
 
-The dashboard will be available at `http://localhost:3000`.
+Without Firestore credentials the app still loads, but the Home page won't sync saved scenarios.
+
+## Project structure
+
+```
+web/
+├── index.html                       # Vite entry
+├── vite.config.ts                   # /api → :8080 proxy
+├── eslint.config.js                 # ESLint flat config
+└── src/
+    ├── main.tsx / App.tsx           # Router shell
+    ├── firebase.ts                  # Firestore init from VITE_FIREBASE_*
+    ├── useTheme.ts                  # light/dark hook
+    ├── TopNav.tsx / Footer.tsx
+    ├── i18n/                        # translations.ts + LanguageContext
+    └── pages/
+        ├── home/                    # Scenario CRUD + run
+        ├── settings/                # LLM config (writes to /api/config + localStorage)
+        └── about/                   # Project description + mermaid diagram
+```
 
 ---
 
-## 📎 References
+## Related
 
-* [Mobile Tester Agent (Backend)](https://github.com/maikotrindade/mobile-tester-agent)
-* [Sample Android App](https://github.com/maikotrindade/mobile-tester-agent-sample-app)
-* [Koog Documentation](https://docs.koog.ai)
-
----
-
-✅ With this frontend, you can easily interact with the **AI-powered Mobile Tester Agent**, configure tests, and monitor execution results in real time.
+- Backend (this repo): [../README.md](../README.md)
+- [Koog Documentation](https://docs.koog.ai)
