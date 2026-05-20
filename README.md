@@ -55,7 +55,7 @@ flowchart LR
     FE -->|POST /run-test| API[Ktor HTTP API]
     API --> AGENT[MobileTestAgent<br/>Koog AIAgent]
     AGENT <-->|reasoning| LLM[(LLM<br/>DeepSeek / Gemini /<br/>Claude / OpenRouter / Ollama)]
-    AGENT -->|@Tool calls| TOOLS[MobileTestTools<br/>platform-aware]
+    AGENT -->|Tool calls| TOOLS[MobileTestTools<br/>platform-aware]
     TOOLS --> AND[Android<br/>device / emulator]
     TOOLS --> IOS[iOS<br/>device / simulator]
     TOOLS --> RN[React Native<br/>app on Android or iOS]
