@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Settings.module.css';
 import homeStyles from '../home/Home.module.css';
+import { useLanguage } from '../../i18n/useLanguage';
 
 const Settings: React.FC = () => {
+  const { t } = useLanguage();
   const [executorInfoId, setExecutorInfoId] = useState<string>('');
   const [llmTemperature, setLlmTemperature] = useState<number>(0.2);
   const [maxAgentIterations, setMaxAgentIterations] = useState<number>(50);
@@ -66,13 +68,13 @@ const Settings: React.FC = () => {
       });
 
       if (response.ok) {
-        setSuccessMessage('Settings saved successfully!');
+        setSuccessMessage(t('settings.successSaved'));
       } else {
-        setSuccessMessage('Failed to save settings.');
+        setSuccessMessage(t('settings.failedSaved'));
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setSuccessMessage('An error occurred while saving settings.');
+      setSuccessMessage(t('settings.errorSaving'));
     }
 
     setTimeout(() => setSuccessMessage(null), 3000);
@@ -80,24 +82,24 @@ const Settings: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Settings</h1>
-      
+      <h1>{t('settings.title')}</h1>
+
       <div className={homeStyles.mainLayout}>
         {/* Left Panel - Model Configuration */}
         <div className={homeStyles.leftPanel}>
           <div className={homeStyles.panelTitle}>
-            <span className="icon">🤖</span>AI Model Configuration
+            <span className="icon">🤖</span>{t('settings.modelConfig')}
           </div>
-          
+
           <div className={styles.formSection}>
             <div className={styles.formGroup}>
-              <label htmlFor="ai-model">Select Default AI Model:</label>
+              <label htmlFor="ai-model">{t('settings.selectModelLabel')}</label>
               <select
                 id="ai-model"
                 value={executorInfoId}
                 onChange={(e) => setExecutorInfoId(e.target.value)}
               >
-                <option value="">- Select a Model -</option>
+                <option value="">{t('settings.selectModelPlaceholder')}</option>
                 <option value="open_router">Open Router GPT-4</option>
                 <option value="ollama_gwen">Ollama Gwen 3.0 6B</option>
                 <option value="gemini">Gemini 2.0 Flash</option>
@@ -106,7 +108,7 @@ const Settings: React.FC = () => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="llm-temperature">LLM Temperature: {llmTemperature}</label>
+              <label htmlFor="llm-temperature">{t('settings.llmTemperatureLabel', { value: llmTemperature })}</label>
               <input
                 type="range"
                 id="llm-temperature"
@@ -117,7 +119,7 @@ const Settings: React.FC = () => {
                 onChange={(e) => setLlmTemperature(parseFloat(e.target.value))}
               />
               <div className={styles.temperatureInfo}>
-                <small>Controls randomness in AI responses (0 = deterministic, 10 = very creative)</small>
+                <small>{t('settings.llmTemperatureHelp')}</small>
               </div>
             </div>
           </div>
@@ -126,13 +128,13 @@ const Settings: React.FC = () => {
         {/* Right Panel - Agent Configuration */}
         <div className={homeStyles.rightPanel}>
           <div className={homeStyles.panelTitle}>
-            <span className="icon">⚙️</span>Agent Configuration
+            <span className="icon">⚙️</span>{t('settings.agentConfig')}
           </div>
-          
+
           <div className={styles.formSection}>
 
             <div className={styles.formGroup}>
-              <label htmlFor="api-base-url">API Base URL:</label>
+              <label htmlFor="api-base-url">{t('settings.apiBaseUrlLabel')}</label>
               <input
                 type="url"
                 id="api-base-url"
@@ -144,12 +146,12 @@ const Settings: React.FC = () => {
                 required
               />
               <div className={styles.tokenInfo}>
-                <small>Set the base URL for API calls</small>
+                <small>{t('settings.apiBaseUrlHelp')}</small>
               </div>
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="package-name">Package Name:</label>
+              <label htmlFor="package-name">{t('settings.packageNameLabel')}</label>
               <input
                 type="text"
                 id="package-name"
@@ -159,12 +161,12 @@ const Settings: React.FC = () => {
                 className={styles.inputField}
               />
               <div className={styles.tokenInfo}>
-                <small>Android package name of the app under test</small>
+                <small>{t('settings.packageNameHelp')}</small>
               </div>
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="max-agent-iterations">Max Agent Iterations:</label>
+              <label htmlFor="max-agent-iterations">{t('settings.maxIterationsLabel')}</label>
               <input
                 type="number"
                 id="max-agent-iterations"
@@ -174,7 +176,7 @@ const Settings: React.FC = () => {
                 max="200"
               />
               <div className={styles.iterationInfo}>
-                <small>Maximum number of steps the agent can take to complete a task</small>
+                <small>{t('settings.maxIterationsHelp')}</small>
               </div>
             </div>
 
@@ -185,10 +187,10 @@ const Settings: React.FC = () => {
                   checked={logTokensConsumption}
                   onChange={(e) => setLogTokensConsumption(e.target.checked)}
                 />
-                Log Tokens Consumption
+                {t('settings.logTokensLabel')}
               </label>
               <div className={styles.tokenInfo}>
-                <small>Enable detailed logging of API token usage for cost tracking</small>
+                <small>{t('settings.logTokensHelp')}</small>
               </div>
             </div>
 
@@ -198,7 +200,7 @@ const Settings: React.FC = () => {
                 className={`${homeStyles.button} ${homeStyles.btnRunTest}`}
                 disabled={!executorInfoId}
               >
-                Save Settings
+                {t('settings.saveSettings')}
               </button>
             </div>
 

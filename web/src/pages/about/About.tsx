@@ -3,9 +3,11 @@ import mermaid from 'mermaid';
 import styles from './About.module.css';
 import homeStyles from '../home/Home.module.css';
 import { useTheme } from '../../useTheme';
+import { useLanguage } from '../../i18n/useLanguage';
 
 const About: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     const isDark = theme === 'dark';
@@ -51,35 +53,29 @@ const About: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1>System Overview</h1>
+      <h1>{t('about.title')}</h1>
       <p className={styles.lead}>
-        The <strong>AI Agentic Mobile Tester Agent</strong> automates Android application testing with{' '}
-        <strong>AI-powered agents</strong>.
+        {t('about.lead1')}<strong>{t('about.leadProduct')}</strong>{t('about.lead2')}
+        <strong>{t('about.leadAi')}</strong>{t('about.lead3')}
       </p>
 
       <div className={homeStyles.mainLayout}>
         {/* Left Column: Project Cards */}
         <div className={homeStyles.leftPanel}>
           <div className={homeStyles.panelTitle}>
-            <span className="icon">📦</span> Core
+            <span className="icon">📦</span> {t('about.core')}
           </div>
           <div>
             <article className={styles.card}>
-              <h3>⚙️ Backend AI Agent</h3>
+              <h3>{t('about.backendTitle')}</h3>
               <p>
-                The core service powering automated mobile testing. Built with{' '}
-                <code className={styles.inline}>Koog</code> for agent orchestration
-                and <code className={styles.inline}>Ktor</code> as the HTTP server.
+                {t('about.backendP1Pre')}
+                <code className={styles.inline}>Koog</code>{t('about.backendP1Mid')}
+                <code className={styles.inline}>Ktor</code>{t('about.backendP1Post')}
               </p>
+              <p>{t('about.backendP2')}</p>
               <p>
-                It accepts a test goal and steps from the frontend, then uses a
-                configurable LLM (OpenRouter, Gemini, or Ollama) to interpret each
-                step and execute UI actions on a connected device via{' '}
-                <code className={styles.inline}>ADB</code>.
-              </p>
-              <p>
-                Every run produces a structured report with executed steps,
-                screenshots, and token usage.
+                {t('about.backendP3')}
               </p>
               <div className={styles.btns}>
                 <a
@@ -88,9 +84,19 @@ const About: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  View Repo
+                  {t('about.viewRepo')}
                 </a>
               </div>
+            </article>
+
+            <article className={styles.card}>
+              <h3>{t('about.platformsTitle')}</h3>
+              <p>{t('about.platformsIntro')}</p>
+              <ul>
+                <li><strong>{t('about.platformAndroid')}</strong> — {t('about.platformAndroidDesc')}</li>
+                <li><strong>{t('about.platformIos')}</strong> — {t('about.platformIosDesc')}</li>
+                <li><strong>{t('about.platformRn')}</strong> — {t('about.platformRnDesc')}</li>
+              </ul>
             </article>
           </div>
         </div>
@@ -98,17 +104,19 @@ const About: React.FC = () => {
         {/* Right Column: System Overview Diagram */}
         <div className={homeStyles.rightPanel}>
           <div className={homeStyles.panelTitle}>
-            <span className="icon">🗺️</span> Architecture
+            <span className="icon">🗺️</span> {t('about.architecture')}
           </div>
-          <section className={styles.diagram} aria-label="System overview diagram">
+          <section className={styles.diagram} aria-label={t('about.diagramLabel')}>
             <div className="mermaid">
               {`
 graph TD
     A[Frontend] --> B[Backend API]
     B --> C[Koog Agent]
-    C --> D[ADB]
-    D --> E[Android Device]
     C --> G[LLM]
+    C --> T[Platform Tools]
+    T --> AND[Android]
+    T --> IOS[iOS]
+    T --> RN[React Native]
     C --> H[Reports]
     H --> A
 `}

@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import axios from 'axios';
 import styles from './Home.module.css';
+import { useLanguage } from '../../i18n/useLanguage';
 
 interface TestScenario {
   id: string;
@@ -21,6 +22,7 @@ interface TestScenario {
 }
 
 function Home() {
+  const { t } = useLanguage();
   const [testGoal, setTestGoal] = useState('');
   const [steps, setSteps] = useState<{ id: number; description: string }[]>([]);
   const [editingStepId, setEditingStepId] = useState<number | null>(null);
@@ -121,10 +123,10 @@ function Home() {
           setCurrentScenarioId(docRef.id);
         }
         setError(null);
-        setSuccess('Auto-saved!');
+        setSuccess(t('home.autoSaved'));
         setTimeout(() => setSuccess(null), 1500);
       } catch (err) {
-        setError('Failed to auto-save scenario');
+        setError(t('home.errAutoSave'));
         setSuccess(null);
       }
     };
@@ -156,10 +158,10 @@ function Home() {
         handleNewScenario();
       }
       setError(null);
-      setSuccess('Test scenario removed!');
+      setSuccess(t('home.scenarioRemoved'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError('Failed to delete scenario from Firestore');
+      setError(t('home.errDelete'));
       setSuccess(null);
     }
   };
@@ -168,12 +170,12 @@ function Home() {
 
   const handleRunTest = async () => {
     if (!testGoal.trim()) {
-      setError('Please enter a test goal');
+      setError(t('home.errGoal'));
       return;
     }
 
     if (steps.length === 0) {
-      setError('Please add at least one test step');
+      setError(t('home.errSteps'));
       return;
     }
 
@@ -197,48 +199,45 @@ function Home() {
       });
 
       console.log('Test execution response:', response.data);
-  setSuccess('Test executed successfully!');
+  setSuccess(t('home.testSuccess'));
   setTimeout(() => setSuccess(null), 4000);
     } catch (err) {
       console.error('Test execution failed:', err);
-      
-      let errorMessage = 'An unexpected error occurred';
-      
+
+      let errorMessage = t('home.errUnexpected');
+
       if (axios.isAxiosError(err)) {
         if (err.code === 'ECONNABORTED') {
-          errorMessage = 'Request timed out. Please try again.';
+          errorMessage = t('home.errTimeout');
         } else if (err.code === 'ERR_NETWORK') {
-          errorMessage = 'Network error. Please check if the backend server is running on http://localhost:8080';
+          errorMessage = t('home.errNetwork');
         } else if (err.response) {
-          // Server responded with error status
           const responseData = err.response.data;
           const statusText = err.response.statusText;
           const status = err.response.status;
-          
+
           if (responseData) {
             if (typeof responseData === 'string') {
-              errorMessage = `Server error (${status}): ${responseData}`;
+              errorMessage = t('home.errServer', { status, message: responseData });
             } else if (responseData.message) {
-              errorMessage = `Server error (${status}): ${responseData.message}`;
+              errorMessage = t('home.errServer', { status, message: responseData.message });
             } else if (responseData.error) {
-              errorMessage = `Server error (${status}): ${responseData.error}`;
+              errorMessage = t('home.errServer', { status, message: responseData.error });
             } else {
-              errorMessage = `Server error (${status}): ${JSON.stringify(responseData)}`;
+              errorMessage = t('home.errServer', { status, message: JSON.stringify(responseData) });
             }
           } else {
-            errorMessage = statusText || `Server error: ${status}`;
+            errorMessage = statusText || t('home.errServer', { status, message: '' });
           }
         } else if (err.request) {
-          // Request was made but no response received
-          errorMessage = 'No response from server. Please check if the backend is running and CORS is configured.';
+          errorMessage = t('home.errNoResponse');
         } else {
-          errorMessage = err.message || 'Failed to execute test';
+          errorMessage = err.message || t('home.errFailedExecute');
         }
       } else {
-        // Non-Axios error
         errorMessage = err instanceof Error ? err.message : String(err);
       }
-      
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -247,23 +246,23 @@ function Home() {
 
   return (
     <div className={styles.container}>
-      <h1>AI Agentic Mobile Tester</h1>
+      <h1>{t('home.title')}</h1>
       <div className={styles.mainLayout}>
         {/* Left Panel - Scenarios List */}
         <div className={styles.leftPanel}>
           <div className={styles.panelTitle}>
-            <span className="icon">📋</span>Test Scenarios
+            <span className="icon">📋</span>{t('home.testScenarios')}
           </div>
-          
+
           <div className={styles.scenarioList}>
             {scenarios.length === 0 ? (
               <div className={styles.emptyScenarios}>
                 <span className="icon">📝</span>
-                <div>No scenarios yet</div>
+                <div>{t('home.noScenarios')}</div>
               </div>
             ) : (
               <>
-                <h3>Saved Scenarios ({scenarios.length})</h3>
+                <h3>{t('home.savedScenarios', { count: scenarios.length })}</h3>
                 {scenarios.map((scenario) => (
                   <div 
                     key={scenario.id} 
@@ -273,8 +272,8 @@ function Home() {
                     <div className={styles.scenarioInfo}>
                       <div className={styles.scenarioTitle}>{scenario.name}</div>
                       <div className={styles.scenarioDetails}>
-                        {scenario.steps.length} steps<br/>
-                        Updated: {scenario.updatedAt.toLocaleDateString()}
+                        {t('home.stepsCount', { count: scenario.steps.length })}<br/>
+                        {t('home.updated', { date: scenario.updatedAt.toLocaleDateString() })}
                       </div>
                     </div>
                     <div className={styles.scenarioActions}>
@@ -296,10 +295,10 @@ function Home() {
 
           <div className={styles.scenarioControls}>
             <div className={styles.scenarioControlsRow}>
-              <button 
-                className={`${styles.button} ${styles.btnSecondary}`} 
+              <button
+                className={`${styles.button} ${styles.btnSecondary}`}
                 onClick={handleNewScenario}
-              >New Scenario
+              >{t('home.newScenario')}
               </button>
             </div>
           </div>
@@ -309,19 +308,19 @@ function Home() {
         <div className={styles.rightPanel}>
           <div className={styles.panelTitle}>
             <span className="icon">⚙️</span>
-            {currentScenarioId ? 'Edit Scenario' : 'Create New Scenario'}
+            {currentScenarioId ? t('home.editScenario') : t('home.createNew')}
           </div>
 
           <div className={styles.formSection}>
             <div className={styles.formSectionTitle}>
-              <span className="icon">🎯</span>Test Objective
+              <span className="icon">🎯</span>{t('home.testObjective')}
             </div>
             <div className={styles.formGroup}>
-              <label htmlFor="test-goal">Test Goal:</label>
+              <label htmlFor="test-goal">{t('home.testGoalLabel')}</label>
               <textarea
                 id="test-goal"
                 rows={2}
-                placeholder="Describe the test's goal..."
+                placeholder={t('home.testGoalPlaceholder')}
                 value={testGoal}
                 onChange={(e) => setTestGoal(e.target.value)}
               ></textarea>
@@ -330,13 +329,13 @@ function Home() {
 
           <div className={styles.testStepsSection}>
             <div className={styles.formSectionTitle}>
-              <span className="icon">⚡</span>Test Steps ({steps.length})
+              <span className="icon">⚡</span>{t('home.testStepsCount', { count: steps.length })}
             </div>
 
             <div className={styles.addStepForm}>
               <input
                 type="text"
-                placeholder="Enter step description..."
+                placeholder={t('home.stepPlaceholder')}
                 value={newStepDescription}
                 onChange={(e) => setNewStepDescription(e.target.value)}
                 onKeyPress={(e) => {
@@ -346,13 +345,13 @@ function Home() {
                 }}
               />
               <button className={`${styles.button} ${styles.btnAddStep}`} onClick={handleAddStep}>
-                Add Step
+                {t('home.addStep')}
               </button>
             </div>
 
             <div className={styles.stepsContainer}>
               {steps.length === 0 ? (
-                <div className={styles.emptyState}>No test steps added yet</div>
+                <div className={styles.emptyState}>{t('home.noSteps')}</div>
               ) : (
                 steps.map((step, index) => (
                   <div key={step.id} className={styles.stepItem}>
@@ -371,12 +370,12 @@ function Home() {
                             className={`${styles.button} ${styles.btnSmall} ${styles.btnPrimary}`}
                             onClick={() => handleEditStepSave(step.id)}
                             style={{ marginRight: '4px' }}
-                          >Save</button>
+                          >{t('home.save')}</button>
                           <button
                             className={`${styles.button} ${styles.btnSmall} ${styles.btnSecondary}`}
                             onClick={handleEditStepCancel}
                             style={{ marginRight: '4px' }}
-                          >Cancel</button>
+                          >{t('home.cancel')}</button>
                         </>
                       ) : (
                         <>
@@ -384,7 +383,7 @@ function Home() {
                           <button
                             className={`${styles.button} ${styles.btnEdit}`}
                             onClick={() => handleEditStep(step.id, step.description)}
-                            title="Edit step"
+                            title={t('home.editStep')}
                           >
                             <span className="icon">✏️</span>
                           </button>
@@ -415,7 +414,7 @@ function Home() {
                 onClick={handleRunTest}
                 disabled={isLoading}
               >
-                {isLoading ? 'Running Test…' : 'Run Test'}
+                {isLoading ? t('home.runningTest') : t('home.runTest')}
               </button>
             </div>
           </div>
