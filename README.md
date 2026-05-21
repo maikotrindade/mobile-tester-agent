@@ -40,7 +40,6 @@ curl -X POST http://localhost:8080/run-test \
 ```
 
 > `packageName` is the platform-native identifier — Android package id, iOS bundle id, or the bundle of a React Native app.
-
 Full walkthrough: [docs/getting-started.md](docs/getting-started.md).
 
 ---
@@ -83,7 +82,7 @@ Detailed design lives in [docs/](docs/):
 - [Koog Documentation](https://docs.koog.ai) — the agentic framework powering the LLM ↔ tool loop
 - [Building an Agentic AI Mobile Tester with Koog and Kotlin](https://maikotrindade.com/ai/kotlin/android/development/agents/2025/08/19/building-agentic-ai-mobile-tester-koog-kotlin.html) — the blog post behind this project
 - [mobile-tester-agent-sample-app](https://github.com/maikotrindade/mobile-tester-agent-sample-app) — sample Android app under test
-
+- [How to Actually Test Autonomous AI Agents](https://maikotrindade.com/ai-agents/testing/2026/05/20/testing-autonomous-ai-agents.html)
 ---
 
 ## License
