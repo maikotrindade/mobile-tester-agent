@@ -100,10 +100,12 @@ const Settings: React.FC = () => {
                 onChange={(e) => setExecutorInfoId(e.target.value)}
               >
                 <option value="">{t('settings.selectModelPlaceholder')}</option>
-                <option value="open_router">Open Router GPT-4</option>
-                <option value="ollama_gwen">Ollama Gwen 3.0 6B</option>
-                <option value="gemini">Gemini 2.0 Flash</option>
-                <option value="ollama_llama">Ollama LLaMA 3.2 3B</option>
+                <option value="deepseek">DeepSeek V4 Flash</option>
+                <option value="gemini">Gemini 2.5 Flash</option>
+                <option value="haiku">Anthropic Claude Haiku 4.5</option>
+                <option value="open_router">OpenRouter GPT-4</option>
+                <option value="ollama_gwen">Ollama Qwen 3 0.6B (local)</option>
+                <option value="ollama_llama">Ollama LLaMA 3.2 3B (local)</option>
               </select>
             </div>
 

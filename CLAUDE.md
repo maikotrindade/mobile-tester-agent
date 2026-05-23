@@ -55,7 +55,7 @@ All implement `ExecutorInfo` in `agent/executor/`. Selected via `POST /config` (
 
 | `executorInfoId` | Class | Env var |
 |---|---|---|
-| `deepseek` *(default)* | `DeepSeekExecutor` | `DEEP_SEEK_KEY` |
+| `deepseek` *(default)* | `DeepSeekExecutor` (DeepSeek V4 Flash) | `DEEP_SEEK_KEY` |
 | `gemini` | `GeminiExecutor` (Gemini 2.5 Flash) | `GEMINI_API_KEY` |
 | `haiku` | `HaikuExecutor` (Claude Haiku 4.5) | `CLAUDE_API_KEY` |
 | `open_router` | `OpenRouterExecutor` (GPT-4) | `OPEN_ROUTER` |

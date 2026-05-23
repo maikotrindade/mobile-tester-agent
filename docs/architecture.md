@@ -116,7 +116,7 @@ src/main/kotlin/
     ├── executor/
     │   ├── ExecutorInfo.kt      # interface { executor, llmModel }
     │   ├── GeminiExecutor.kt    # Google Gemini 2.5 Flash
-    │   ├── DeepSeekExecutor.kt  # DeepSeek Chat
+    │   ├── DeepSeekExecutor.kt  # DeepSeek V4 Flash
     │   ├── HaikuExecutor.kt     # Anthropic Claude Haiku 4.5
     │   ├── OpenRouterExecutor.kt# OpenRouter GPT-4
     │   ├── OllamaLlamaExecutor.kt # Local Ollama, Llama 3.2 3B

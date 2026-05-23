@@ -121,13 +121,15 @@ await axios.post('/api/run-test', payload, {
 Model dropdown options:
 
 ```
-open_router  → Open Router GPT-4
-ollama_gwen  → Ollama Gwen 3.0 6B
-gemini       → Gemini 2.0 Flash
-ollama_llama → Ollama LLaMA 3.2 3B
+deepseek     → DeepSeek V4 Flash
+gemini       → Gemini 2.5 Flash
+haiku        → Anthropic Claude Haiku 4.5
+open_router  → OpenRouter GPT-4
+ollama_gwen  → Ollama Qwen 3 0.6B (local)
+ollama_llama → Ollama LLaMA 3.2 3B (local)
 ```
 
-> Note: the dropdown does not yet list `haiku` or `deepseek` despite the backend accepting them. Add `<option>`s to expose them.
+The dropdown exposes every `executorInfoId` the backend accepts (see [`MobileTesterConfigAPI.toMobileConfig()`](../src/main/kotlin/server/model/MobileTesterConfigAPI.kt)). Adding a new executor on the backend requires adding a matching `<option>` here so users can pick it.
 
 `handleSave` writes everything to `localStorage`, then `fetch`-POSTs to `/api/config` and reports success/failure via a translated message.
 

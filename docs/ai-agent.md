@@ -145,13 +145,13 @@ All concrete implementations live under [agent/executor/](../src/main/kotlin/age
 | ID (`executorInfoId`) | Class | Model | API key env var |
 |---|---|---|---|
 | `gemini` | `GeminiExecutor` | `GoogleModels.Gemini2_5Flash` | `GEMINI_API_KEY` |
-| `deepseek` | `DeepSeekExecutor` | `DeepSeekModels.DeepSeekChat` | `DEEP_SEEK_KEY` |
+| `deepseek` | `DeepSeekExecutor` | `DeepSeekModels.DeepSeekV4Flash` | `DEEP_SEEK_KEY` |
 | `haiku` | `HaikuExecutor` | `AnthropicModels.Haiku_4_5` | `CLAUDE_API_KEY` |
 | `open_router` | `OpenRouterExecutor` | `OpenRouterModels.GPT4` | `OPEN_ROUTER` |
 | `ollama_llama` | `OllamaLlamaExecutor` | `OllamaModels.Meta.LLAMA_3_2_3B` | — (local) |
 | `ollama_gwen` | `OllamaGwenExecutor` | `OllamaModels.Alibaba.QWEN_3_06B` | — (local) |
 
-The default executor when the JVM starts is **`DeepSeekExecutor`** — see the default value on [MobileTesterConfig](../src/main/kotlin/agent/model/MobileTesterConfig.kt). The frontend's default selection on the Settings page is `gemini`.
+The default executor when the JVM starts is **`DeepSeekExecutor`** — see the default value on [MobileTesterConfig](../src/main/kotlin/agent/model/MobileTesterConfig.kt). The frontend's Settings page leaves the model unselected by default (the Save button is disabled until the user picks one); selecting and saving posts `executorInfoId` to `/config`, which swaps the live executor for subsequent `/run-test` calls.
 
 ### Adding a new executor
 
