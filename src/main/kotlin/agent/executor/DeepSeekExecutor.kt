@@ -11,5 +11,5 @@ class DeepSeekExecutor : ExecutorInfo {
 
     @OptIn(ExperimentalTime::class)
     override val executor = MultiLLMPromptExecutor(DeepSeekLLMClient(dotenv["DEEP_SEEK_KEY"]))
-    override val llmModel = DeepSeekModels.DeepSeekV4Flash
+    override val llmModel = DeepSeekModels.DeepSeekChat
 }
