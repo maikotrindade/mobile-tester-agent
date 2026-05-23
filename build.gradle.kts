@@ -1,6 +1,7 @@
 val kotlin_version: String by project
 val logback_version: String by project
 val koog_agents_version: String by project
+val koog_beta_version: String by project
 val dotenv_kotlin_version: String by project
 val ktor_version: String by project
 
@@ -36,5 +37,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:${logback_version}")
 
     implementation("ai.koog:koog-agents:$koog_agents_version")
+    implementation("ai.koog:prompt-executor-llms-all:$koog_beta_version")
+    implementation("ai.koog:prompt-executor-google-client:$koog_beta_version")
+    implementation("ai.koog:prompt-executor-deepseek-client:$koog_beta_version")
+    implementation("ai.koog:prompt-executor-openrouter-client:$koog_beta_version")
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_kotlin_version")
 }
