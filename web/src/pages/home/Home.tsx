@@ -179,13 +179,19 @@ function Home() {
       return;
     }
 
+    const packageName = localStorage.getItem('packageName')?.trim();
+    if (!packageName) {
+      setError(t('home.errPackageName'));
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
       const payload = {
         goal: testGoal,
-        packageName: localStorage.getItem('packageName') || 'io.githib.maikotrindade.appfortesting',
+        packageName,
         steps: steps.map(step => step.description),
       };
 

@@ -17,7 +17,7 @@ Runs a single test scenario on the connected device. **Synchronous** — the res
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `goal` | string | yes | Human-readable objective of the test |
-| `packageName` | string | yes | Platform-native app identifier — Android package id, iOS bundle id, or the bundle/package of a React Native app (e.g. `io.githib.maikotrindade.appfortesting`) |
+| `packageName` | string | yes | Platform-native app identifier — Android package id, iOS bundle id, or the bundle/package of a React Native app (e.g. `com.example.myapp`). Supplied by the caller; the backend has no hardcoded default and rejects the request with `400` if it is blank. |
 | `steps` | string[] | yes | Ordered list of natural-language steps the agent will execute |
 
 Defined in [server/model/AgentRequest.kt](../src/main/kotlin/server/model/AgentRequest.kt).
@@ -29,7 +29,7 @@ curl -X POST http://localhost:8080/run-test \
   -H "Content-Type: application/json" \
   -d '{
     "goal": "Verify login works with valid credentials",
-    "packageName": "io.githib.maikotrindade.appfortesting",
+    "packageName": "com.example.myapp",
     "steps": [
       "Tap the Login button on the home screen",
       "Enter username test@example.com",

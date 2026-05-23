@@ -117,7 +117,7 @@ You have two ways to trigger a run.
 ### Via the dashboard
 
 1. Open `http://localhost:5173`.
-2. Settings → pick a model (e.g. `Gemini 2.0 Flash`), set `packageName` to the package id of the app under test, **Save**.
+2. Settings → pick a model (e.g. `Gemini 2.0 Flash`), set **App Identifier** to the package id / bundle id of the app under test (this is required — there is no default), **Save**.
 3. Home → write a goal (e.g. *"Verify the create-post flow"*), add steps (one line each), **Run Test**.
 4. Wait for the PASS/FAIL summary.
 
@@ -128,7 +128,7 @@ curl -X POST http://localhost:8080/run-test \
   -H "Content-Type: application/json" \
   -d '{
     "goal": "Open the app and verify the home screen loads",
-    "packageName": "io.githib.maikotrindade.appfortesting",
+    "packageName": "com.example.myapp",
     "steps": [
       "Verify the home screen heading is visible"
     ]

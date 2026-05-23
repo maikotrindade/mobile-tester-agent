@@ -10,7 +10,7 @@ const Settings: React.FC = () => {
   const [maxAgentIterations, setMaxAgentIterations] = useState<number>(50);
   const [logTokensConsumption, setLogTokensConsumption] = useState<boolean>(true);
   const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8080');
-  const [packageName, setPackageName] = useState<string>('io.githib.maikotrindade.appfortesting');
+  const [packageName, setPackageName] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -157,7 +157,7 @@ const Settings: React.FC = () => {
                 id="package-name"
                 value={packageName}
                 onChange={(e) => setPackageName(e.target.value)}
-                placeholder="io.githib.maikotrindade.appfortesting"
+                placeholder="com.example.myapp"
                 className={styles.inputField}
               />
               <div className={styles.tokenInfo}>

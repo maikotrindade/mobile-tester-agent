@@ -28,7 +28,7 @@ curl -X POST http://localhost:8080/run-test \
   -H "Content-Type: application/json" \
   -d '{
     "goal": "Verify the login flow",
-    "packageName": "io.githib.maikotrindade.appfortesting",
+    "packageName": "com.example.myapp",
     "steps": [
       "Tap Login",
       "Enter username test@example.com",
@@ -39,7 +39,7 @@ curl -X POST http://localhost:8080/run-test \
   }'
 ```
 
-> `packageName` is the platform-native identifier — Android package id, iOS bundle id, or the bundle of a React Native app.
+> `packageName` is the platform-native identifier of the app under test — Android package id, iOS bundle id, or the bundle of a React Native app. It is supplied by the caller (or set in the dashboard's **Settings → App Identifier** field); there is no hardcoded default.
 Full walkthrough: [docs/getting-started.md](docs/getting-started.md).
 
 ---
