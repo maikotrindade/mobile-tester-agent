@@ -84,9 +84,14 @@ An effect on `[testGoal, steps]` upserts to Firestore. New scenarios call `addDo
 `handleRunTest` posts to `/api/run-test`:
 
 ```ts
+const packageName = localStorage.getItem('packageName')?.trim();
+if (!packageName) {
+  setError(t('home.errPackageName'));
+  return;
+}
 const payload = {
   goal: testGoal,
-  packageName: localStorage.getItem('packageName') || 'io.githib.maikotrindade.appfortesting',
+  packageName,
   steps: steps.map(s => s.description),
 };
 await axios.post('/api/run-test', payload, {
@@ -96,7 +101,7 @@ await axios.post('/api/run-test', payload, {
 });
 ```
 
-The 3-minute timeout matches typical full-scenario runtimes. Error handling distinguishes `ECONNABORTED` (timeout), `ERR_NETWORK`, server-with-body, and request-without-response cases — all surfaced via translated strings (see §6).
+`packageName` is read from `localStorage` (populated by the Settings page) and is **required** — there is no hardcoded fallback. If the user hasn't configured it, the Home page surfaces `home.errPackageName` and refuses to call the backend. The 3-minute timeout matches typical full-scenario runtimes. Error handling distinguishes `ECONNABORTED` (timeout), `ERR_NETWORK`, server-with-body, and request-without-response cases — all surfaced via translated strings (see §6).
 
 ---
 
@@ -111,7 +116,7 @@ The 3-minute timeout matches typical full-scenario runtimes. Error handling dist
 | `maxAgentIterations` | `50` | ✅ |
 | `logTokensConsumption` | `true` | ✅ |
 | `apiBaseUrl` | `http://localhost:8080` | (frontend only) |
-| `packageName` | `io.githib.maikotrindade.appfortesting` | (frontend only, used by Home when running tests) |
+| `packageName` | — (must be entered by the user) | (frontend only, used by Home when running tests) |
 
 Model dropdown options:
 

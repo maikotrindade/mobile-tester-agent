@@ -202,8 +202,8 @@ Putting it together, a single `runAgent` call produces this kind of execution tr
 
 ```
 Starting strategy: TestingStrategy
-Tool called: tool startTestingScenario, args {appPackage=io.githib.maikotrindade.appfortesting}
-  → OK: launched io.githib.maikotrindade.appfortesting (foreground confirmed)
+Tool called: tool startTestingScenario, args {appPackage=com.example.myapp}
+  → OK: launched com.example.myapp (foreground confirmed)
 Tool called: tool findUiElementsByText, args {text=Login}
   → [UiMatchResult(value="Login", cx=540, cy=1280)]
 Tool called: tool tap, args {text=Login}
@@ -214,6 +214,6 @@ Tool called: tool verifyElementVisible, args {text=Username}
   → VISIBLE: 1 match(es) for 'Username'
 ... (continues for each step) ...
 Tool called: tool closeApp
-  → OK: App 'io.githib.maikotrindade.appfortesting' has been force-stopped.
+  → OK: App 'com.example.myapp' has been force-stopped.
 onAgentFinished: Step 1: PASS — ... Step 2: PASS — ... etc.
 ```
