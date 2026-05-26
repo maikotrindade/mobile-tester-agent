@@ -10,7 +10,7 @@ Full documentation lives in [docs/](docs/). Start there for anything non-trivial
 |---|---|
 | [docs/architecture.md](docs/architecture.md) | Runtime topology, request lifecycle, module map |
 | [docs/getting-started.md](docs/getting-started.md) | Prerequisites, env, first run |
-| [docs/api.md](docs/api.md) | `POST /run-test`, `POST /config` payloads + errors |
+| [docs/api.md](docs/api.md) | `POST /run-test`, `POST /stop-test`, `POST /config` payloads + errors |
 | [docs/ai-agent.md](docs/ai-agent.md) | `MobileTestAgent`, strategy graph, system prompt, executors |
 | [docs/tools.md](docs/tools.md) | Tool catalog, status-prefix convention, utility layer |
 | [docs/frontend.md](docs/frontend.md) | React/Vite dashboard internals |
@@ -25,7 +25,7 @@ src/main/kotlin/
 └── agent/
     ├── MobileTestAgent.kt     # Singleton — builds & runs the Koog AIAgent
     ├── strategy/              # TestingStrategy.kt — Koog graph
-    ├── executor/              # One file per LLM provider (ExecutorInfo impls)
+    ├── executor/              # Per-provider subfolders (anthropic, deepSeek, google, ollama, openRouter), each holding ExecutorInfo impls
     ├── model/                 # MobileTesterConfig, TestScenarioReport
     └── tool/
         ├── mobile/test/       # MobileTestTools, ReportingTools, utils/
@@ -44,23 +44,24 @@ docs/                          # Source of truth for design + API docs
 ## Frontend stack
 
 - **React 19 + react-router-dom 7** on **Vite 7 + TypeScript 5.8**
-- **axios** for `POST /run-test`, native `fetch` for `/config`
+- **axios** for `POST /run-test` and `POST /stop-test`, native `fetch` for `/config`
 - **Firebase Firestore** for scenario persistence
 - **mermaid** for architecture diagram on About page
 - Vite dev server proxies `/api/*` → `http://localhost:8080`
 
 ## LLM executors
 
-All implement `ExecutorInfo` in `agent/executor/`. Selected via `POST /config` (`executorInfoId` string).
+All implement `ExecutorInfo` in `agent/executor/<provider>/`. Selected via `POST /config` (`executorInfoId` string, **case-sensitive**).
 
 | `executorInfoId` | Class | Env var |
 |---|---|---|
-| `deepseek` *(default)* | `DeepSeekExecutor` | `DEEP_SEEK_KEY` |
-| `gemini` | `GeminiExecutor` (Gemini 2.5 Flash) | `GEMINI_API_KEY` |
-| `haiku` | `HaikuExecutor` (Claude Haiku 4.5) | `CLAUDE_API_KEY` |
-| `open_router` | `OpenRouterExecutor` (GPT-4) | `OPEN_ROUTER` |
-| `ollama_llama` | `OllamaLlamaExecutor` (local) | — |
-| `ollama_gwen` | `OllamaGwenExecutor` (local) | — |
+| `DeepSeekV4Flash` *(default)* | `DeepSeekV4FlashExecutor` | `DEEP_SEEK_KEY` |
+| `Gemini3Pro` | `Gemini3ProExecutor` (Gemini 3 Pro Preview) | `GEMINI_API_KEY` |
+| `Opus47` | `Opus47Executor` (Claude Opus 4.7) | `CLAUDE_API_KEY` |
+| `GPT52Pro` | `GPT52ProExecutor` (OpenRouter GPT-5.2 Pro) | `OPEN_ROUTER` |
+| `QWEN36B` | `QWEN36BExecutor` (local Ollama, Qwen 3 0.6B) | — |
+| `Llama4` | `Llama4Executor` (local Ollama) | — |
+| `Grok8BExecutor` | `Grok8BExecutor` (local Ollama) | — |
 
 ## Critical conventions
 
@@ -75,7 +76,8 @@ These behaviors are load-bearing — see [docs/ai-agent.md](docs/ai-agent.md) an
 ## Common commands
 
 ```bash
-./gradlew run                       # Start backend on :8080
+./start.sh                          # Start backend (:8080) + web (:5173) and open browser
+./gradlew run                       # Backend only
 ./gradlew compileKotlin             # Type-check Kotlin
 adb devices                         # Confirm device/emulator visibility
 

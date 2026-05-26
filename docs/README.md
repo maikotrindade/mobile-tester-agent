@@ -20,7 +20,7 @@ The **Mobile Tester Agent** is an AI-powered mobile test automation system cover
 |---|---|
 | [Architecture](architecture.md) | High-level system map, request lifecycle, runtime topology, mermaid diagrams |
 | [Getting Started](getting-started.md) | Prerequisites, environment setup, running backend + frontend, first test run |
-| [HTTP API](api.md) | `POST /run-test`, `POST /config`, payload shapes, status codes, examples |
+| [HTTP API](api.md) | `POST /run-test`, `POST /stop-test`, `POST /config`, payload shapes, status codes, examples |
 | [AI Agent](ai-agent.md) | `MobileTestAgent`, the Koog strategy graph, system prompt design, LLM executors |
 | [Tools](tools.md) | The full `MobileTestTools` & `ReportingTools` catalog and the ADB / UiAutomator / Media utilities behind them |
 | [Frontend (web)](frontend.md) | React 19 + Vite dashboard, pages, theming, i18n, Firestore persistence, dev proxy |
@@ -35,7 +35,7 @@ flowchart LR
     U[User] -->|writes scenario| FE[Web Dashboard<br/>React + Vite]
     FE -->|POST /run-test| API[Ktor HTTP API]
     API --> AGENT[MobileTestAgent<br/>Koog AIAgent]
-    AGENT <-->|reasoning| LLM[(LLM<br/>Gemini / DeepSeek /<br/>Claude / OpenRouter / Ollama)]
+    AGENT <-->|reasoning| LLM[(LLM<br/>Opus 4.7 / DeepSeek V4 Flash /<br/>Gemini 3 Pro / GPT-5.2 Pro / Ollama)]
     AGENT -->|Tool calls| TOOLS[MobileTestTools<br/>platform-aware]
     TOOLS --> AND[Android<br/>device / emulator]
     TOOLS --> IOS[iOS<br/>device / simulator]

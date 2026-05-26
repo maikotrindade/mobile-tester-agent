@@ -12,14 +12,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MobileTesterConfigAPI(
-    var executorInfoId: String = "gemini",
+    var executorInfoId: String = "Gemini3Pro",
     var llmTemperature: Double = 0.0,
     var maxAgentIterations: Int = 50,
     var logTokensConsumption: Boolean = false
 )
 
 fun MobileTesterConfigAPI.toMobileConfig() = MobileTesterConfig(
-    executorInfo = when (executorInfoId.lowercase()) {
+    executorInfo = when (executorInfoId) {
         "Opus47" -> Opus47Executor()
         "DeepSeekV4Flash" -> DeepSeekV4FlashExecutor()
         "Gemini3Pro" -> Gemini3ProExecutor()

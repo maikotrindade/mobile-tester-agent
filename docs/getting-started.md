@@ -53,6 +53,14 @@ HOME_PATH=/home/<you>/mobile-tester-artifacts
 
 ## 3. Run the backend
 
+The quickest path is the convenience script — it starts the Ktor backend (`:8080`) and the Vite dashboard (`:5173`) in parallel, installs web deps if missing, and opens the dashboard in your browser:
+
+```bash
+./start.sh
+```
+
+Press `Ctrl+C` once to stop both. To run them independently:
+
 ```bash
 ./gradlew run
 ```
@@ -71,7 +79,7 @@ In IntelliJ, use the `mobile-tester-agent` run configuration which runs the same
 ```bash
 curl -X POST http://localhost:8080/config \
   -H "Content-Type: application/json" \
-  -d '{"executorInfoId":"gemini","llmTemperature":0.0,"maxAgentIterations":50,"logTokensConsumption":false}'
+  -d '{"executorInfoId":"Gemini3Pro","llmTemperature":0.0,"maxAgentIterations":50,"logTokensConsumption":false}'
 # → Configuration updated successfully
 ```
 
@@ -117,9 +125,9 @@ You have two ways to trigger a run.
 ### Via the dashboard
 
 1. Open `http://localhost:5173`.
-2. Settings → pick a model (e.g. `Gemini 2.0 Flash`), set **App Identifier** to the package id / bundle id of the app under test (this is required — there is no default), **Save**.
+2. Settings → pick a model (e.g. `Gemini 3 Pro`), set **App Identifier** to the package id / bundle id of the app under test (this is required — there is no default), **Save**.
 3. Home → write a goal (e.g. *"Verify the create-post flow"*), add steps (one line each), **Run Test**.
-4. Wait for the PASS/FAIL summary.
+4. Wait for the PASS/FAIL summary. If the run goes off the rails, the same button toggles to **Stop Test** and cancels the agent without killing the backend (see [api.md](api.md#post-stop-test)).
 
 ### Via `curl`
 

@@ -14,11 +14,11 @@ flowchart TB
         FE[React/Vite Dashboard<br/>web/]
     end
     subgraph JVM[JVM process — Ktor server :8080]
-        ROUTING[server.Routing<br/>POST /run-test, /config]
+        ROUTING[server.Routing<br/>POST /run-test, /stop-test, /config]
         AGENT[agent.MobileTestAgent<br/>Koog AIAgent singleton]
         STRAT[agent.strategy.TestingStrategy<br/>Koog graph]
         TOOLS[agent.tool.mobile.test.MobileTestTools<br/>+ ReportingTools<br/>platform-aware]
-        EXEC[agent.executor.*<br/>Gemini / DeepSeek / Claude /<br/>OpenRouter / Ollama]
+        EXEC[agent.executor.*<br/>Opus 4.7 / DeepSeek V4 Flash /<br/>Gemini 3 Pro / GPT-5.2 Pro / Ollama]
     end
     subgraph Targets[Device targets]
         AND[Android<br/>device / emulator]
@@ -105,7 +105,7 @@ src/main/kotlin/
 │   ├── Application.kt           # Ktor entry point (EngineMain)
 │   ├── HTTP.kt                  # ContentNegotiation (kotlinx.serialization JSON)
 │   ├── Monitoring.kt            # CallLogging
-│   ├── Routing.kt               # POST /run-test, POST /config
+│   ├── Routing.kt               # POST /run-test, POST /stop-test, POST /config
 │   └── model/
 │       ├── AgentRequest.kt          # {goal, packageName, steps[]}
 │       └── MobileTesterConfigAPI.kt # external config DTO + toMobileConfig() mapper
@@ -114,13 +114,14 @@ src/main/kotlin/
     ├── strategy/
     │   └── TestingStrategy.kt   # Koog strategy graph (LLM ↔ tools ↔ compress)
     ├── executor/
-    │   ├── ExecutorInfo.kt      # interface { executor, llmModel }
-    │   ├── GeminiExecutor.kt    # Google Gemini 2.5 Flash
-    │   ├── DeepSeekExecutor.kt  # DeepSeek Chat
-    │   ├── HaikuExecutor.kt     # Anthropic Claude Haiku 4.5
-    │   ├── OpenRouterExecutor.kt# OpenRouter GPT-4
-    │   ├── OllamaLlamaExecutor.kt # Local Ollama, Llama 3.2 3B
-    │   └── OllamaGwenExecutor.kt  # Local Ollama, Qwen 3 0.6B
+    │   ├── ExecutorInfo.kt               # interface { executor, llmModel }
+    │   ├── anthropic/Opus47Executor.kt           # Claude Opus 4.7
+    │   ├── deepSeek/DeepSeekV4FlashExecutor.kt   # DeepSeek V4 Flash (default)
+    │   ├── google/Gemini3ProExecutor.kt          # Google Gemini 3 Pro Preview
+    │   ├── openRouter/GPT52ProExecutor.kt        # OpenRouter GPT-5.2 Pro
+    │   ├── ollama/QWEN36BExecutor.kt             # Local Ollama, Qwen 3 0.6B
+    │   ├── ollama/Llama4Executor.kt              # Local Ollama (Groq Llama 3 tool-use 8B)
+    │   └── ollama/Grok8BExecutor.kt              # Local Ollama (Groq Llama 3 tool-use 8B)
     ├── model/
     │   ├── MobileTesterConfig.kt   # internal runtime config
     │   └── TestScenarioReport.kt   # report shape (goal, steps, dates)

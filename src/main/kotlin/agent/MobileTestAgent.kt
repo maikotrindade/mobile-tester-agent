@@ -14,13 +14,27 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.features.eventHandler.feature.handleEvents
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.params.LLMParams
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlin.time.ExperimentalTime
 
 object MobileTestAgent {
     private var config: MobileTesterConfig = MobileTesterConfig()
+    private var currentJob: Job? = null
 
-    suspend fun runAgent(goal: String, packageName: String, steps: List<String>): String {
+    val isRunning: Boolean get() = currentJob?.isActive == true
+
+    fun stop(): Boolean {
+        val job = currentJob
+        if (job == null || !job.isActive) return false
+        job.cancel(CancellationException("Stopped by user"))
+        return true
+    }
+
+    suspend fun runAgent(goal: String, packageName: String, steps: List<String>): String = supervisorScope {
         val appPackage = packageName
         val resultDeferred = CompletableDeferred<String>()
 
@@ -137,8 +151,24 @@ object MobileTestAgent {
             }
         }
 
-        agent.run(testScenario)
-        return resultDeferred.await()
+        val job = launch {
+            try {
+                agent.run(testScenario)
+            } catch (_: CancellationException) {
+                // Cancellation is surfaced via invokeOnCompletion below.
+            }
+        }
+        currentJob = job
+        job.invokeOnCompletion { cause ->
+            if (cause is CancellationException && !resultDeferred.isCompleted) {
+                resultDeferred.complete("Test stopped by user")
+            }
+        }
+        try {
+            resultDeferred.await()
+        } finally {
+            currentJob = null
+        }
     }
 
     fun updateConfiguration(newConfig: MobileTesterConfig) {

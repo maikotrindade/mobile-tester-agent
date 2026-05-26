@@ -103,6 +103,10 @@ await axios.post('/api/run-test', payload, {
 
 `packageName` is read from `localStorage` (populated by the Settings page) and is **required** — there is no hardcoded fallback. If the user hasn't configured it, the Home page surfaces `home.errPackageName` and refuses to call the backend. The 3-minute timeout matches typical full-scenario runtimes. Error handling distinguishes `ECONNABORTED` (timeout), `ERR_NETWORK`, server-with-body, and request-without-response cases — all surfaced via translated strings (see §6).
 
+### Stopping a test
+
+While `isLoading` is true the same button label flips to **Stop Test**, and clicking it calls `handleStopTest` → `POST /api/stop-test`. The backend cancels the running `runAgent` coroutine; the original `/run-test` request then returns `Test stopped by user`, which flips `isLoading` back to false and surfaces the `home.testStopped` toast. The Ktor process stays up, so no settings are lost. See [api.md](api.md#post-stop-test).
+
 ---
 
 ## 4. Settings page
@@ -118,16 +122,19 @@ await axios.post('/api/run-test', payload, {
 | `apiBaseUrl` | `http://localhost:8080` | (frontend only) |
 | `packageName` | — (must be entered by the user) | (frontend only, used by Home when running tests) |
 
-Model dropdown options:
+Model dropdown options (values are sent verbatim to the backend, which matches them case-sensitively):
 
 ```
-open_router  → Open Router GPT-4
-ollama_gwen  → Ollama Gwen 3.0 6B
-gemini       → Gemini 2.0 Flash
-ollama_llama → Ollama LLaMA 3.2 3B
+Opus47           → Claude Opus 4.7
+DeepSeekV4Flash  → DeepSeek V4 Flash
+Gemini3Pro       → Gemini 3 Pro
+GPT52Pro         → GPT-5.2 Pro
+QWEN36B          → QWEN 3 6B
+Llama4           → Llama 4
+Grok8BExecutor   → Grok 8B
 ```
 
-> Note: the dropdown does not yet list `haiku` or `deepseek` despite the backend accepting them. Add `<option>`s to expose them.
+To add or remove a model, edit the `<option>`s in [Settings.tsx](../web/src/pages/settings/Settings.tsx) and the matching `when`-branch in [MobileTesterConfigAPI.kt](../src/main/kotlin/server/model/MobileTesterConfigAPI.kt).
 
 `handleSave` writes everything to `localStorage`, then `fetch`-POSTs to `/api/config` and reports success/failure via a translated message.
 

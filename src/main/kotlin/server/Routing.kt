@@ -40,6 +40,15 @@ fun Application.configureRouting() {
             }
         }
 
+        post("/stop-test") {
+            val stopped = MobileTestAgent.stop()
+            if (stopped) {
+                call.respondText("Test stopped", status = HttpStatusCode.OK)
+            } else {
+                call.respondText("No test is running", status = HttpStatusCode.Conflict)
+            }
+        }
+
         post("/config") {
             try {
                 val configApi = call.receive<MobileTesterConfigAPI>()
