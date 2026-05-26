@@ -43,4 +43,12 @@ dependencies {
     implementation("ai.koog:prompt-executor-openrouter-client:$koog_beta_version")
 
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_kotlin_version")
+
+    testImplementation(kotlin("test"))
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
