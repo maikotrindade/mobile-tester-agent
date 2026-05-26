@@ -140,22 +140,23 @@ interface ExecutorInfo {
 }
 ```
 
-All concrete implementations live under [agent/executor/](../src/main/kotlin/agent/executor/). Selected at runtime by `POST /config` (see [api.md](api.md#post-config)).
+All concrete implementations live under [agent/executor/](../src/main/kotlin/agent/executor/), grouped by provider in subdirectories (`anthropic/`, `deepSeek/`, `google/`, `openRouter/`, `ollama/`). Selected at runtime by `POST /config` (see [api.md](api.md#post-config)). The `executorInfoId` is matched **case-sensitively**.
 
 | ID (`executorInfoId`) | Class | Model | API key env var |
 |---|---|---|---|
-| `gemini` | `GeminiExecutor` | `GoogleModels.Gemini2_5Flash` | `GEMINI_API_KEY` |
-| `deepseek` | `DeepSeekExecutor` | `DeepSeekModels.DeepSeekChat` | `DEEP_SEEK_KEY` |
-| `haiku` | `HaikuExecutor` | `AnthropicModels.Haiku_4_5` | `CLAUDE_API_KEY` |
-| `open_router` | `OpenRouterExecutor` | `OpenRouterModels.GPT4` | `OPEN_ROUTER` |
-| `ollama_llama` | `OllamaLlamaExecutor` | `OllamaModels.Meta.LLAMA_3_2_3B` | — (local) |
-| `ollama_gwen` | `OllamaGwenExecutor` | `OllamaModels.Alibaba.QWEN_3_06B` | — (local) |
+| `Opus47` | `Opus47Executor` | `AnthropicModels.Opus_4_7` | `CLAUDE_API_KEY` |
+| `DeepSeekV4Flash` | `DeepSeekV4FlashExecutor` | `DeepSeekModels.DeepSeekV4Flash` | `DEEP_SEEK_KEY` |
+| `Gemini3Pro` | `Gemini3ProExecutor` | `GoogleModels.Gemini3_Pro_Preview` | `GEMINI_API_KEY` |
+| `GPT52Pro` | `GPT52ProExecutor` | `OpenRouterModels.GPT5_2Pro` | `OPEN_ROUTER` |
+| `QWEN36B` | `QWEN36BExecutor` | `OllamaModels.Alibaba.QWEN_3_06B` | — (local) |
+| `Llama4` | `Llama4Executor` | `OllamaModels.Groq.LLAMA_3_GROK_TOOL_USE_8B` | — (local) |
+| `Grok8BExecutor` | `Grok8BExecutor` | `OllamaModels.Groq.LLAMA_3_GROK_TOOL_USE_8B` | — (local) |
 
-The default executor when the JVM starts is **`DeepSeekExecutor`** — see the default value on [MobileTesterConfig](../src/main/kotlin/agent/model/MobileTesterConfig.kt). The frontend's default selection on the Settings page is `gemini`.
+The default executor when the JVM starts is **`DeepSeekV4FlashExecutor`** — see the default value on [MobileTesterConfig](../src/main/kotlin/agent/model/MobileTesterConfig.kt). The frontend's default selection on the Settings page is `Gemini3Pro`.
 
 ### Adding a new executor
 
-1. Create `agent/executor/MyExecutor.kt` implementing `ExecutorInfo`:
+1. Create `agent/executor/<provider>/MyExecutor.kt` implementing `ExecutorInfo`:
    ```kotlin
    class MyExecutor : ExecutorInfo {
        val dotenv = dotenv()
@@ -176,7 +177,7 @@ API keys are read via [dotenv-kotlin](https://github.com/cdimascio/dotenv-kotlin
 
 ```kotlin
 data class MobileTesterConfig(
-    var executorInfo: ExecutorInfo = DeepSeekExecutor(),
+    var executorInfo: ExecutorInfo = DeepSeekV4FlashExecutor(),
     var llmTemperature: Double = 0.0,
     var maxAgentIterations: Int = 80,
     var logTokensConsumption: Boolean = true

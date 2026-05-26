@@ -14,11 +14,12 @@ AI-powered UI test automation for **Android, iOS, and React Native** — author 
 # 1. Configure environment
 cp .env.example .env          # then fill in at least one LLM key + HOME_PATH
 
-# 2. Start the backend (port 8080)
-./gradlew run
+# 2. One-shot: backend (:8080) + dashboard (:5173) + open browser
+./start.sh
 
-# 3. Start the dashboard (optional, port 5173)
-cd web && npm install && npm run dev
+# — or run them separately —
+./gradlew run                                  # backend only
+cd web && npm install && npm run dev           # dashboard only
 ```
 
 Trigger a test scenario:
@@ -69,7 +70,7 @@ Detailed design lives in [docs/](docs/):
 |---|---|
 | [Architecture](docs/architecture.md) | Runtime topology, request lifecycle, module map |
 | [Getting Started](docs/getting-started.md) | Prerequisites, env vars, first test run |
-| [HTTP API](docs/api.md) | `POST /run-test`, `POST /config`, payloads and errors |
+| [HTTP API](docs/api.md) | `POST /run-test`, `POST /stop-test`, `POST /config`, payloads and errors |
 | [AI Agent](docs/ai-agent.md) | Strategy graph, system prompt, LLM executors |
 | [Tools](docs/tools.md) | Full `MobileTestTools` catalog and ADB/UiAutomator utilities |
 | [Frontend (web)](docs/frontend.md) | React 19 + Vite dashboard, theming, i18n, Firestore |

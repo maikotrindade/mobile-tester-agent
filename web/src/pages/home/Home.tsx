@@ -168,6 +168,17 @@ function Home() {
 
   // Remove openSaveDialog, saving is now direct
 
+  const handleStopTest = async () => {
+    try {
+      await axios.post('/api/stop-test');
+      setSuccess(t('home.testStopped'));
+      setTimeout(() => setSuccess(null), 4000);
+    } catch (err) {
+      console.error('Failed to stop test:', err);
+      setError(t('home.errUnexpected'));
+    }
+  };
+
   const handleRunTest = async () => {
     if (!testGoal.trim()) {
       setError(t('home.errGoal'));
@@ -338,23 +349,6 @@ function Home() {
               <span className="icon">⚡</span>{t('home.testStepsCount', { count: steps.length })}
             </div>
 
-            <div className={styles.addStepForm}>
-              <input
-                type="text"
-                placeholder={t('home.stepPlaceholder')}
-                value={newStepDescription}
-                onChange={(e) => setNewStepDescription(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddStep();
-                  }
-                }}
-              />
-              <button className={`${styles.button} ${styles.btnAddStep}`} onClick={handleAddStep}>
-                {t('home.addStep')}
-              </button>
-            </div>
-
             <div className={styles.stepsContainer}>
               {steps.length === 0 ? (
                 <div className={styles.emptyState}>{t('home.noSteps')}</div>
@@ -404,6 +398,23 @@ function Home() {
               )}
             </div>
 
+            <div className={styles.addStepForm}>
+              <input
+                type="text"
+                placeholder={t('home.stepPlaceholder')}
+                value={newStepDescription}
+                onChange={(e) => setNewStepDescription(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddStep();
+                  }
+                }}
+              />
+              <button className={`${styles.button} ${styles.btnAddStep}`} onClick={handleAddStep}>
+                {t('home.addStep')}
+              </button>
+            </div>
+
             <div className={styles.buttonGroup}>
               {error && (
                 <div className={styles.errorMessage}>
@@ -417,10 +428,9 @@ function Home() {
               )}
               <button
                 className={`${styles.button} ${styles.btnRunTest}`}
-                onClick={handleRunTest}
-                disabled={isLoading}
+                onClick={isLoading ? handleStopTest : handleRunTest}
               >
-                {isLoading ? t('home.runningTest') : t('home.runTest')}
+                {isLoading ? t('home.stopTest') : t('home.runTest')}
               </button>
             </div>
           </div>

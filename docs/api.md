@@ -1,6 +1,6 @@
 # HTTP API
 
-The backend exposes a tiny Ktor HTTP surface — two endpoints. JSON in, JSON/text out. The same endpoints drive **Android, iOS, and React Native** test runs; the platform is implied by the `packageName` you submit.
+The backend exposes a tiny Ktor HTTP surface — three endpoints. JSON in, JSON/text out. The same endpoints drive **Android, iOS, and React Native** test runs; the platform is implied by the `packageName` you submit.
 
 Defined in [server/Routing.kt](../src/main/kotlin/server/Routing.kt) and bound to port `8080` by [src/main/resources/application.yaml](../src/main/resources/application.yaml).
 
@@ -65,6 +65,29 @@ The format is enforced by the system prompt — see [ai-agent.md](ai-agent.md#sy
 
 ---
 
+## `POST /stop-test`
+
+Cancels the in-flight `runAgent` coroutine. Returns immediately — does not wait for the agent to wind down. The original `POST /run-test` call then returns `200 OK` with the body `Test stopped by user`.
+
+The Ktor process keeps running, so configuration and subsequent test runs are unaffected.
+
+### Example
+
+```bash
+curl -X POST http://localhost:8080/stop-test
+```
+
+### Responses
+
+| Status | When | Body |
+|---|---|---|
+| `200 OK` | A test was running and has been cancelled | `Test stopped` |
+| `409 Conflict` | No test is currently running | `No test is running` |
+
+The dashboard's **Run Test** button toggles to **Stop Test** while a run is in progress and calls this endpoint when clicked.
+
+---
+
 ## `POST /config`
 
 Updates the agent's runtime configuration. Survives until the JVM restarts.
@@ -73,7 +96,7 @@ Updates the agent's runtime configuration. Survives until the JVM restarts.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `executorInfoId` | string | `"gemini"` | One of: `gemini`, `deepseek`, `haiku`, `open_router`, `ollama_gwen`, `ollama_llama` |
+| `executorInfoId` | string | `"Gemini3Pro"` | Case-sensitive. One of: `Opus47`, `DeepSeekV4Flash`, `Gemini3Pro`, `GPT52Pro`, `QWEN36B`, `Llama4`, `Grok8BExecutor` |
 | `llmTemperature` | double | `0.0` | Forwarded to `LLMParams.temperature`. `0` = deterministic |
 | `maxAgentIterations` | int | `50` | Hard cap on agent reasoning steps before it gives up |
 | `logTokensConsumption` | boolean | `false` | Currently a config flag only — wire-up TBD |
@@ -81,12 +104,13 @@ Updates the agent's runtime configuration. Survives until the JVM restarts.
 Defined in [server/model/MobileTesterConfigAPI.kt](../src/main/kotlin/server/model/MobileTesterConfigAPI.kt). The `toMobileConfig()` extension function maps `executorInfoId` strings to concrete `ExecutorInfo` instances:
 
 ```kotlin
-"haiku"         -> HaikuExecutor()
-"deepseek"      -> DeepSeekExecutor()
-"gemini"        -> GeminiExecutor()
-"ollama_gwen"   -> OllamaGwenExecutor()
-"ollama_llama"  -> OllamaLlamaExecutor()
-"open_router"   -> OpenRouterExecutor()
+"Opus47"          -> Opus47Executor()
+"DeepSeekV4Flash" -> DeepSeekV4FlashExecutor()
+"Gemini3Pro"      -> Gemini3ProExecutor()
+"QWEN36B"         -> QWEN36BExecutor()
+"Llama4"          -> Llama4Executor()
+"GPT52Pro"        -> GPT52ProExecutor()
+"Grok8BExecutor"  -> Grok8BExecutor()
 ```
 
 An unknown id triggers `400 Bad Request` with `Invalid configuration: Unknown executorInfoId: <id>`.
@@ -97,7 +121,7 @@ An unknown id triggers `400 Bad Request` with `Invalid configuration: Unknown ex
 curl -X POST http://localhost:8080/config \
   -H "Content-Type: application/json" \
   -d '{
-    "executorInfoId": "haiku",
+    "executorInfoId": "Opus47",
     "llmTemperature": 0.0,
     "maxAgentIterations": 80,
     "logTokensConsumption": true
