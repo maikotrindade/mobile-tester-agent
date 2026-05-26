@@ -38,7 +38,7 @@ docs/                          # Source of truth for design + API docs
 
 - **JDK 21** (Amazon Corretto), Kotlin **2.3.0**, Gradle wrapper (8.11+)
 - **Ktor 3.1.3** (Netty) + `kotlinx.serialization`
-- **Koog Agents 0.8.0** — `AIAgent`, strategy DSL, `@Tool` reflection
+- **Koog Agents 1.0.0** — `AIAgent`, strategy DSL, `@Tool` reflection
 - **dotenv-kotlin** — loads `.env` from project root
 
 ## Frontend stack
