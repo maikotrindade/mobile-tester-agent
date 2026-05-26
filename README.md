@@ -1,7 +1,5 @@
 # Mobile Tester Agent
 
-[![Build](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/build.yml/badge.svg)](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/build.yml)
-[![Tests](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/test.yml/badge.svg)](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/test.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![JDK](https://img.shields.io/badge/JDK-21-007396?logo=openjdk&logoColor=white)](https://adoptium.net)
 [![Ktor](https://img.shields.io/badge/Ktor-3.1.3-087CFA?logo=ktor&logoColor=white)](https://ktor.io)
