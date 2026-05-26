@@ -1,9 +1,10 @@
-package agent.executor
+package agent.executor.ollama
 
+import agent.executor.ExecutorInfo
 import ai.koog.prompt.executor.llms.all.simpleOllamaAIExecutor
 import ai.koog.prompt.executor.ollama.client.OllamaModels
 
-class OllamaLlamaExecutor : ExecutorInfo {
+class Llama4Executor : ExecutorInfo {
     override val executor = simpleOllamaAIExecutor()
-    override val llmModel = OllamaModels.Meta.LLAMA_3_2_3B
+    override val llmModel = OllamaModels.Groq.LLAMA_3_GROK_TOOL_USE_8B
 }
