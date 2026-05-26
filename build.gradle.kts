@@ -41,5 +41,6 @@ dependencies {
     implementation("ai.koog:prompt-executor-google-client:$koog_beta_version")
     implementation("ai.koog:prompt-executor-deepseek-client:$koog_beta_version")
     implementation("ai.koog:prompt-executor-openrouter-client:$koog_beta_version")
+
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_kotlin_version")
 }
