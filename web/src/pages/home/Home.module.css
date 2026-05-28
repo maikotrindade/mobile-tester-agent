@@ -199,6 +199,15 @@
   color: var(--color-primary-contrast);
   padding: 10px 18px;
   font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.runArrow {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: -1px;
 }
 
 .btnPrimary {
@@ -254,6 +263,7 @@
   padding: 5px 9px;
   font-size: 0.78rem;
   min-width: 40px;
+  flex: 0 0 auto;
 }
 
 .buttonGroup {
@@ -509,4 +519,20 @@
   .stepItem {
     padding: 8px 10px;
   }
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinnerRotate 0.8s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  to { transform: rotate(360deg); }
 }
