@@ -123,8 +123,6 @@ function Home() {
           setCurrentScenarioId(docRef.id);
         }
         setError(null);
-        setSuccess(t('home.autoSaved'));
-        setTimeout(() => setSuccess(null), 1500);
       } catch (err) {
         setError(t('home.errAutoSave'));
         setSuccess(null);
