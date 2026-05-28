@@ -37,12 +37,11 @@ Defined in [agent/tool/mobile/test/MobileTestTools.kt](../src/main/kotlin/agent/
 ### Lifecycle
 
 #### `startTestingScenario(appPackage: String): String`
-First action in every run. Connects ADB, wakes screen, dismisses keyguard, force-stops any stale instance, launches the package via `monkey`, and **verifies** it reached the foreground (retrying once). On success the target app is already on screen — the model is forbidden from "manually" tapping a launcher icon.
+First action in every run. Connects ADB, wakes screen, dismisses keyguard, force-stops any stale instance, launches the package via `monkey`, and **verifies** it reached the foreground. On success the target app is already on screen — the model is forbidden from "manually" tapping a launcher icon.
 
-> Returns `OK: launched <package> (foreground confirmed)` or `ERROR: ...`.
+Calling it a second time in the same run is a hard no-op: the tool tracks a `scenarioStarted` flag and returns an `ERROR` directing the LLM to proceed with Step 1 instead of restarting the app mid-test.
 
-#### `closeApp(): String`
-Final action. Reads `dumpsys activity top` to find the current foreground package and `am force-stop`s it.
+> Returns `OK: launched <package> (foreground confirmed)`, `OK: launched <package> (process running; foreground check inconclusive)`, or `ERROR: ...`.
 
 #### `launchAppByPackage(packageName: String): String`
 Mid-run app switch (e.g. open Settings to toggle airplane mode, return to the app under test).
@@ -147,9 +146,8 @@ The `@Tool` methods are thin wrappers — the real work lives in three utility o
 * **`runAdb(vararg args)`** — `ProcessBuilder("adb", "-s", serial, …args).redirectErrorStream(true).start()`, returns trimmed stdout. Swallows exceptions into an `Error running adb …` string.
 * **`getDevices()`** — parses `adb devices` output into a list, dropping the header.
 * **`connectDevice()`** — restarts the adb server if any devices are offline, then picks a target: emulator preferred, otherwise the first online device.
-* **`closeCurrentApp()`** — regex-extracts `ACTIVITY <pkg>/...` from `dumpsys activity top` and `am force-stop`s it.
-* **`foregroundPackage()`** — same regex without the stop.
-* **`launchAndVerify(packageName)`** — `monkey -p <pkg> -c android.intent.category.LAUNCHER 1`, sleeps 1.5s, re-reads `foregroundPackage()`, retries once after 2.5s if it doesn't match.
+* **`foregroundPackage()`** — checks `mCurrentFocus` / `mFocusedApp` from `dumpsys window` first, then falls back to the last `ACTIVITY` entry from `dumpsys activity top`. Multiple sources avoid false negatives during launcher transitions.
+* **`launchAndVerify(packageName)`** — `monkey -p <pkg> -c android.intent.category.LAUNCHER 1`, then polls `foregroundPackage()` for up to ~6s. If the process is alive (`pidof`) but foreground detection still races, treats it as success rather than failing the run.
 * **`deviceInformation()`** — multi-prop dump for diagnostics.
 
 ### `UiAutomatorUtils` — hierarchy + interaction

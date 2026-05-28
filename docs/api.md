@@ -10,7 +10,7 @@ Content negotiation uses `kotlinx.serialization` (pretty-printed, lenient, ignor
 
 ## `POST /run-test`
 
-Runs a single test scenario on the connected device. **Synchronous** — the response returns only after the agent's `closeApp` + final summary, so set a generous client timeout (the frontend uses 3 minutes).
+Runs a single test scenario on the connected device. **Synchronous** — the response returns only after the agent's final summary, so set a generous client timeout (the frontend uses 3 minutes).
 
 ### Request body
 
