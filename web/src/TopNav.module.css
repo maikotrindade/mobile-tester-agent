@@ -114,6 +114,20 @@
   line-height: 1;
 }
 
+.statusDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: #555;
+  flex-shrink: 0;
+}
+
+.statusDotPass { background-color: #28a745; }
+.statusDotFail { background-color: #dc3545; }
+.statusDotNone { background-color: #555; }
+
 @media (max-width: 768px) {
   .navContent {
     height: 52px;
