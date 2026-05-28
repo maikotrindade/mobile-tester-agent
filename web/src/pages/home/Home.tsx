@@ -36,6 +36,7 @@ function Home() {
   // New state for scenario management
   const [scenarios, setScenarios] = useState<TestScenario[]>([]);
   const [currentScenarioId, setCurrentScenarioId] = useState<string | null>(null);
+  const [editorVisible, setEditorVisible] = useState(false);
   // Removed scenarioName and showSaveDialog state
 
   const handleAddStep = () => {
@@ -139,6 +140,7 @@ function Home() {
     const maxStepId = scenario.steps.length > 0 ? Math.max(...scenario.steps.map(s => s.id)) : 0;
     setStepCounter(maxStepId + 1);
     setError(null);
+    setEditorVisible(true);
   };
 
   const handleNewScenario = () => {
@@ -147,6 +149,7 @@ function Home() {
     setCurrentScenarioId(null);
     setStepCounter(1);
     setError(null);
+    setEditorVisible(true);
   };
 
   const handleDeleteScenario = async (scenarioId: string) => {
@@ -321,6 +324,20 @@ function Home() {
 
         {/* Right Panel - Scenario Editor */}
         <div className={styles.rightPanel}>
+          {!editorVisible && !currentScenarioId && !testGoal.trim() && steps.length === 0 ? (
+            <div className={styles.welcomeState}>
+              <div className={styles.welcomeIcon} aria-hidden="true">📱</div>
+              <h2>{t('home.welcomeTitle')}</h2>
+              <p>{t('home.welcomeBody')}</p>
+              <button
+                className={`${styles.button} ${styles.btnRunTest}`}
+                onClick={handleNewScenario}
+              >
+                {t('home.welcomeCta')}
+              </button>
+            </div>
+          ) : (
+          <>
           <div className={styles.formSection}>
             <div className={styles.formSectionTitle}>
               <span className="icon">🎯</span>{t('home.testObjective')}
@@ -437,6 +454,8 @@ function Home() {
               </button>
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
 

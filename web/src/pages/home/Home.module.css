@@ -420,9 +420,9 @@
 }
 
 .successMessage {
-  background-color: var(--color-success-soft);
-  border: 1px solid var(--color-success);
-  color: var(--color-success);
+  background-color: var(--color-primary-soft);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
   padding: 8px 12px;
   border-radius: var(--radius-md);
   margin-bottom: 12px;
@@ -535,4 +535,33 @@
 
 @keyframes spinnerRotate {
   to { transform: rotate(360deg); }
+}
+
+.welcomeState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  min-height: 400px;
+  padding: 40px 24px;
+  gap: 12px;
+  color: var(--color-text-muted);
+}
+
+.welcomeIcon {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+.welcomeState h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.25rem;
+}
+
+.welcomeState p {
+  margin: 0 0 12px 0;
+  max-width: 360px;
 }

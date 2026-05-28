@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 import styles from './TopNav.module.css';
 import { useTheme } from './useTheme';
 import { useLanguage } from './i18n/useLanguage';
 
+type ReportStatus = 'pass' | 'fail' | 'none';
+
 const TopNav: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t } = useLanguage();
+  const [reportStatus, setReportStatus] = useState<ReportStatus>('none');
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchStatus = async () => {
+      try {
+        const response = await axios.get<{ status?: string }>('/api/report');
+        if (cancelled) return;
+        setReportStatus(response.data?.status === 'completed' ? 'pass' : 'fail');
+      } catch (err) {
+        if (cancelled) return;
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          setReportStatus('none');
+        }
+      }
+    };
+    fetchStatus();
+    const id = window.setInterval(fetchStatus, 5000);
+    return () => { cancelled = true; window.clearInterval(id); };
+  }, []);
+
+  const statusDotClass =
+    reportStatus === 'pass' ? styles.statusDotPass
+    : reportStatus === 'fail' ? styles.statusDotFail
+    : styles.statusDotNone;
+  const statusTitle =
+    reportStatus === 'pass' ? 'Last report: passed'
+    : reportStatus === 'fail' ? 'Last report: failed'
+    : 'No report yet';
   const isDark = theme === 'dark';
   const themeLabel = isDark ? t('topnav.toLight') : t('topnav.toDark');
   const langLabel = language === 'en' ? t('topnav.toFrench') : t('topnav.toEnglish');
@@ -17,6 +49,10 @@ const TopNav: React.FC = () => {
         <div className={styles.links}>
           <NavLink to="/" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
             {t('nav.home')}
+          </NavLink>
+          <NavLink to="/reports" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+            <span className={`${styles.statusDot} ${statusDotClass}`} title={statusTitle} aria-label={statusTitle} />
+            {t('nav.reports')}
           </NavLink>
           <NavLink to="/settings" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
             {t('nav.settings')}

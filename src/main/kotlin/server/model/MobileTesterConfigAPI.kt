@@ -15,7 +15,10 @@ data class MobileTesterConfigAPI(
     var executorInfoId: String = "Gemini3Pro",
     var llmTemperature: Double = 0.0,
     var maxAgentIterations: Int = 50,
-    var logTokensConsumption: Boolean = false
+    var logTokensConsumption: Boolean = false,
+    var logsEnabled: Boolean = true,
+    var screenshotsEnabled: Boolean = true,
+    var recordingEnabled: Boolean = false
 )
 
 fun MobileTesterConfigAPI.toMobileConfig() = MobileTesterConfig(
@@ -31,5 +34,8 @@ fun MobileTesterConfigAPI.toMobileConfig() = MobileTesterConfig(
     },
     llmTemperature = llmTemperature,
     maxAgentIterations = maxAgentIterations,
-    logTokensConsumption = logTokensConsumption
+    logTokensConsumption = logTokensConsumption,
+    logsEnabled = logsEnabled,
+    screenshotsEnabled = screenshotsEnabled,
+    recordingEnabled = recordingEnabled
 )

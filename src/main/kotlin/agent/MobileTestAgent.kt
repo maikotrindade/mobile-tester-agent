@@ -3,9 +3,9 @@
 package agent
 
 import agent.model.MobileTesterConfig
+import agent.reporting.ReportRecorder
 import agent.strategy.TestingStrategy
 import agent.tool.mobile.test.MobileTestTools
-import agent.tool.mobile.test.ReportingTools
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.GraphAIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
@@ -23,6 +23,7 @@ import kotlin.time.ExperimentalTime
 
 object MobileTestAgent {
     private var config: MobileTesterConfig = MobileTesterConfig()
+    val currentConfig: MobileTesterConfig get() = config
     private var currentJob: Job? = null
 
     val isRunning: Boolean get() = currentJob?.isActive == true
@@ -37,6 +38,8 @@ object MobileTestAgent {
     suspend fun runAgent(goal: String, packageName: String, steps: List<String>): String = supervisorScope {
         val appPackage = packageName
         val resultDeferred = CompletableDeferred<String>()
+
+        ReportRecorder.startRun(goal, appPackage, config)
 
         val agentConfig = AIAgentConfig(
             prompt = prompt("mobileTester", LLMParams(temperature = config.llmTemperature)) {
@@ -112,7 +115,6 @@ object MobileTestAgent {
 
         val toolRegistry = ToolRegistry {
             tools(MobileTestTools())
-            tools(ReportingTools())
         }
 
         val agent = AIAgent(
@@ -132,11 +134,31 @@ object MobileTestAgent {
                     )
                 }
 
+                onToolCallCompleted { eventContext ->
+                    val resultStr = eventContext.toolResult?.toString()
+                    ReportRecorder.logToolCall(
+                        toolName = eventContext.toolName,
+                        args = eventContext.toolArgs.toString(),
+                        result = resultStr
+                    )
+                    ReportRecorder.captureScreenshot(eventContext.toolName)
+                }
+
+                onToolCallFailed { eventContext ->
+                    ReportRecorder.logToolCall(
+                        toolName = eventContext.toolName,
+                        args = eventContext.toolArgs.toString(),
+                        result = "ERROR ${eventContext.message}"
+                    )
+                }
+
                 onAgentExecutionFailed { eventContext ->
                     println("An error occurred: ${eventContext.error.message}\n${eventContext.error.stackTraceToString()}")
+                    ReportRecorder.endRun("failed")
                 }
 
                 onAgentCompleted { eventContext ->
+                    ReportRecorder.endRun("completed")
                     resultDeferred.complete(
                         if (eventContext.result != null) {
                             "onAgentFinished: ${eventContext.result.toString()}"
@@ -163,12 +185,25 @@ object MobileTestAgent {
                 agent.run(testScenario)
             } catch (_: CancellationException) {
                 // Cancellation is surfaced via invokeOnCompletion below.
+            } catch (t: Throwable) {
+                if (!resultDeferred.isCompleted) {
+                    ReportRecorder.endRun("failed")
+                    resultDeferred.complete("Agent failed: ${t.message}")
+                }
             }
         }
         currentJob = job
         job.invokeOnCompletion { cause ->
-            if (cause is CancellationException && !resultDeferred.isCompleted) {
+            if (resultDeferred.isCompleted) return@invokeOnCompletion
+            if (cause is CancellationException) {
+                ReportRecorder.endRun("stopped")
                 resultDeferred.complete("Test stopped by user")
+            } else if (cause != null) {
+                ReportRecorder.endRun("failed")
+                resultDeferred.complete("Agent failed: ${cause.message}")
+            } else {
+                ReportRecorder.endRun("failed")
+                resultDeferred.complete("Agent finished without result")
             }
         }
         try {

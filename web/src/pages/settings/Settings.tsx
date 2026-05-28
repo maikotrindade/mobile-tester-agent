@@ -8,7 +8,9 @@ const Settings: React.FC = () => {
   const [executorInfoId, setExecutorInfoId] = useState<string>('');
   const [llmTemperature, setLlmTemperature] = useState<number>(0.2);
   const [maxAgentIterations, setMaxAgentIterations] = useState<number>(50);
-  const [logTokensConsumption, setLogTokensConsumption] = useState<boolean>(true);
+  const [logsEnabled, setLogsEnabled] = useState<boolean>(true);
+  const [screenshotsEnabled, setScreenshotsEnabled] = useState<boolean>(true);
+  const [recordingEnabled, setRecordingEnabled] = useState<boolean>(false);
   const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8080');
   const [packageName, setPackageName] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -26,10 +28,12 @@ const Settings: React.FC = () => {
     if (savedMaxAgentIterations) {
       setMaxAgentIterations(parseInt(savedMaxAgentIterations, 10));
     }
-    const savedLogTokensConsumption = localStorage.getItem('logTokensConsumption');
-    if (savedLogTokensConsumption) {
-      setLogTokensConsumption(savedLogTokensConsumption === 'true');
-    }
+    const savedLogsEnabled = localStorage.getItem('logsEnabled');
+    if (savedLogsEnabled !== null) setLogsEnabled(savedLogsEnabled === 'true');
+    const savedScreenshotsEnabled = localStorage.getItem('screenshotsEnabled');
+    if (savedScreenshotsEnabled !== null) setScreenshotsEnabled(savedScreenshotsEnabled === 'true');
+    const savedRecordingEnabled = localStorage.getItem('recordingEnabled');
+    if (savedRecordingEnabled !== null) setRecordingEnabled(savedRecordingEnabled === 'true');
     const savedApiBaseUrl = localStorage.getItem('apiBaseUrl');
     if (savedApiBaseUrl) {
       setApiBaseUrl(savedApiBaseUrl);
@@ -45,7 +49,9 @@ const Settings: React.FC = () => {
       executorInfoId,
       llmTemperature,
       maxAgentIterations,
-      logTokensConsumption,
+      logsEnabled,
+      screenshotsEnabled,
+      recordingEnabled,
       apiBaseUrl,
       packageName,
     };
@@ -54,7 +60,9 @@ const Settings: React.FC = () => {
     localStorage.setItem('executorInfoId', executorInfoId);
     localStorage.setItem('llmTemperature', llmTemperature.toString());
     localStorage.setItem('maxAgentIterations', maxAgentIterations.toString());
-    localStorage.setItem('logTokensConsumption', logTokensConsumption.toString());
+    localStorage.setItem('logsEnabled', logsEnabled.toString());
+    localStorage.setItem('screenshotsEnabled', screenshotsEnabled.toString());
+    localStorage.setItem('recordingEnabled', recordingEnabled.toString());
     localStorage.setItem('apiBaseUrl', apiBaseUrl);
     localStorage.setItem('packageName', packageName);
 
@@ -125,6 +133,33 @@ const Settings: React.FC = () => {
                 <small>{t('settings.llmTemperatureHelp')}</small>
               </div>
             </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={logsEnabled}
+                  onChange={(e) => setLogsEnabled(e.target.checked)}
+                />
+                Enable logs
+              </label>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={screenshotsEnabled}
+                  onChange={(e) => setScreenshotsEnabled(e.target.checked)}
+                />
+                Capture screenshots after each tool call
+              </label>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={recordingEnabled}
+                  onChange={(e) => setRecordingEnabled(e.target.checked)}
+                />
+                Record screen video
+              </label>
+            </div>
           </div>
         </div>
 
@@ -180,20 +215,6 @@ const Settings: React.FC = () => {
               />
               <div className={styles.iterationInfo}>
                 <small>{t('settings.maxIterationsHelp')}</small>
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={logTokensConsumption}
-                  onChange={(e) => setLogTokensConsumption(e.target.checked)}
-                />
-                {t('settings.logTokensLabel')}
-              </label>
-              <div className={styles.tokenInfo}>
-                <small>{t('settings.logTokensHelp')}</small>
               </div>
             </div>
 
