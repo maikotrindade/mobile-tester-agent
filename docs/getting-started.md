@@ -53,7 +53,7 @@ HOME_PATH=/home/<you>/mobile-tester-artifacts
 
 ## 3. Run the backend
 
-The quickest path is the convenience script — it starts the Ktor backend (`:8080`) and the Vite dashboard (`:5173`) in parallel, installs web deps if missing, and opens the dashboard in your browser:
+The quickest path is the convenience script — it starts the Ktor backend (`:8080`), **waits for it to accept connections** (so the dashboard's first request doesn't race the boot), then starts the Vite dashboard (`:5173`), installs web deps if missing, and opens the dashboard in your browser:
 
 ```bash
 ./start.sh
@@ -148,8 +148,7 @@ The backend will:
 1. Connect to the device (`AdbUtils.connectDevice`).
 2. Wake the screen, dismiss the keyguard, force-stop any stale instance, `monkey`-launch the package, verify foreground.
 3. Run the LLM ↔ tool loop until each step is verified.
-4. `closeApp`.
-5. Return a PASS/FAIL summary as the HTTP response body.
+4. Return a PASS/FAIL summary as the HTTP response body.
 
 ---
 

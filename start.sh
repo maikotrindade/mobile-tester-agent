@@ -21,6 +21,9 @@ echo "Starting Ktor backend on http://localhost:8080 ..."
 ./gradlew run --console=plain &
 BACKEND_PID=$!
 
+echo "Waiting for backend to accept connections on :8080 ..."
+until curl -sf http://localhost:8080/report >/dev/null 2>&1; do sleep 1; done
+
 echo "Starting web dashboard on http://localhost:5173 ..."
 (cd web && npm run dev) &
 WEB_PID=$!
