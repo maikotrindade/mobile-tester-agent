@@ -82,29 +82,6 @@ object AdbUtils {
     }
 
     /**
-     * Closes the current foreground application on the device.
-     *
-     * @return A message indicating which app was closed, or a failure message.
-     */
-    fun closeCurrentApp(): String {
-        return try {
-            val output = runAdb("shell", "dumpsys", "activity", "top")
-            
-            val regex = Regex("ACTIVITY\\s+([a-zA-Z0-9_.]+)/")
-            val packageName = regex.find(output)?.groups?.get(1)?.value
-
-            if (packageName != null && packageName != "system") {
-                runAdb("shell", "am", "force-stop", packageName)
-                "App '$packageName' has been force-stopped."
-            } else {
-                "Failed to identify the current foreground app."
-            }
-        } catch (e: Exception) {
-            "Error closing app: ${e.message}"
-        }
-    }
-
-    /**
      * Gathers and returns detailed information about the connected device.
      *
      * @return A formatted string with device information, or an error message.
@@ -113,26 +90,42 @@ object AdbUtils {
      * Returns the package name of the current foreground activity, or null if it can't be read.
      */
     fun foregroundPackage(): String? {
-        val output = runAdb("shell", "dumpsys", "activity", "top")
-        return Regex("ACTIVITY\\s+([a-zA-Z0-9_.]+)/").find(output)?.groups?.get(1)?.value
+        // Try several sources — Android exposes the focused app in different places
+        // and `dumpsys activity top` can briefly still show the launcher mid-transition.
+        val focus = runAdb("shell", "dumpsys", "window")
+        Regex("mCurrentFocus=.*?\\s+([a-zA-Z0-9_.]+)/").find(focus)?.groups?.get(1)?.value?.let { return it }
+        Regex("mFocusedApp=.*?\\s+([a-zA-Z0-9_.]+)/").find(focus)?.groups?.get(1)?.value?.let { return it }
+        val top = runAdb("shell", "dumpsys", "activity", "top")
+        return Regex("ACTIVITY\\s+([a-zA-Z0-9_.]+)/").findAll(top).lastOrNull()?.groups?.get(1)?.value
+    }
+
+    /** True if at least one process for [packageName] is alive on the device. */
+    private fun isProcessRunning(packageName: String): Boolean {
+        val out = runAdb("shell", "pidof", packageName)
+        return out.isNotBlank() && !out.contains("Error") && out.trim().all { it.isDigit() || it == ' ' }
     }
 
     /**
      * Launches an app by package via monkey, then verifies it reached the foreground.
-     * Retries once if the verification fails.
+     * Polls for up to ~6s; if the process is alive but foreground detection still races
+     * (common on the Pixel launcher transition), treat it as success rather than a false alarm.
      */
     fun launchAndVerify(packageName: String): String {
-        repeat(2) { attempt ->
-            val launch = runAdb(
-                "shell", "monkey", "-p", packageName,
-                "-c", "android.intent.category.LAUNCHER", "1"
-            )
-            if (launch.contains("Error") || launch.contains("No activities")) {
-                return "ERROR: failed to launch '$packageName': $launch"
+        val launch = runAdb(
+            "shell", "monkey", "-p", packageName,
+            "-c", "android.intent.category.LAUNCHER", "1"
+        )
+        if (launch.contains("Error") || launch.contains("No activities")) {
+            return "ERROR: failed to launch '$packageName': $launch"
+        }
+        repeat(6) {
+            Thread.sleep(1000)
+            if (foregroundPackage() == packageName) {
+                return "OK: launched $packageName (foreground confirmed)"
             }
-            Thread.sleep(if (attempt == 0) 1500 else 2500)
-            val fg = foregroundPackage()
-            if (fg == packageName) return "OK: launched $packageName (foreground confirmed)"
+        }
+        if (isProcessRunning(packageName)) {
+            return "OK: launched $packageName (process running; foreground check inconclusive)"
         }
         val fg = foregroundPackage() ?: "unknown"
         return "ERROR: launched '$packageName' but foreground is '$fg' after retry"

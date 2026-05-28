@@ -15,6 +15,8 @@ import kotlinx.coroutines.delay
  */
 class MobileTestTools : ToolSet {
 
+    private var scenarioStarted: Boolean = false
+
     @Tool
     @LLMDescription(
         "Connect the device/emulator and launch the target app via ADB. Call ONCE as the first action. " +
@@ -27,24 +29,24 @@ class MobileTestTools : ToolSet {
         @LLMDescription("Android package name to launch, e.g. com.maikogram. Required.")
         appPackage: String
     ): String {
+        if (scenarioStarted) {
+            return "ERROR: startTestingScenario was already called this run — DO NOT call it again. " +
+                    "The app is already launched. Proceed directly to Step 1 of the scenario."
+        }
         if (appPackage.isBlank()) return "ERROR: appPackage is required"
         val connect = AdbUtils.connectDevice()
         if (connect.contains("No devices") || connect.startsWith("Failed") || connect.startsWith("Error")) {
             return "ERROR: $connect"
         }
-        // Idempotent: if the target app is already foreground, skip relaunch so duplicate
-        // calls from the LLM don't restart the app mid-test.
-        if (AdbUtils.foregroundPackage() == appPackage) {
-            return "OK: $appPackage already foreground (startTestingScenario is a no-op — proceed to next step)"
-        }
         AdbUtils.runAdb("shell", "input", "keyevent", "224") // KEYCODE_WAKEUP
         Thread.sleep(300)
         AdbUtils.runAdb("shell", "wm", "dismiss-keyguard")
         Thread.sleep(200)
-        // Force-stop any stale instance so launch starts from a clean state.
         AdbUtils.runAdb("shell", "am", "force-stop", appPackage)
         Thread.sleep(200)
-        return AdbUtils.launchAndVerify(appPackage)
+        val result = AdbUtils.launchAndVerify(appPackage)
+        if (result.startsWith("OK")) scenarioStarted = true
+        return result
     }
 
     @Tool
@@ -359,14 +361,4 @@ class MobileTestTools : ToolSet {
         else "OK: launched $packageName"
     }
 
-    @Tool
-    @LLMDescription(
-        "Force-stop the current foreground app. Call ONCE as the final action of the test scenario. " +
-                "Returns 'OK: ...' or 'ERROR: ...'."
-    )
-    fun closeApp(): String {
-        val result = AdbUtils.closeCurrentApp()
-        return if (result.startsWith("Failed") || result.startsWith("Error")) "ERROR: $result"
-        else "OK: $result"
-    }
 }

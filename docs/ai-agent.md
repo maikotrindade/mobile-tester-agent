@@ -80,8 +80,7 @@ The full text lives inline in [MobileTestAgent.kt](../src/main/kotlin/agent/Mobi
 
 1. **First action:** `startTestingScenario(appPackage)` — passing the *exact* `App package` from the user message. Connects ADB, force-stops stale instances, launches the package, verifies foreground. If it returns `OK`, the app is on screen — the model is forbidden from tapping launcher/home icons to "open" it (a common LLM failure mode).
 2. **Execute each step in order**, one at a time, starting from the current screen.
-3. **Final action:** `closeApp` once.
-4. **Emit a single assistant message** listing each step as `PASS`/`FAIL` with a one-line reason.
+3. **After the last step is verified**, emit a single assistant message listing each step as `PASS`/`FAIL` with a one-line reason, and stop. No explicit close step.
 
 ### Per-step loop: act → verify → recover
 
@@ -111,14 +110,13 @@ The model parses this prefix to decide its next action. This is a deliberate cho
 
 * Don't call `startTestingScenario` more than once.
 * Don't tap the launcher/home screen to open the target app.
-* Don't call `closeApp` between steps.
 * Don't loop the same failing call more than twice.
 * Don't skip verification.
 * Don't invent selectors not seen on screen — call `findUiElementsByText` or `getScreenDump` first.
 
 ### Termination
 
-Stop only after `closeApp` + the final summary message. Format:
+Stop immediately after the final summary message. Format:
 
 ```
 Step 1: PASS — <one-line reason>
@@ -214,7 +212,5 @@ Tool called: tool wait, args {ms=500}
 Tool called: tool verifyElementVisible, args {text=Username}
   → VISIBLE: 1 match(es) for 'Username'
 ... (continues for each step) ...
-Tool called: tool closeApp
-  → OK: App 'com.example.myapp' has been force-stopped.
 onAgentFinished: Step 1: PASS — ... Step 2: PASS — ... etc.
 ```

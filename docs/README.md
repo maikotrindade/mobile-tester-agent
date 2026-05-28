@@ -49,6 +49,6 @@ flowchart LR
 2. The frontend POSTs the scenario to the Ktor server.
 3. `MobileTestAgent` (a Koog `AIAgent`) interprets each step, calls `@Tool`-annotated functions, and verifies the result before continuing.
 4. The tools layer drives the device on the target platform — **Android, iOS, or React Native** — and reads UI state back.
-5. After `closeApp`, the agent emits a PASS/FAIL summary per step, which is returned to the dashboard.
+5. After the final step verification, the agent emits a PASS/FAIL summary per step, which is returned to the dashboard.
 
 For the deeper "how" — see [architecture.md](architecture.md) and [ai-agent.md](ai-agent.md).

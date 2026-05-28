@@ -70,7 +70,7 @@ These behaviors are load-bearing — see [docs/ai-agent.md](docs/ai-agent.md) an
 - **Status-prefixed tool returns.** Every `@Tool` returns a `String` starting with one of `OK | TAPPED | VISIBLE | NOT_VISIBLE | NOT_FOUND | AMBIGUOUS | ERROR | TIMEOUT`. The system prompt tells the LLM to pattern-match the prefix. Preserve this when adding tools — return strings, never throw.
 - **Device serial pinning.** `AdbUtils.runAdb()` injects `-s <serial>` after `connectDevice()` picks a target. Don't bypass it with raw `ProcessBuilder("adb", …)` calls.
 - **`MAX_TOKENS_THRESHOLD = 8000`** in `TestingStrategy.kt`. Lower values trigger compression too aggressively and the agent forgets which step it's on.
-- **`startTestingScenario` once, first; `closeApp` once, last.** The system prompt forbids any "tap launcher to open the app" recovery — launch is handled programmatically.
+- **`startTestingScenario` once, first.** The system prompt forbids any "tap launcher to open the app" recovery — launch is handled programmatically. The agent stops immediately after the final-step summary; there is no explicit close step.
 - **`hideKeyboard` uses `KEYCODE_BACK` (4)**, not `KEYCODE_ESCAPE`. Empirically required on the target device; documented inline.
 
 ## Common commands

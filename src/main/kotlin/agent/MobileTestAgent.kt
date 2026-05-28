@@ -56,8 +56,9 @@ object MobileTestAgent {
                          home screen entry to open it. If it returns ERROR, stop and FAIL the scenario;
                          do not try to open the app manually.
                       2. Execute every step in order, one step at a time, starting from the app's current screen.
-                      3. Final action: call closeApp once.
-                      4. After closeApp, emit ONE assistant message summarising each step as PASS or FAIL with a one-line reason.
+                      3. After the LAST step is verified, immediately emit ONE assistant message summarising
+                         each step as PASS or FAIL with a one-line reason, and STOP. Do not perform any extra
+                         actions, screenshots, or cleanup after the last step's verification.
 
                     PER-STEP LOOP (act → verify → recover):
                       a) Act: take the smallest tool action that advances the step.
@@ -95,14 +96,13 @@ object MobileTestAgent {
                         If you do not know what to tap, call findUiElementsByText or getScreenDump first.
                       - Tap an app icon / launcher / home screen to open the target app. The app is launched
                         programmatically via ADB inside startTestingScenario.
-                      - Call closeApp between steps.
                       - Loop the same failing tool call > 2x in a row.
                       - Skip verification.
                       - Invent selectors not seen on screen — call findUiElementsByText, perceiveScreen,
                         or getScreenDump first.
 
                     TERMINATION:
-                      Stop only after closeApp + the final summary message. Format:
+                      Stop immediately after emitting the final summary message. Format:
                         Step 1: PASS — <one-line reason>
                         Step 2: FAIL — <one-line reason>
                         ...
