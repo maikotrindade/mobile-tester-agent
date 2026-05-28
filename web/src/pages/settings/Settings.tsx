@@ -8,7 +8,6 @@ const Settings: React.FC = () => {
   const [executorInfoId, setExecutorInfoId] = useState<string>('');
   const [llmTemperature, setLlmTemperature] = useState<number>(0.2);
   const [maxAgentIterations, setMaxAgentIterations] = useState<number>(50);
-  const [logTokensConsumption, setLogTokensConsumption] = useState<boolean>(true);
   const [logsEnabled, setLogsEnabled] = useState<boolean>(true);
   const [screenshotsEnabled, setScreenshotsEnabled] = useState<boolean>(true);
   const [recordingEnabled, setRecordingEnabled] = useState<boolean>(false);
@@ -28,10 +27,6 @@ const Settings: React.FC = () => {
     const savedMaxAgentIterations = localStorage.getItem('maxAgentIterations');
     if (savedMaxAgentIterations) {
       setMaxAgentIterations(parseInt(savedMaxAgentIterations, 10));
-    }
-    const savedLogTokensConsumption = localStorage.getItem('logTokensConsumption');
-    if (savedLogTokensConsumption) {
-      setLogTokensConsumption(savedLogTokensConsumption === 'true');
     }
     const savedLogsEnabled = localStorage.getItem('logsEnabled');
     if (savedLogsEnabled !== null) setLogsEnabled(savedLogsEnabled === 'true');
@@ -54,7 +49,6 @@ const Settings: React.FC = () => {
       executorInfoId,
       llmTemperature,
       maxAgentIterations,
-      logTokensConsumption,
       logsEnabled,
       screenshotsEnabled,
       recordingEnabled,
@@ -66,7 +60,6 @@ const Settings: React.FC = () => {
     localStorage.setItem('executorInfoId', executorInfoId);
     localStorage.setItem('llmTemperature', llmTemperature.toString());
     localStorage.setItem('maxAgentIterations', maxAgentIterations.toString());
-    localStorage.setItem('logTokensConsumption', logTokensConsumption.toString());
     localStorage.setItem('logsEnabled', logsEnabled.toString());
     localStorage.setItem('screenshotsEnabled', screenshotsEnabled.toString());
     localStorage.setItem('recordingEnabled', recordingEnabled.toString());
@@ -222,20 +215,6 @@ const Settings: React.FC = () => {
               />
               <div className={styles.iterationInfo}>
                 <small>{t('settings.maxIterationsHelp')}</small>
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={logTokensConsumption}
-                  onChange={(e) => setLogTokensConsumption(e.target.checked)}
-                />
-                {t('settings.logTokensLabel')}
-              </label>
-              <div className={styles.tokenInfo}>
-                <small>{t('settings.logTokensHelp')}</small>
               </div>
             </div>
 
