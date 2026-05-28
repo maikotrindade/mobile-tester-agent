@@ -321,11 +321,6 @@ function Home() {
 
         {/* Right Panel - Scenario Editor */}
         <div className={styles.rightPanel}>
-          <div className={styles.panelTitle}>
-            <span className="icon">⚙️</span>
-            {currentScenarioId ? t('home.editScenario') : t('home.createNew')}
-          </div>
-
           <div className={styles.formSection}>
             <div className={styles.formSectionTitle}>
               <span className="icon">🎯</span>{t('home.testObjective')}
@@ -428,7 +423,17 @@ function Home() {
                 className={`${styles.button} ${styles.btnRunTest}`}
                 onClick={isLoading ? handleStopTest : handleRunTest}
               >
-                {isLoading ? t('home.stopTest') : t('home.runTest')}
+                {isLoading ? (
+                  <>
+                    <span className={styles.spinner} aria-hidden="true" />
+                    {t('home.stopTest')}
+                  </>
+                ) : (
+                  <>
+                    {t('home.runTest')}
+                    <span aria-hidden="true" className={styles.runArrow}>›</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

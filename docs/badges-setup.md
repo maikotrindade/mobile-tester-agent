@@ -15,7 +15,7 @@ These render from [shields.io](https://shields.io) with hard-coded values. Bump 
 | Kotlin | `img.shields.io/badge/Kotlin-2.3.0-...` | Bump version in URL when `build.gradle.kts` changes |
 | JDK | `img.shields.io/badge/JDK-21-...` | Bump if you change `jvmToolchain` |
 | Ktor | `img.shields.io/badge/Ktor-3.1.3-...` | Track `build.gradle.kts` |
-| Koog | `img.shields.io/badge/Koog-0.8.0-...` | Track `build.gradle.kts` |
+| Koog | `img.shields.io/badge/Koog-1.0.0-...` | Track `build.gradle.kts` |
 | Gradle | `img.shields.io/badge/Gradle-8.11+-...` | Bump if wrapper changes |
 | React / Vite / TypeScript | `img.shields.io/badge/...` | Track `web/package.json` |
 | Firebase, Android, iOS, React Native | Platform tags | No update needed |

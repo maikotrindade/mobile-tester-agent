@@ -1,19 +1,12 @@
 # Mobile Tester Agent
 
-[![Build](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/build.yml/badge.svg)](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/build.yml)
-[![Tests](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/test.yml/badge.svg)](https://github.com/maikotrindade/mobile-tester-agent/actions/workflows/test.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![JDK](https://img.shields.io/badge/JDK-21-007396?logo=openjdk&logoColor=white)](https://adoptium.net)
 [![Ktor](https://img.shields.io/badge/Ktor-3.1.3-087CFA?logo=ktor&logoColor=white)](https://ktor.io)
-[![Koog](https://img.shields.io/badge/Koog-0.8.0-FF6F00)](https://docs.koog.ai)
+[![Koog](https://img.shields.io/badge/Koog-1.0.0-FF6F00)](https://docs.koog.ai)
 [![Gradle](https://img.shields.io/badge/Gradle-8.11+-02303A?logo=gradle&logoColor=white)](https://gradle.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
-[![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
-[![iOS](https://img.shields.io/badge/iOS-000000?logo=apple&logoColor=white)](https://developer.apple.com/ios)
-[![React Native](https://img.shields.io/badge/React_Native-61DAFB?logo=react&logoColor=black)](https://reactnative.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/maikotrindade/mobile-tester-agent/pulls)
 
