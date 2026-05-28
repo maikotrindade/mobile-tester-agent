@@ -30,7 +30,22 @@ fun Application.configureRouting() {
                     return@post call.respondText("Missing steps", status = HttpStatusCode.BadRequest)
                 }
 
-                println("\n###### API REQUEST\n Goal: $goal \n packageName: $packageName \n steps: $stepsAsStrings \n######\n")
+                val cfg = MobileTestAgent.currentConfig
+                val llmName = (cfg.executorInfo::class.simpleName ?: "Unknown").removeSuffix("Executor")
+                val toggles = buildList {
+                    add("LLM: $llmName")
+                    if (cfg.logsEnabled) add("Logs enabled")
+                    if (cfg.screenshotsEnabled) add("Screenshots enabled")
+                    if (cfg.recordingEnabled) add("Recording enabled")
+                }.joinToString(" | ")
+                println(
+                    "\n###### API REQUEST\n" +
+                            "\n * Goal: $goal" +
+                            "\n * App: $packageName" +
+                            "\n * Settings: $toggles" +
+                            "\n * Steps: $stepsAsStrings" +
+                            "\n######\n"
+                )
                 val result = MobileTestAgent.runAgent(goal, packageName, stepsAsStrings)
                 call.respond(result)
             } catch (e: Exception) {

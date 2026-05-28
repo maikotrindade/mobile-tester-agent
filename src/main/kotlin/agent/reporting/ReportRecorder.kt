@@ -96,7 +96,10 @@ object ReportRecorder {
         val m = manifest ?: return
         if (!m.logsEnabled) return
         val now = Instant.now()
-        val prefix = result?.substringBefore(' ')?.trimEnd(':', ',')
+        val prefix = result
+            ?.trimStart('"', ' ', '{', '}')
+            ?.substringBefore(' ')
+            ?.trimEnd(':', ',', '"')
         val event = ReportEvent(
             index = ++eventCounter,
             timestamp = isoFmt.format(now),

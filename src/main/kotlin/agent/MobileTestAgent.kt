@@ -23,6 +23,7 @@ import kotlin.time.ExperimentalTime
 
 object MobileTestAgent {
     private var config: MobileTesterConfig = MobileTesterConfig()
+    val currentConfig: MobileTesterConfig get() = config
     private var currentJob: Job? = null
 
     val isRunning: Boolean get() = currentJob?.isActive == true
@@ -184,13 +185,25 @@ object MobileTestAgent {
                 agent.run(testScenario)
             } catch (_: CancellationException) {
                 // Cancellation is surfaced via invokeOnCompletion below.
+            } catch (t: Throwable) {
+                if (!resultDeferred.isCompleted) {
+                    ReportRecorder.endRun("failed")
+                    resultDeferred.complete("Agent failed: ${t.message}")
+                }
             }
         }
         currentJob = job
         job.invokeOnCompletion { cause ->
-            if (cause is CancellationException && !resultDeferred.isCompleted) {
+            if (resultDeferred.isCompleted) return@invokeOnCompletion
+            if (cause is CancellationException) {
                 ReportRecorder.endRun("stopped")
                 resultDeferred.complete("Test stopped by user")
+            } else if (cause != null) {
+                ReportRecorder.endRun("failed")
+                resultDeferred.complete("Agent failed: ${cause.message}")
+            } else {
+                ReportRecorder.endRun("failed")
+                resultDeferred.complete("Agent finished without result")
             }
         }
         try {
