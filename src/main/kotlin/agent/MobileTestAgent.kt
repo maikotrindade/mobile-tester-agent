@@ -69,6 +69,8 @@ object MobileTestAgent {
                     SELECTOR STRATEGY (most to least reliable):
                       resource-id > content-desc > text. Pass selectorType when you know which attribute applies.
                       Default "any" searches all three.
+                      For positional/semantic steps ("last", "newest", "cheapest", icon-only), call
+                      perceiveScreen() once, pick the right node, then tap by its text or by tapByCoordinates(cx,cy).
 
                     TOOL RESULT CONVENTION:
                       Every tool returns a string starting with one of: OK | TAPPED | VISIBLE | NOT_VISIBLE |
@@ -84,12 +86,17 @@ object MobileTestAgent {
 
                     ANTI-PATTERNS — DO NOT:
                       - Call startTestingScenario more than once — it is the FIRST action only.
+                      - Call launchAppByPackage for the SAME package you passed to startTestingScenario.
+                        launchAppByPackage is ONLY for switching to a different app mid-scenario.
+                      - Emit a tool call with empty/missing arguments. Every `tap` call MUST include `text`.
+                        If you do not know what to tap, call findUiElementsByText or getScreenDump first.
                       - Tap an app icon / launcher / home screen to open the target app. The app is launched
                         programmatically via ADB inside startTestingScenario.
                       - Call closeApp between steps.
                       - Loop the same failing tool call > 2x in a row.
                       - Skip verification.
-                      - Invent selectors not seen on screen — call findUiElementsByText or getScreenDump first.
+                      - Invent selectors not seen on screen — call findUiElementsByText, perceiveScreen,
+                        or getScreenDump first.
 
                     TERMINATION:
                       Stop only after closeApp + the final summary message. Format:
