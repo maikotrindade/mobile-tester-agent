@@ -18,6 +18,9 @@ const TopNav: React.FC = () => {
           <NavLink to="/" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
             {t('nav.home')}
           </NavLink>
+          <NavLink to="/reports" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+            Reports
+          </NavLink>
           <NavLink to="/settings" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
             {t('nav.settings')}
           </NavLink>

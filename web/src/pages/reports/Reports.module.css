@@ -1,0 +1,117 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: var(--text-muted, #888);
+}
+
+.statusChip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-left: 8px;
+  text-transform: uppercase;
+  background: #eee;
+  color: #333;
+}
+
+.statusCompleted { background: #d4edda; color: #155724; }
+.statusFailed { background: #f8d7da; color: #721c24; }
+.statusStopped { background: #fff3cd; color: #856404; }
+.statusRunning { background: #cce5ff; color: #004085; }
+
+.videoSection {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.videoSection video {
+  width: 100%;
+  max-height: 420px;
+  background: #000;
+  border-radius: 6px;
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.eventRow {
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  background: var(--card-bg, #fafafa);
+}
+
+.eventHeader {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted, #777);
+}
+
+.toolName {
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text, #222);
+}
+
+.args {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  word-break: break-all;
+  color: var(--text-muted, #555);
+}
+
+.result {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  white-space: pre-wrap;
+  color: var(--text, #333);
+}
+
+.prefixChip {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #eee;
+  color: #444;
+}
+
+.prefixOK, .prefixTAPPED, .prefixVISIBLE { background: #d4edda; color: #155724; }
+.prefixNOT_VISIBLE, .prefixNOT_FOUND, .prefixERROR, .prefixTIMEOUT, .prefixAMBIGUOUS { background: #f8d7da; color: #721c24; }
+
+.screenshot {
+  display: block;
+  max-width: 280px;
+  margin-top: 0.5rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-muted, #888);
+  padding: 3rem;
+}
